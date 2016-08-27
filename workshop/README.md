@@ -1,2 +1,2 @@
 # Workshop Addons
-Most of these didn't quite make the cut for the workshop. Lots of them are barely even started or empty. I am just putting this here in case anyone asks for source code.
+Most of these didn't quite make the cut for the workshop. Lots of them are barely even started or empty. I am just putting this here in case anyone asks for source code. GMA files are excluded for any of the addons that have them, but they can all be downloaded from [my workshop page](http://steamcommunity.com/id/sirfrancisbillard/myworkshopfiles/?appid=0&sort=score&browsefilter=myfiles&view=imagewall)
