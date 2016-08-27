@@ -1,2 +1,2 @@
 # lua-projects
-Some bigger projects that I need to dump
+Some bigger LUA projects that I need to put somewhere. All of them are for Garry's Mod.
