@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Refining oil turns it into fuel, a much more useful and efficient material."
+	return "Refining oil turns it into fuel, a much more useful and efficient material. Fuel can be extracted from the refinery with the use key."
 end
 function ENT:ExtraNetworkedVars()
 	self:NetworkVar("Int", 1, "StoredOil")
@@ -33,10 +33,13 @@ if SERVER then
 		end
 	end
 	function ENT:ExtraThink()
-		self:SetConvertCooldown(self:GetConvertCooldown() - 1)
-		if (self:GetConvertCooldown() < 1) and (self:GetStoredOil() > 0) then
-			self:SetStoredOil(self:GetStoredOil() - 1)
-			self:SetStoredFuel(self:GetStoredFuel() + 1)
+		if (self:GetStoredPower() > 20) then
+			self:SetStoredPower(self:GetStoredPower() - 20)
+			self:SetConvertCooldown(self:GetConvertCooldown() - 1)
+			if (self:GetConvertCooldown() < 1) and (self:GetStoredOil() > 0) then
+				self:SetStoredOil(self:GetStoredOil() - 1)
+				self:SetStoredFuel(self:GetStoredFuel() + 1)
+			end
 		end
 	end
 	function ENT:OnEntityUsed(ply)

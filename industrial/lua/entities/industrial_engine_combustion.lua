@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Combustion Engine"
 ENT.Spawnable = true
-ENT.Model = "models/props_interiors/Radiator01a.mdl"
+ENT.Model = "models/props_vehicles/generatortrailer01.mdl"
 function ENT:IndustrialType()
 	return "gen"
 	// valid types and their uses

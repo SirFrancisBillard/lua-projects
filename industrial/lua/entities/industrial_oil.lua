@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Oil Barrel"
 ENT.Spawnable = true
-ENT.Model = "models/props_phx/construct/metal_plate1.mdl"
+ENT.Model = "models/props_c17/oildrum001.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
