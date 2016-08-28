@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Fuel Can"
+ENT.PrintName = "Oil Barrel"
 ENT.Spawnable = true
 ENT.Model = "models/props_phx/construct/metal_plate1.mdl"
 function ENT:IndustrialType()
@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Fuel can be used with jetpacks or missiles, as well as being three times better at powering combustion engines compared to oil."
+	return "Oil is an extremely useful resource that can be refined into fuel or used in a combustion engine."
 end
 function ENT:CanReceivePower()
 	return false
