@@ -26,6 +26,9 @@ end
 function ENT:MinerData()
 	return false
 end
+function ENT:ExplodesAfterDamage()
+	return 0
+end
 function ENT:CanTransmitPower()
 	return true
 end
@@ -52,6 +55,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 6, "EngineTime")
 	self:NetworkVar("Int", 7, "MiningCooldown")
 	self:NetworkVar("Int", 8, "MinedStuff")
+	self:NetworkVar("Int", 9, "BoomHealth")
 	self:ExtraNetworkedVars()
 end
 function ENT:HasMaterials()
@@ -109,6 +113,7 @@ if SERVER then
 		self:SetStoredProduct(0)
 		self:SetEngineTime(0)
 		self:SetMinedStuff(0)
+		self:SetBoomHealth(self:ExplodesAfterDamage())
 		self:ExtraInit()
 		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 		self:SetConvertCooldown(Tim)
@@ -229,6 +234,19 @@ if SERVER then
 				end
 			end
 		end
+	end
+	function ENT:ExtraOnTakeDamage()
+	function ENT:OnTakeDamage(dmg)
+		self:SetBoomHealth(self:GetBoomHealth() - dmg:GetDamage())
+		if (self:GetBoomHealth() <= 0) and (self:ExplodesAfterDamage() > 0) then
+			local boom = EffectData()
+			boom:SetOrigin(self:GetPos())
+			util.Effect("HelicopterMegaBomb", boom)
+			self:EmitSound("weapons/explode"..math.random(3, 5)..".wav")
+			util.BlastDamage(self, self, self:GetPos(), 128, 100)
+			SafeRemoveEntity(self)
+		end
+		self:ExtraOnTakeDamage()
 	end
 end
 
