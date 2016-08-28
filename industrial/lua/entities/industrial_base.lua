@@ -17,6 +17,9 @@ end
 function ENT:HelpText()
 	return "No help text found. Sorry!"
 end
+function ENT:RefineryData()
+	return false
+end
 function ENT:CanTransmitPower()
 	return true
 end
@@ -35,7 +38,37 @@ end
 function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "StoredPower")
+	self:NetworkVar("Int", 1, "StoredMaterial1")
+	self:NetworkVar("Int", 2, "StoredMaterial2")
+	self:NetworkVar("Int", 3, "StoredMaterial3")
+	self:NetworkVar("Int", 4, "StoredProduct")
+	self:NetworkVar("Int", 5, "ConvertCooldown")
 	self:ExtraNetworkedVars()
+end
+function ENT:HasMaterials()
+	local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+	if (MatAmt == 1) then
+		return IsRef and (self:GetStoredMaterial1() > 0)
+	elseif (MatAmt == 2) then
+		return IsRef and (self:GetStoredMaterial1() > 0) and (self:GetStoredMaterial2() > 0)
+	elseif (MatAmt == 3) then
+		return IsRef and (self:GetStoredMaterial1() > 0) and (self:GetStoredMaterial2() > 0) and (self:GetStoredMaterial3() > 0)
+	else
+		return IsRef
+	end
+end
+function ENT:UseMaterials()
+	local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+	if (MatAmt == 1) then
+		self:SetStoredMaterial1(self:GetStoredMaterial1() - 1)
+	elseif (MatAmt == 2) then
+		self:SetStoredMaterial1(self:GetStoredMaterial1() - 1)
+		self:SetStoredMaterial2(self:GetStoredMaterial2() - 1)
+	elseif (MatAmt == 3) then
+		self:SetStoredMaterial1(self:GetStoredMaterial1() - 1)
+		self:SetStoredMaterial2(self:GetStoredMaterial2() - 1)
+		self:SetStoredMaterial3(self:GetStoredMaterial3() - 1)
+	end
 end
 function ENT:GetMaxStoredPower()
 	return 200
@@ -62,11 +95,21 @@ if SERVER then
 		self:SetUseType(SIMPLE_USE or 3)
 		self:SetStoredPower(0)
 		self:ExtraInit()
+		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+		self:SetConvertCooldown(Tim)
 	end
 	function ENT:OnEntityUsed(ply) end
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			self:OnEntityUsed(ply)
+			// spit out product
+			if (self:GetStoredProduct() > 0) and self:RefineryData() then
+				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+				self:SetStoredProduct(self:GetStoredProduct() - 1)
+				local ent = ents.Create(Prod)
+				ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+				ent:Spawn()
+			end
 		end
 	end
 	function ENT:ExtraThink() end
@@ -95,10 +138,43 @@ if SERVER then
 			if self:CanGeneratePower() then
 				self:SetStoredPower(math.Clamp(self:GetStoredPower() + self:PowerGenerationRate(), 0, self:GetMaxStoredPower()))
 			end
+			// refine materials
+			if self:RefineryData() then
+				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+				local function self:HasMaterials()
+					return (self:GetStoredMaterial1 > 0) and (self:GetStoredMaterial2 > 0) and (self:GetStoredMaterial3 > 0)
+				end
+				if (self:GetStoredPower() >= Pow) and (self:HasMaterials()) then
+					self:SetStoredPower(self:GetStoredPower() - Pow)
+					self:SetConvertCooldown(self:GetConvertCooldown() - 1)
+				end
+				if (self:GetConvertCooldown() <= 0) and (self:HasMaterials()) then
+					self:UseMaterials()
+					self:SetStoredProduct(self:GetStoredProduct() + 1)
+				end
+			end
 		end
 		self:ExtraThink()
 		self:NextThink(CurTime() + 1)
 		return true
+	end
+	function ENT:ExtraTouch(toucher) end
+	function ENT:Touch(toucher)
+		if self:RefineryData() then
+			local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+			for k, v in pairs(Mats) then
+				if (toucher:GetClass() == v) then
+					SafeRemoveEntity(toucher)
+					if (k == 1) then
+						self:SetStoredMaterial1(self:GetStoredMaterial1() + 1)
+					elseif (k == 2) then
+						self:SetStoredMaterial2(self:GetStoredMaterial2() + 1)
+					elseif (k == 3) then
+						self:SetStoredMaterial3(self:GetStoredMaterial3() + 1)
+					end
+				end
+			end
+		end
 	end
 end
 
