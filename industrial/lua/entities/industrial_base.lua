@@ -20,6 +20,9 @@ end
 function ENT:RefineryData()
 	return false
 end
+function ENT:EngineData()
+	return false
+end
 function ENT:CanTransmitPower()
 	return true
 end
@@ -43,6 +46,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 3, "StoredMaterial3")
 	self:NetworkVar("Int", 4, "StoredProduct")
 	self:NetworkVar("Int", 5, "ConvertCooldown")
+	self:NetworkVar("Int", 6, "EngineTime")
 	self:ExtraNetworkedVars()
 end
 function ENT:HasMaterials()
@@ -94,6 +98,11 @@ if SERVER then
 		end
 		self:SetUseType(SIMPLE_USE or 3)
 		self:SetStoredPower(0)
+		self:SetStoredMaterial1(0)
+		self:SetStoredMaterial2(0)
+		self:SetStoredMaterial3(0)
+		self:SetStoredProduct(0)
+		self:SetEngineTime(0)
 		self:ExtraInit()
 		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 		self:SetConvertCooldown(Tim)
@@ -114,7 +123,7 @@ if SERVER then
 	end
 	function ENT:ExtraThink() end
 	function ENT:Think()
-		if (self:IndustrialType() != "base") and (self:IndustrialType() != "mach") then
+		if (self:IndustrialType() != "base") then
 			// send power
 			for k, v in pairs(ents.FindInSphere(self:GetPos(), self:GetInteractionRadius())) do
 				if IsValid(v) and (v.IndustrialType != nil) then
@@ -135,23 +144,24 @@ if SERVER then
 				end
 			end
 			// generate power
-			if self:CanGeneratePower() then
+			if self:CanGeneratePower() or (self:GetEngineTime() > 0) then
 				self:SetStoredPower(math.Clamp(self:GetStoredPower() + self:PowerGenerationRate(), 0, self:GetMaxStoredPower()))
 			end
 			// refine materials
 			if self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
-				local function self:HasMaterials()
-					return (self:GetStoredMaterial1 > 0) and (self:GetStoredMaterial2 > 0) and (self:GetStoredMaterial3 > 0)
-				end
 				if (self:GetStoredPower() >= Pow) and (self:HasMaterials()) then
 					self:SetStoredPower(self:GetStoredPower() - Pow)
-					self:SetConvertCooldown(self:GetConvertCooldown() - 1)
+					self:SetConvertCooldown(math.Clamp(self:GetConvertCooldown() - 1, 0, self:GetConvertCooldown()))
 				end
 				if (self:GetConvertCooldown() <= 0) and (self:HasMaterials()) then
 					self:UseMaterials()
 					self:SetStoredProduct(self:GetStoredProduct() + 1)
 				end
+			end
+			// engine time
+			if self:EngineData() then
+				self:SetEngineTime(math.Clamp(self:GetEngineTime() - 1, 0, self:GetEngineTime()))
 			end
 		end
 		self:ExtraThink()
@@ -160,6 +170,7 @@ if SERVER then
 	end
 	function ENT:ExtraTouch(toucher) end
 	function ENT:Touch(toucher)
+		// refinery materials
 		if self:RefineryData() then
 			local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 			for k, v in pairs(Mats) then
@@ -172,6 +183,16 @@ if SERVER then
 					elseif (k == 3) then
 						self:SetStoredMaterial3(self:GetStoredMaterial3() + 1)
 					end
+				end
+			end
+		end
+		// engine fuel
+		if self:EngineData() then
+			local IsEng, Fuels, Times = self:EngineData()
+			for k, v in pairs(Fuels) do
+				if (toucher == v) then
+					SafeRemoveEntity(toucher)
+					self:SetEngineTime(self:GetEngineTime() + Times[k])
 				end
 			end
 		end
