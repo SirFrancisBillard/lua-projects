@@ -15,39 +15,6 @@ end
 function ENT:HelpText()
 	return "Refining oil turns it into fuel, a much more useful and efficient material. Fuel can be extracted from the refinery with the use key."
 end
-function ENT:ExtraNetworkedVars()
-	self:NetworkVar("Int", 1, "StoredOil")
-	self:NetworkVar("Int", 2, "StoredFuel")
-	self:NetworkVar("Int", 3, "ConvertCooldown")
-end
-if SERVER then
-	function ENT:ExtraInit()
-		self:SetStoredOil(0)
-		self:SetStoredFuel(0)
-		self:SetConvertCooldown(10)
-	end
-	function ENT:Touch(toucher)
-		if (toucher:GetClass() == "industrial_oil") then
-			SafeRemoveEntity(toucher)
-			self:SetStoredOil(self:GetStoredOil() + 1)
-		end
-	end
-	function ENT:ExtraThink()
-		if (self:GetStoredPower() > 20) then
-			self:SetStoredPower(self:GetStoredPower() - 20)
-			self:SetConvertCooldown(self:GetConvertCooldown() - 1)
-			if (self:GetConvertCooldown() < 1) and (self:GetStoredOil() > 0) then
-				self:SetStoredOil(self:GetStoredOil() - 1)
-				self:SetStoredFuel(self:GetStoredFuel() + 1)
-			end
-		end
-	end
-	function ENT:OnEntityUsed(ply)
-		if (self:GetStoredFuel() > 0) then
-			self:SetStoredFuel(self:GetStoredFuel() - 1)
-			local ent = ents.Create("industrial_fuel")
-			ent:SetPos(self:GetPos() + Vector(0, 0, 60))
-			ent:Spawn()
-		end
-	end
+function ENT:RefineryData()
+	return true, {"industrial_oil"}, 1, "industrial_fuel", 10, 20
 end
