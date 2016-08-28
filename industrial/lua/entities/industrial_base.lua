@@ -14,6 +14,9 @@ function ENT:IndustrialType()
 	// bat - stores power
 	// mach - uses power
 end
+function ENT:HelpText()
+	return "No help text found. Sorry!"
+end
 function ENT:CanTransmitPower()
 	return true
 end
@@ -29,8 +32,10 @@ end
 function ENT:PowerGenerationRate()
 	return 10
 end
+function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "StoredPower")
+	self:ExtraNetworkedVars()
 end
 function ENT:GetMaxStoredPower()
 	return 200
@@ -39,11 +44,12 @@ function ENT:GetInteractionRadius()
 	return 80
 end
 function ENT:CanSeeSky()
-	local tr = util.TraceLine({start = self:GetPos(), endpos = self:GetPos() + Vector(0, 0, 5000), self.Entity})
-	return (tr.HitNonWorld and tr.HitSky)
+	local tr = util.TraceLine({start = self:GetPos(), endpos = self:GetPos() + Vector(0, 0, 2048), filter = self})
+	return tr.HitSky
 end
 
 if SERVER then
+	function ENT:ExtraInit() end
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
@@ -54,6 +60,8 @@ if SERVER then
 			phys:Wake()
 		end
 		self:SetUseType(SIMPLE_USE or 3)
+		self:SetStoredPower(0)
+		self:ExtraInit()
 	end
 	function ENT:OnEntityUsed(ply) end
 	function ENT:Use(activator, caller)
@@ -61,6 +69,7 @@ if SERVER then
 			self:OnEntityUsed(ply)
 		end
 	end
+	function ENT:ExtraThink() end
 	function ENT:Think()
 		if (self:IndustrialType() != "base") and (self:IndustrialType() != "mach") then
 			// send power
@@ -87,6 +96,7 @@ if SERVER then
 				self:SetStoredPower(math.Clamp(self:GetStoredPower() + self:PowerGenerationRate(), 0, self:GetMaxStoredPower()))
 			end
 		end
+		self:ExtraThink()
 		self:NextThink(CurTime() + 1)
 		return true
 	end
