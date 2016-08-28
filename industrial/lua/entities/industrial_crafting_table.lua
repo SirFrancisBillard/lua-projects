@@ -32,3 +32,4 @@ if SERVER then
 		end
 	end
 end
+if CLIENT then

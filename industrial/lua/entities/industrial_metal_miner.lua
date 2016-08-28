@@ -16,5 +16,5 @@ function ENT:HelpText()
 	return "Oil wells will generate oil when given enough power. Harvested oil can be extracted from the well with the use key."
 end
 function ENT:MinerData()
-	return true, {"industrial_oil"}, false, 10, 10
+	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_zinc"}, true, 10, 10
 end
