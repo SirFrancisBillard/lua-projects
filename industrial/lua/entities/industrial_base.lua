@@ -23,6 +23,9 @@ end
 function ENT:EngineData()
 	return false
 end
+function ENT:MinerData()
+	return false
+end
 function ENT:CanTransmitPower()
 	return true
 end
@@ -47,6 +50,8 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 4, "StoredProduct")
 	self:NetworkVar("Int", 5, "ConvertCooldown")
 	self:NetworkVar("Int", 6, "EngineTime")
+	self:NetworkVar("Int", 7, "MiningCooldown")
+	self:NetworkVar("Int", 8, "MinedStuff")
 	self:ExtraNetworkedVars()
 end
 function ENT:HasMaterials()
@@ -103,9 +108,12 @@ if SERVER then
 		self:SetStoredMaterial3(0)
 		self:SetStoredProduct(0)
 		self:SetEngineTime(0)
+		self:SetMinedStuff(0)
 		self:ExtraInit()
 		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 		self:SetConvertCooldown(Tim)
+		local IsMiner, Stuff, IsRandom, mTim, mPow = self:MinerData()
+		self:SetMiningCooldown(mTim)
 	end
 	function ENT:OnEntityUsed(ply) end
 	function ENT:Use(activator, caller)
@@ -118,6 +126,20 @@ if SERVER then
 				local ent = ents.Create(Prod)
 				ent:SetPos(self:GetPos() + Vector(0, 0, 60))
 				ent:Spawn()
+			end
+			// spit out mined stuff
+			if self:MinerData() and (self:GetMinedStuff() > 0) then
+				self:SetMinedStuff(math.Clamp(self:GetMinedStuff() - 1, 0, self:GetMinedStuff()))
+				local IsMiner, Stuff, IsRandom, Tim, Pow = self:MinerData()
+				if IsRandom then
+					local ent = ents.Create(Stuff[math.random(1, #Stuff)])
+					ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+					ent:Spawn()
+				else
+					local ent = ents.Create(Stuff[1])
+					ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+					ent:Spawn()
+				end
 			end
 		end
 	end
@@ -162,6 +184,17 @@ if SERVER then
 			// engine time
 			if self:EngineData() then
 				self:SetEngineTime(math.Clamp(self:GetEngineTime() - 1, 0, self:GetEngineTime()))
+			end
+			// mine stuff
+			if self:MinerData() then
+				local IsMiner, Stuff, IsRandom, Tim, Pow = self:MinerData()
+				if (self:GetStoredPower() >= Pow) then
+					self:SetStoredPower(self:GetStoredPower() - Pow)
+					self:SetMiningCooldown(math.Clamp(self:GetMiningCooldown() - 1, 0, self:GetMiningCooldown()))
+				end
+				if (self:GetMiningCooldown() <= 0) then
+					self:SetMinedStuff(self:GetMinedStuff() + 1)
+				end
 			end
 		end
 		self:ExtraThink()
