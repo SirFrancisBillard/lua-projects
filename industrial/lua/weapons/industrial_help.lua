@@ -10,7 +10,7 @@ SWEP.AdminOnly = false
 SWEP.Slot = 1
 
 SWEP.WorldModel = "models/weapons/w_pistol.mdl"
-SWEP.ViewModel = "models/weapons/c_irifle.mdl"
+SWEP.ViewModel = "models/weapons/c_pistol.mdl"
 SWEP.UseHands = true
 
 function SWEP:CanSecondaryAttack()
