@@ -25,7 +25,7 @@ function SWEP:PrimaryAttack()
 		ply:LagCompensation(true)
 	end
 	local tr = ply:GetEyeTrace()
-	if IsValid(tr.Entity) and (tr.Entity.HelpText != nil) then
+	if IsValid(tr.Entity) and (tr.Entity.HelpText != nil) and SERVER then
 		ply:ChatPrint(tr.Entity:HelpText())
 	end
 	if (ply:IsPlayer()) then
