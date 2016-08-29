@@ -74,9 +74,9 @@ if CLIENT then
 		end
 	end
 	function SWEP:ViewModelDrawn()
-	if ply:KeyDown(IN_ATTACK) and self.VM then
-        render.SetMaterial( LASER )
-		render.DrawBeam(self.VM:GetAttachment(self.Attach).Pos, self:GetOwner():GetEyeTrace().HitPos, 2, 0, 12.5, self:GetLaserColor())
-    end
-end
+		if ply:KeyDown(IN_ATTACK) and self.VM then
+	        	render.SetMaterial( LASER )
+			render.DrawBeam(self.VM:GetAttachment(self.Attach).Pos, self:GetOwner():GetEyeTrace().HitPos, 2, 0, 12.5, self:GetLaserColor())
+	    	end
+	end
 end
