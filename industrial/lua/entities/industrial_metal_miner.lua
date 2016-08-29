@@ -16,5 +16,5 @@ function ENT:HelpText()
 	return "Metal mines will mine metals when given power."
 end
 function ENT:MinerData()
-	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_zinc"}, true, 10, 10
+	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_zinc", "industrial_zinc", "industrial_zinc", "industrial_gold"}, true, 10, 10
 end

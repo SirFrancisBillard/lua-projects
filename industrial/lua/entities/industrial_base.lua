@@ -44,6 +44,12 @@ end
 function ENT:PowerGenerationRate()
 	return 10
 end
+function ENT:PermaColor()
+	return false
+end
+function ENT:PermaMaterial()
+	return false
+end
 function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "StoredPower")
@@ -202,6 +208,15 @@ if SERVER then
 				end
 			end
 		end
+		// set color 
+		if self:PermaColor() then
+			self:SetColor(self:PermaColor())
+		end
+		// set material
+		if self:PermaMaterial() then
+			self:SetMaterial(self:PermaMaterial())
+		end
+		// set next think
 		self:ExtraThink()
 		self:NextThink(CurTime() + 1)
 		return true
