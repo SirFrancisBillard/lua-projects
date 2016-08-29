@@ -2,11 +2,11 @@ local plyMeta = FindMetaTable("Player")
 local entMeta = FindMetaTable("Entity")
 
 local recipes = {
-	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_metal", "industrial_metal", "industrial_fuel"}, power = 6000, func = function(ent) end},
-	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_fuel"}, power = 6000, func = function(ent) end},
-	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_zinc"}, power = 400, func = function(ent) end},
-	["advanced alloy"] = {result = "industrial_adv_alloy", recipe = {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_gold"}, power = 800, func = function(ent) end},
-	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, func = function(ent) end}
+	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_metal", "industrial_metal", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
+	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
+	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["advanced alloy"] = {result = "industrial_adv_alloy", recipe = {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_gold"}, power = 800, ctable = "industrial_crafting_table", func = function(ent) end},
+	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end}
 
 }
 
@@ -24,7 +24,7 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 		local item = string.sub(txt, 12)
 		for k, v in pairs(recipes) do
 			if (string.find(item, tostring(k))) then
-				local ctable = ply:NearestItem("industrial_crafting_table")
+				local ctable = ply:NearestItem(v.ctable)
 				if ctable then
 					if (ctable:GetStoredPower() >= v.power) then
 						local ingredients = {}
