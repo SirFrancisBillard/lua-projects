@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 surface.CreateFont("IndustrialFont", {
 	font = "Arial",
 	extended = false,
