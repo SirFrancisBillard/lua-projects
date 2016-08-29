@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Zinc"
+ENT.PrintName = "Brass"
 ENT.Spawnable = true
-ENT.Model = "models/props_junk/rock001a.mdl"
+ENT.Model = "models/Items/item_item_crate_chunk02.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Zinc is a somewhat rare resource that is used to make brass and medicine."
+	return "Brass is an alloy made from metal and zinc that can be used to make ammo."
 end
 function ENT:CanReceivePower()
 	return false
@@ -22,5 +22,8 @@ function ENT:CanTransmitPower()
 	return false
 end
 function ENT:PermaMaterial()
-	return "models/props/cs_office/snowmana"
+	return "models/props_pipes/pipemetal001a"
+end
+function ENT:PermaColor()
+	return Color(255, 200, 0)
 end

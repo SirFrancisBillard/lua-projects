@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Gold"
 ENT.Spawnable = true
-ENT.Model = "models/props_c17/oildrum001.mdl"
+ENT.Model = "models/props_junk/rock001a.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -20,4 +20,7 @@ function ENT:CanReceivePower()
 end
 function ENT:CanTransmitPower()
 	return false
+end
+function ENT:PermaMaterial()
+	return "models/props_c17/furniturefabric001a"
 end

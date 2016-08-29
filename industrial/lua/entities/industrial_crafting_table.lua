@@ -2,8 +2,8 @@ AddCSLuaFile()
 
 ENT.Base = "industrial_base"
 ENT.PrintName = "Crafting Table"
-ENT.Spawnable = true
-ENT.Model = "models/props_interiors/Radiator01a.mdl"
+ENT.Spawnable = true6
+ENT.Model = "models/props/CS_militia/wood_table.mdl"
 function ENT:IndustrialType()
 	return "mach"
 	// valid types and their uses
@@ -13,13 +13,13 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:Recipes()
-	return {
-	jetpack = {result = "industrial_jetpack", recipe = {"industrial_metal_refined", "industrial_booster"}},
-	laser = {result = "industrial_laser", recipe = {"industrial_metal_refined"}},
-}
+	return 0
 end
 function ENT:HelpText()
 	return "Crafting tables are used to forge items like jetpacks and laser guns using materials and power."
+end
+function ENT:GetMaxStoredPower()
+	return 10000
 end
 function ENT:ExtraNetworkedVars()
 	self:NetworkVar("Entity", 0, "Crafter")
@@ -32,4 +32,3 @@ if SERVER then
 		end
 	end
 end
-if CLIENT then

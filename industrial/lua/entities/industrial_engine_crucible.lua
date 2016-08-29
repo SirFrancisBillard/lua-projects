@@ -21,3 +21,9 @@ end
 function ENT:PowerGenerationRate()
 	return 200
 end
+function ENT:PowerTransmitRate()
+	return 400
+end
+function ENT:GetMaxStoredPower()
+	return 1000
+end

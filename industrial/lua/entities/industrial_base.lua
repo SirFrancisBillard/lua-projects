@@ -110,6 +110,7 @@ if SERVER then
 		local phys = self:GetPhysicsObject()
 		if phys:IsValid() then
 			phys:Wake()
+			phys:SetMass(60)
 		end
 		self:SetUseType(SIMPLE_USE or 3)
 		self:SetStoredPower(0)
@@ -122,14 +123,18 @@ if SERVER then
 		self:SetBoomHealth(self:ExplodesAfterDamage())
 		self:ExtraInit()
 		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
-		self:SetConvertCooldown(Tim)
+		if IsRef then
+			self:SetConvertCooldown(Tim)
+		end
 		local IsMiner, Stuff, IsRandom, mTim, mPow = self:MinerData()
-		self:SetMiningCooldown(mTim)
+		if IsMiner then
+			self:SetMiningCooldown(mTim)
+		end
 	end
 	function ENT:OnEntityUsed(ply) end
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
-			self:OnEntityUsed(ply)
+			self:OnEntityUsed(caller)
 			// spit out product
 			if (self:GetStoredProduct() > 0) and self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
@@ -189,6 +194,7 @@ if SERVER then
 				end
 				if (self:GetConvertCooldown() <= 0) and (self:HasMaterials()) then
 					self:UseMaterials()
+					self:SetConvertCooldown(Tim)
 					self:SetStoredProduct(self:GetStoredProduct() + 1)
 				end
 			end
@@ -204,6 +210,7 @@ if SERVER then
 					self:SetMiningCooldown(math.Clamp(self:GetMiningCooldown() - 1, 0, self:GetMiningCooldown()))
 				end
 				if (self:GetMiningCooldown() <= 0) then
+					self:SetMiningCooldown(Tim)
 					self:SetMinedStuff(self:GetMinedStuff() + 1)
 				end
 			end
@@ -226,7 +233,7 @@ if SERVER then
 		// refinery materials
 		if self:RefineryData() then
 			local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
-			for k, v in pairs(Mats) then
+			for k, v in pairs(Mats) do
 				if (toucher:GetClass() == v) then
 					SafeRemoveEntity(toucher)
 					if (k == 1) then
@@ -243,7 +250,7 @@ if SERVER then
 		if self:EngineData() then
 			local IsEng, Fuels, Times = self:EngineData()
 			for k, v in pairs(Fuels) do
-				if (toucher == v) then
+				if (toucher:GetClass() == v) then
 					SafeRemoveEntity(toucher)
 					self:SetEngineTime(self:GetEngineTime() + Times[k])
 				end
@@ -264,7 +271,7 @@ if SERVER then
 		self:ExtraOnTakeDamage()
 	end
 end
-
+end
 if CLIENT then
 	function ENT:Draw()
 		self:DrawModel()
