@@ -24,7 +24,12 @@ function SWEP:Deploy()
 	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
 end
 function SWEP:GetLaserColor()
-	return Color(self:GetLaserColorR(), self:GetLaserColorG(), self:GetLaserColorb())
+	return Color(self:GetLaserColorR(), self:GetLaserColorG(), self:GetLaserColorB())
+end
+function SWEP:SetLaserColor(color)
+	self:SetLaserColorR(color.r)
+	self:SetLaserColorG(color.g)
+	self:SetLaserColorB(color.b)
 end
 function SWEP:Initialize()
 	self:SetHoldType("ar2")
@@ -51,5 +56,27 @@ if SERVER then
 	end
 end
 if CLIENT then
-
+	local ply = self.Owner
+	local LASER = Material("cable/redlaser")
+	if ply.GetViewModel and ply:GetViewModel():IsValid() then
+		local attachmentIndex = ply:GetViewModel():LookupAttachment("muzzle")
+		if attachmentIndex == 0 then attachmentIndex = ply:GetViewModel():LookupAttachment("1") end
+		if LocalPlayer():GetAttachment(attachmentIndex) then
+			self.VM = ply:GetViewModel()
+			self.Attach = attachmentIndex
+		end
+	end
+	if ply:IsValid() then
+		local attachmentIndex = ply:LookupAttachment("anim_attachment_RH")
+		if ply:GetAttachment(attachmentIndex) then
+			self.WM = ply
+			self.WAttach = attachmentIndex
+		end
+	end
+	function SWEP:ViewModelDrawn()
+	if ply:KeyDown(IN_ATTACK) and self.VM then
+        render.SetMaterial( LASER )
+		render.DrawBeam(self.VM:GetAttachment(self.Attach).Pos, self:GetOwner():GetEyeTrace().HitPos, 2, 0, 12.5, self:GetLaserColor())
+    end
+end
 end
