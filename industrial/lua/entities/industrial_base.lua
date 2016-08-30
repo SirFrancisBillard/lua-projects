@@ -52,16 +52,26 @@ function ENT:PermaMaterial()
 end
 function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
-	self:NetworkVar("Int", 0, "StoredPower")
-	self:NetworkVar("Int", 1, "StoredMaterial1")
-	self:NetworkVar("Int", 2, "StoredMaterial2")
-	self:NetworkVar("Int", 3, "StoredMaterial3")
-	self:NetworkVar("Int", 4, "StoredProduct")
-	self:NetworkVar("Int", 5, "ConvertCooldown")
-	self:NetworkVar("Int", 6, "EngineTime")
-	self:NetworkVar("Int", 7, "MiningCooldown")
-	self:NetworkVar("Int", 8, "MinedStuff")
-	self:NetworkVar("Int", 9, "BoomHealth")
+	if (self:IndustrialType() != "base") then
+		self:NetworkVar("Int", 0, "StoredPower")
+	end
+	if self:RefineryData() then
+		self:NetworkVar("Int", 1, "StoredMaterial1")
+		self:NetworkVar("Int", 2, "StoredMaterial2")
+		self:NetworkVar("Int", 3, "StoredMaterial3")
+		self:NetworkVar("Int", 4, "StoredProduct")
+		self:NetworkVar("Int", 5, "ConvertCooldown")
+	end
+	if self:EngineData() then
+		self:NetworkVar("Int", 6, "EngineTime")
+	end
+	if self:MinerData() then
+		self:NetworkVar("Int", 7, "MiningCooldown")
+		self:NetworkVar("Int", 8, "MinedStuff")
+	end
+	if (self:ExplodesAfterDamage() > 0) then
+		self:NetworkVar("Int", 9, "BoomHealth")
+	end
 	self:ExtraNetworkedVars()
 end
 function ENT:HasMaterials()
@@ -113,22 +123,28 @@ if SERVER then
 			phys:SetMass(60)
 		end
 		self:SetUseType(SIMPLE_USE or 3)
-		self:SetStoredPower(0)
-		self:SetStoredMaterial1(0)
-		self:SetStoredMaterial2(0)
-		self:SetStoredMaterial3(0)
-		self:SetStoredProduct(0)
-		self:SetEngineTime(0)
-		self:SetMinedStuff(0)
-		self:SetBoomHealth(self:ExplodesAfterDamage())
+		if (self:IndustrialType() != "base") then
+			self:SetStoredPower(0)
+		end
+		if self:EngineData() then
+			self:SetEngineTime(0)
+		end
+		if (self:ExplodesAfterDamage() > 0) then
+			self:SetBoomHealth(self:ExplodesAfterDamage())
+		end
 		self:ExtraInit()
 		local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 		if IsRef then
 			self:SetConvertCooldown(Tim)
+			self:SetStoredMaterial1(0)
+			self:SetStoredMaterial2(0)
+			self:SetStoredMaterial3(0)
+			self:SetStoredProduct(0)
 		end
 		local IsMiner, Stuff, IsRandom, mTim, mPow = self:MinerData()
 		if IsMiner then
 			self:SetMiningCooldown(mTim)
+			self:SetMinedStuff(0)
 		end
 	end
 	function ENT:OnEntityUsed(ply) end
