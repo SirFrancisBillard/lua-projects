@@ -238,9 +238,9 @@ if SERVER then
 					SafeRemoveEntity(toucher)
 					if (k == 1) then
 						self:SetStoredMaterial1(self:GetStoredMaterial1() + 1)
-					elseif (k == 2) then
+					elseif (MatAmt > 1) and (k == 2) then
 						self:SetStoredMaterial2(self:GetStoredMaterial2() + 1)
-					elseif (k == 3) then
+					elseif (MatAmt > 2) ans (k == 3) then
 						self:SetStoredMaterial3(self:GetStoredMaterial3() + 1)
 					end
 				end
