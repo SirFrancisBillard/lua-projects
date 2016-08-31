@@ -25,3 +25,18 @@ The function returns 6 values:
 - Prod - The product made after the refining process.
 - Tim - The time taken to refine items, must have adequate power to do so.
 - Pow - Power used per second of refining. Items will pause in their refining process if not enough power is given.
+- 
+### Engine Data
+Engines use different types of fuel to produce power. They require said fuel to produce power, and will not do anything when not powered. Adding fuel only increases the amount of time the engine will run, with no effect on the engine's speed.
+This function returns 3 values:
+- IsEng - Is this entity an engine? If not, no other values need be returned.
+- Fuels - A table of items that can be used as fuel
+- Times - A table of how long fuels of matching keys to the Fuels table will make the engine run for (in seconds).
+
+Example:
+function ENT:EngineData()
+	return true, {"industrial_fuel", "industrial_gold"}, {10, 50}
+end
+
+### Miner Data
+Miners use power to generate varying amounts of materials over time.
