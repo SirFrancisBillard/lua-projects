@@ -56,7 +56,7 @@ Miners use power to generate varying amounts of materials over time. Miners will
 This function returns 5 vales, in this order:
 1. bool - Is this entity a miner? If not, no other values need be returned.
 2. table - A table of one or more items that can be mined by this miner.
-3. bool - Whether or not items are chosen at random from the Stuff table. If disabled, the first item from the table will be selected.
+3. bool - Whether or not items are chosen at random from the item table. If disabled, the first item from the table will be selected.
 4. int - The time in seconds needed to mine one item.
 5. int - The power needed to complete one second of mining.
 
