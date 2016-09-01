@@ -25,7 +25,16 @@ The function returns 6 values:
 - Prod - The product made after the refining process.
 - Tim - The time taken to refine items, must have adequate power to do so.
 - Pow - Power used per second of refining. Items will pause in their refining process if not enough power is given.
-- 
+
+Example:
+```javascript
+function ENT:RefineryData()
+	return true, {"industrial_metal", "industrial_oil", "industrial_zinc"}, 3, "industrial_gold", 20, 50
+end
+```
+Result:
+This entity is a refinery that will take 20 seconds to turn 1 metal, oil, and zinc into 1 gold if given 50 power per second.
+
 ### Engine Data
 Engines use different types of fuel to produce power. They require said fuel to produce power, and will not do anything when not powered. Adding fuel only increases the amount of time the engine will run, with no effect on the engine's speed.
 This function returns 3 values:
@@ -34,9 +43,28 @@ This function returns 3 values:
 - Times - A table of how long fuels of matching keys to the Fuels table will make the engine run for (in seconds).
 
 Example:
+```javascript
 function ENT:EngineData()
 	return true, {"industrial_fuel", "industrial_gold"}, {10, 50}
 end
+```
+Result:
+This entity is an engine that is powered for 10 seconds by fuel and 50 seconds by gold.
 
 ### Miner Data
-Miners use power to generate varying amounts of materials over time.
+Miners use power to generate varying amounts of materials over time. Miners will halt their current mining progress if they do not have sufficient power.
+This function returns 5 vales:
+- IsMiner - Is this entity a miner? If not, no other values need be returned.
+- Stuff - A table of one or more items that can be mined by this miner.
+- IsRandom - Whether or not items are chosen at random from the Stuff table. If disabled, the first item from the table will be selected.
+- Tim - The time in seconds needed to mine one item.
+- Pow - The power needed to complete one second of mining.
+
+Example:
+```javascript
+function ENT:MinerData()
+	return true, {"industrial_uranium", "industrial_gold"}, true, 60, 20
+end
+```
+Result:
+This entity is a miner that has a 50/50 chance of mining either uranium or gold. It requires 20 power per second for 20 seconds in order to mine an item.
