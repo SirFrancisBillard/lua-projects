@@ -67,4 +67,4 @@ function ENT:MinerData()
 end
 ```
 Result:
-This entity is a miner that has a 50/50 chance of mining either uranium or gold. It requires 20 power per second for 20 seconds in order to mine an item.
+This entity is a miner that has a 50/50 chance of mining either uranium or gold. It requires 20 power per second for 60 seconds in order to mine an item.
