@@ -56,21 +56,26 @@ function ENT:SetupDataTables()
 		self:NetworkVar("Int", 0, "StoredPower")
 	end
 	if self:RefineryData() then
+		local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 		self:NetworkVar("Int", 1, "StoredMaterial1")
 		self:NetworkVar("Int", 2, "StoredMaterial2")
 		self:NetworkVar("Int", 3, "StoredMaterial3")
 		self:NetworkVar("Int", 4, "StoredProduct")
-		self:NetworkVar("Int", 5, "ConvertCooldown")
+		if MultiProd then
+			self:NetworkVar("Int", 5, "StoredProduct2")
+			self:NetworkVar("Int", 6, "StoredProduct3")
+		end
+		self:NetworkVar("Int", 7, "ConvertCooldown")
 	end
 	if self:EngineData() then
-		self:NetworkVar("Int", 6, "EngineTime")
+		self:NetworkVar("Int", 8, "EngineTime")
 	end
 	if self:MinerData() then
-		self:NetworkVar("Int", 7, "MiningCooldown")
-		self:NetworkVar("Int", 8, "MinedStuff")
+		self:NetworkVar("Int", 9, "MiningCooldown")
+		self:NetworkVar("Int", 10, "MinedStuff")
 	end
 	if (self:ExplodesAfterDamage() > 0) then
-		self:NetworkVar("Int", 9, "BoomHealth")
+		self:NetworkVar("Int", 11, "BoomHealth")
 	end
 	self:ExtraNetworkedVars()
 end
@@ -87,7 +92,7 @@ function ENT:HasMaterials()
 	end
 end
 function ENT:UseMaterials()
-	local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+	local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 	if (MatAmt == 1) then
 		self:SetStoredMaterial1(self:GetStoredMaterial1() - 1)
 	elseif (MatAmt == 2) then
@@ -153,11 +158,25 @@ if SERVER then
 			self:OnEntityUsed(caller)
 			// spit out product
 			if (self:GetStoredProduct() > 0) and self:RefineryData() then
-				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 				self:SetStoredProduct(self:GetStoredProduct() - 1)
-				local ent = ents.Create(Prod)
+				local ent = ents.Create(Prod or Prod[1])
 				ent:SetPos(self:GetPos() + Vector(0, 0, 60))
 				ent:Spawn()
+				if MultiProd then
+					if Prod[2] then
+						self:SetStoredProduct2(self:GetStoredProduct2() - 1)
+						local ent = ents.Create(Prod or Prod[2])
+						ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+						ent:Spawn()
+					end
+					if Prod[3] then
+						self:SetStoredProduct3(self:GetStoredProduct3() - 1)
+						local ent = ents.Create(Prod or Prod[3])
+						ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+						ent:Spawn()	
+					end
+				end
 			end
 			// spit out mined stuff
 			if self:MinerData() and (self:GetMinedStuff() > 0) then
@@ -203,15 +222,32 @@ if SERVER then
 			end
 			// refine materials
 			if self:RefineryData() then
-				local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 				if (self:GetStoredPower() >= Pow) and (self:HasMaterials()) then
 					self:SetStoredPower(self:GetStoredPower() - Pow)
 					self:SetConvertCooldown(math.Clamp(self:GetConvertCooldown() - 1, 0, self:GetConvertCooldown()))
 				end
-				if (self:GetConvertCooldown() <= 0) and (self:HasMaterials()) then
-					self:UseMaterials()
-					self:SetConvertCooldown(Tim)
-					self:SetStoredProduct(self:GetStoredProduct() + 1)
+				if (self:GetConvertCooldown() <= 0) then
+					if self:HasMaterials() and (not MultiProd) then
+						self:UseMaterials()
+						self:SetConvertCooldown(Tim)
+						self:SetStoredProduct(self:GetStoredProduct() + 1)
+					end
+					if (self:GetStoredMaterial1() > 0) and MultiProd then
+						self:SetMaterial1(math.Clamp(self:GetMaterial1() - 1, 0, self:GetMaterial1()))
+						self:SetConvertCooldown(Tim)
+						self:SetStoredProduct(self:GetStoredProduct() + 1)
+					end
+					if (self:GetStoredMaterial2() > 0) and MultiProd then
+						self:SetMaterial2(math.Clamp(self:GetMaterial2() - 1, 0, self:GetMaterial2()))
+						self:SetConvertCooldown(Tim)
+						self:SetStoredProduct2(self:GetStoredProduct2() + 1)
+					end
+					if (self:GetStoredMaterial3() > 0) and MultiProd then
+						self:SetMaterial3(math.Clamp(self:GetMaterial3() - 1, 0, self:GetMaterial3()))
+						self:SetConvertCooldown(Tim)
+						self:SetStoredProduct3(self:GetStoredProduct3() + 1)
+					end
 				end
 			end
 			// engine time
