@@ -50,6 +50,9 @@ end
 function ENT:PermaMaterial()
 	return false
 end
+function ENT:EntitySpawnDisplacementVector() // now THAT's a name!
+	return Vector(0, 0, 60)
+end
 function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
 	if (self:IndustrialType() != "base") then
@@ -157,23 +160,25 @@ if SERVER then
 		if IsValid(caller) and caller:IsPlayer() then
 			self:OnEntityUsed(caller)
 			// spit out product
-			if (self:GetStoredProduct() > 0) and self:RefineryData() then
+			if self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
-				self:SetStoredProduct(self:GetStoredProduct() - 1)
-				local ent = ents.Create(Prod or Prod[1])
-				ent:SetPos(self:GetPos() + Vector(0, 0, 60))
-				ent:Spawn()
+				if (self:GetStoredProduct() > 0) then
+					self:SetStoredProduct(self:GetStoredProduct() - 1)
+					local ent = ents.Create(Prod[1] or Prod)
+					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
+					ent:Spawn()
+				end
 				if MultiProd then
-					if Prod[2] then
+					if Prod[2] and (self:GetStoredProduct2() > 0) then
 						self:SetStoredProduct2(self:GetStoredProduct2() - 1)
-						local ent = ents.Create(Prod or Prod[2])
-						ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+						local ent = ents.Create(Prod[2] or Prod)
+						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 						ent:Spawn()
 					end
-					if Prod[3] then
+					if Prod[3] and (self:GetStoredProduct3() > 0) then
 						self:SetStoredProduct3(self:GetStoredProduct3() - 1)
-						local ent = ents.Create(Prod or Prod[3])
-						ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+						local ent = ents.Create(Prod[3] or Prod)
+						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 						ent:Spawn()	
 					end
 				end
@@ -184,11 +189,11 @@ if SERVER then
 				local IsMiner, Stuff, IsRandom, Tim, Pow = self:MinerData()
 				if IsRandom then
 					local ent = ents.Create(Stuff[math.random(1, #Stuff)])
-					ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
 				else
 					local ent = ents.Create(Stuff[1])
-					ent:SetPos(self:GetPos() + Vector(0, 0, 60))
+					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
 				end
 			end
@@ -325,7 +330,9 @@ if SERVER then
 end
 end
 if CLIENT then
+	// puny client functions
 	function ENT:Draw()
 		self:DrawModel()
 	end
+	// todo: menus
 end
