@@ -8,11 +8,11 @@ ENT.Spawnable = false
 ENT.Model = "models/Items/combine_rifle_ammo01.mdl"
 function ENT:IndustrialType()
 	return "base"
-	// valid types and their uses
-	// base - does nothing
-	// gen - generates power
-	// bat - stores power
-	// mach - uses power
+	-- valid types and their uses
+	-- base - does nothing
+	-- gen - generates power
+	-- bat - stores power
+	-- mach - uses power
 end
 function ENT:HelpText()
 	return "No help text found. Sorry!"
@@ -50,7 +50,7 @@ end
 function ENT:PermaMaterial()
 	return false
 end
-function ENT:EntitySpawnDisplacementVector() // now THAT's a name!
+function ENT:EntitySpawnDisplacementVector() -- now THAT's a name!
 	return Vector(0, 0, 60)
 end
 function ENT:ExtraNetworkedVars() end
@@ -159,7 +159,7 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			self:OnEntityUsed(caller)
-			// spit out product
+			-- spit out product
 			if self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 				if (self:GetStoredProduct() > 0) then
@@ -183,7 +183,7 @@ if SERVER then
 					end
 				end
 			end
-			// spit out mined stuff
+			-- spit out mined stuff
 			if self:MinerData() and (self:GetMinedStuff() > 0) then
 				self:SetMinedStuff(math.Clamp(self:GetMinedStuff() - 1, 0, self:GetMinedStuff()))
 				local IsMiner, Stuff, IsRandom, Tim, Pow = self:MinerData()
@@ -202,7 +202,7 @@ if SERVER then
 	function ENT:ExtraThink() end
 	function ENT:Think()
 		if (self:IndustrialType() != "base") then
-			// send power
+			-- send power
 			for k, v in pairs(ents.FindInSphere(self:GetPos(), self:GetInteractionRadius())) do
 				if IsValid(v) and (v.IndustrialType != nil) then
 					if (self:IndustrialType() == "bat") and (v:IndustrialType() == "mach") then
@@ -221,11 +221,11 @@ if SERVER then
 					end
 				end
 			end
-			// generate power
+			-- generate power
 			if self:CanGeneratePower() or (self:GetEngineTime() > 0) then
 				self:SetStoredPower(math.Clamp(self:GetStoredPower() + self:PowerGenerationRate(), 0, self:GetMaxStoredPower()))
 			end
-			// refine materials
+			-- refine materials
 			if self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
 				if (self:GetStoredPower() >= Pow) and (self:HasMaterials()) then
@@ -255,11 +255,11 @@ if SERVER then
 					end
 				end
 			end
-			// engine time
+			-- engine time
 			if self:EngineData() then
 				self:SetEngineTime(math.Clamp(self:GetEngineTime() - 1, 0, self:GetEngineTime()))
 			end
-			// mine stuff
+			-- mine stuff
 			if self:MinerData() then
 				local IsMiner, Stuff, IsRandom, Tim, Pow = self:MinerData()
 				if (self:GetStoredPower() >= Pow) then
@@ -272,22 +272,22 @@ if SERVER then
 				end
 			end
 		end
-		// set color 
+		-- set color 
 		if self:PermaColor() then
 			self:SetColor(self:PermaColor())
 		end
-		// set material
+		-- set material
 		if self:PermaMaterial() then
 			self:SetMaterial(self:PermaMaterial())
 		end
-		// set next think
+		-- set next think
 		self:ExtraThink()
 		self:NextThink(CurTime() + 1)
 		return true
 	end
 	function ENT:ExtraTouch(toucher) end
 	function ENT:Touch(toucher)
-		// refinery materials
+		-- refinery materials
 		if self:RefineryData() then
 			local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 			for k, v in pairs(Mats) do
@@ -303,7 +303,7 @@ if SERVER then
 				end
 			end
 		end
-		// engine fuel
+		-- engine fuel
 		if self:EngineData() then
 			local IsEng, Fuels, Times = self:EngineData()
 			for k, v in pairs(Fuels) do
@@ -330,9 +330,9 @@ if SERVER then
 end
 end
 if CLIENT then
-	// puny client functions
+	-- puny client functions
 	function ENT:Draw()
 		self:DrawModel()
 	end
-	// todo: menus
+	-- todo: menus
 end
