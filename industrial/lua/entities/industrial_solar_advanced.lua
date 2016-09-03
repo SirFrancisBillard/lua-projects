@@ -19,7 +19,11 @@ function ENT:PowerTransmitRate()
 	return 160
 end
 function ENT:PowerGenerationRate()
-	return 80
-endfunction ENT:CanGeneratePower()
+	return 120
+end
+function ENT:GetMaxStoredPower()
+	return 1200
+end
+function ENT:CanGeneratePower()
 	return self:CanSeeSky()
 end
