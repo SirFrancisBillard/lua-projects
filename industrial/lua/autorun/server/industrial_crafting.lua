@@ -3,20 +3,28 @@ local entMeta = FindMetaTable("Entity")
 
 local recipes = {
 	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_adv_alloy", "industrial_adv_alloy", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
-	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_glass", "industrial_adv_alloy"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
+	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_glass", "industrial_adv_alloy"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
 	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_honey"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
-	["carbon mesh"] = {result = "industrial_carbon_mesh", recipe = {"industrial_coal_dust", "industrial_coal_dust"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
+	["carbon mesh"] = {result = "industrial_carbon_mesh", recipe = {"industrial_coal_dust", "industrial_coal_dust"}, power = 60, ctable = "industrial_crafting_table", func = function(ent) end},
 	["nano suit"] = {result = "industrial_nano_suit", recipe = {"industrial_carbon_plate", "industrial_carbon_plate", "industrial_carbon_plate", "industrial_carbon_plate", "industrial_battery"}, power = 10000, ctable = "industrial_crafting_table", func = function(ent) end},
 	["quantum suit"] = {result = "industrial_quantum_suit", recipe = {"industrial_nano_suit", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_battery_gold"}, power = 20000, ctable = "industrial_crafting_table", func = function(ent) end},
-	["golden battery"] = {result = "industrial_battery_gold", recipe = {"industrial_battery", "industrial_gold", "industrial_gold"}, power = 1200, ctable = "industrial_crafting_table", func = function(ent) end},
-	["coal engine"] = {result = "industrial_engine_coal", recipe = {"industrial_metal", "industrial_metal", "industrial_metal"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
-	["combustion engine"] = {result = "industrial_engine_combustion", recipe = {"industrial_engine_coal", "industrial_oil", "industrial_fuel"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
-	["royal crucible engine"] = {result = "industrial_engine_crucible", recipe = {"industrial_engine_combustion", "industrial_gold", "industrial_gold"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["golden battery"] = {result = "industrial_battery_gold", recipe = {"industrial_battery", "industrial_gold", "industrial_gold"}, power = 920, ctable = "industrial_crafting_table", func = function(ent) end},
+	["coal engine"] = {result = "industrial_engine_coal", recipe = {"industrial_metal", "industrial_metal", "industrial_metal"}, power = 480, ctable = "industrial_crafting_table", func = function(ent) end},
+	["combustion engine"] = {result = "industrial_engine_combustion", recipe = {"industrial_engine_coal", "industrial_oil", "industrial_fuel"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["biofuel engine"] = {result = "industrial_engine_biofuel", recipe = {"industrial_engine_coal", "industrial_biofuel", "industrial_foliage"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["royal crucible engine"] = {result = "industrial_engine_crucible", recipe = {"industrial_engine_combustion", "industrial_gold", "industrial_gold"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["machine block"] = {result = "industrial_machine_block", recipe = {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["electric furnace"] = {result = "industrial_electric_furnace", recipe = {"industrial_machine_block", "industrial_coal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["macerator"] = {result = "industrial_macerator", recipe = {"industrial_machine_block", "industrial_metal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
+	["compressor"] = {result = "industrial_compressor", recipe = {"industrial_machine_block", "industrial_metal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
 	["cured plate"] = {result = "industrial_cured_plate", recipe = {"industrial_carbon_plate", "industrial_zinc"}, power = 1800, ctable = "industrial_crafting_table", func = function(ent) end},
 	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end}
 	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end}
 	["napalm missile"] = {result = "industrial_missile_napalm", recipe = {"industrial_missile_empty", "industrial_fuel", "industrial_fuel"}, power = 10000, ctable = "industrial_munition_table", func = function(ent) end}
 	["nuclear fuel rod"] = {result = "industrial_fuel_rod", recipe = {"industrial_adv_alloy", "industrial_uranium"}, power = 20000, ctable = "industrial_munition_table", func = function(ent) end}
+	["artificial garden"] = {result = "industrial_garden", recipe = {"industrial_metal", "industrial_metal", "industrial_glass"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
+	["bee trap"] = {result = "industrial_bee_trap", recipe = {"industrial_wood", "industrial_wood", "industrial_flower", "industrial_flower"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
+	["apiary"] = {result = "industrial_apiary", recipe = {"industrial_wood", "industrial_wood", "industrial_wood", "industrial_wood"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
 }
 
 function plyMeta:NearestItem(item)
