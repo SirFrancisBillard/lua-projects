@@ -53,6 +53,9 @@ end
 function ENT:EntitySpawnDisplacementVector() -- now THAT's a name!
 	return Vector(0, 0, 60)
 end
+function ENT:DealDamageInRadius()
+	return false
+end
 function ENT:ExtraNetworkedVars() end
 function ENT:SetupDataTables()
 	if (self:IndustrialType() != "base") then
@@ -269,6 +272,15 @@ if SERVER then
 				if (self:GetMiningCooldown() <= 0) then
 					self:SetMiningCooldown(Tim)
 					self:SetMinedStuff(self:GetMinedStuff() + 1)
+				end
+			end
+			-- deal damage in radius
+			if self:DealDamageInRadius() then
+				local Radius, Dmg = self:DealDamageInRadius()
+				for k, v in pairs(ents.FindInSphere(self:GetPos(), Radius)) do
+					if v:IsPlayer() then
+						v:DealDamage(Dmg, self, self)
+					end
 				end
 			end
 		end
