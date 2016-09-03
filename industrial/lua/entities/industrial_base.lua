@@ -232,12 +232,12 @@ if SERVER then
 			-- refine materials
 			if self:RefineryData() then
 				local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
-				if (self:GetStoredPower() >= Pow) and (self:HasMaterials()) then
+				if (self:GetStoredPower() >= Pow) and (self:HasMaterials() or (MultiProd and ((self:GetStoredMaterial1() > 0) or (self:GetStoredMaterial2() > 0) or (self:GetStoredMaterial3() > 0)))) then
 					self:SetStoredPower(self:GetStoredPower() - Pow)
 					self:SetConvertCooldown(math.Clamp(self:GetConvertCooldown() - 1, 0, self:GetConvertCooldown()))
 				end
 				if (self:GetConvertCooldown() <= 0) then
-					if self:HasMaterials() and (not MultiProd) then
+					if self:HasMaterials() and then
 						self:UseMaterials()
 						self:SetConvertCooldown(Tim)
 						self:SetStoredProduct(self:GetStoredProduct() + 1)
