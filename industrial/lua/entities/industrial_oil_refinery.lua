@@ -16,5 +16,5 @@ function ENT:HelpText()
 	return "Refining oil turns it into fuel, a much more useful and efficient material. Fuel can be extracted from the refinery with the use key."
 end
 function ENT:RefineryData()
-	return true, {"industrial_oil"}, 1, "industrial_fuel", 20, 20
+	return true, {"industrial_oil"}, 1, "industrial_fuel", 20, 20, false
 end
