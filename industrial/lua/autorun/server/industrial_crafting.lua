@@ -12,7 +12,7 @@ local recipes = {
 	["coal engine"] = {result = "industrial_engine_coal", recipe = {"industrial_metal", "industrial_metal", "industrial_metal"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
 	["combustion engine"] = {result = "industrial_engine_combustion", recipe = {"industrial_engine_coal", "industrial_oil", "industrial_fuel"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
 	["royal crucible engine"] = {result = "industrial_engine_crucible", recipe = {"industrial_engine_combustion", "industrial_gold", "industrial_gold"}, power = 6400, ctable = "industrial_crafting_table", func = function(ent) end},
-	["advanced alloy"] = {result = "industrial_adv_alloy", recipe = {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_gold"}, power = 1200, ctable = "industrial_crafting_table", func = function(ent) end},
+	["cured plate"] = {result = "industrial_cured_plate", recipe = {"industrial_carbon_plate", "industrial_zinc"}, power = 1800, ctable = "industrial_crafting_table", func = function(ent) end},
 	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end}
 	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end}
 	["napalm missile"] = {result = "industrial_missile_napalm", recipe = {"industrial_missile_empty", "industrial_fuel", "industrial_fuel"}, power = 10000, ctable = "industrial_munition_table", func = function(ent) end}
