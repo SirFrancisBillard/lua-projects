@@ -86,7 +86,8 @@ function ENT:SetupDataTables()
 	self:ExtraNetworkedVars()
 end
 function ENT:HasMaterials()
-	local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
+	local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
+	IsRef = IsRef and !MultiProd
 	if (MatAmt == 1) then
 		return IsRef and (self:GetStoredMaterial1() > 0)
 	elseif (MatAmt == 2) then
