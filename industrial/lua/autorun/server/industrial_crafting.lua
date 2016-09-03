@@ -4,7 +4,8 @@ local entMeta = FindMetaTable("Entity")
 local recipes = {
 	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_metal", "industrial_metal", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
 	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
-	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_honey"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["carbon mesh"] = {result = "industrial_carbon_mesh", recipe = {"industrial_coal_dust", "industrial_coal_dust"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
 	["advanced alloy"] = {result = "industrial_adv_alloy", recipe = {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_gold"}, power = 1200, ctable = "industrial_crafting_table", func = function(ent) end},
 	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end}
 	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end}
