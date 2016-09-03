@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Metal Mine"
+ENT.PrintName = "Miner"
 ENT.Spawnable = true
 ENT.Model = "models/props_wasteland/gaspump001a.mdl"
 function ENT:IndustrialType()
@@ -13,8 +13,8 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Metal mines will mine metals when given power."
+	return "Miners will mine materials when given power."
 end
 function ENT:MinerData()
-	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_zinc", "industrial_zinc", "industrial_zinc", "industrial_gold"}, true, 80, 20
+	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_coal", "industrial_coal", "industrial_coal", "industrial_zinc", "industrial_zinc", "industrial_gold"}, true, 80, 20
 end
