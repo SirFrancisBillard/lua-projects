@@ -16,7 +16,7 @@ function ENT:HelpText()
 	return "Coal engines generate power at a normal rate, but require coal to function."
 end
 function ENT:EngineData()
-	return true, {"industrial_coal"}, {40}
+	return true, {"industrial_coal"}, {20}
 end
 function ENT:PowerGenerationRate()
 	return 20
