@@ -123,7 +123,12 @@ function ENT:CanSeeSky()
 end
 
 if SERVER then
+	function ENT:DispenseMinedItem(item) end
+	function ENT:ReceiveMaterial(item) end
+	function ENT:DispenseRefinedItem(item)
 	function ENT:ExtraInit() end
+	function ENT:TransmitPower(amt) end
+	function ENT:ReceivePower(amt)
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
@@ -171,6 +176,7 @@ if SERVER then
 					local ent = ents.Create(Prod[1] or Prod)
 					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
+					self:DispenseRefinedItem(ent)
 				end
 				if MultiProd then
 					if Prod[2] and (self:GetStoredProduct2() > 0) then
@@ -178,12 +184,14 @@ if SERVER then
 						local ent = ents.Create(Prod[2] or Prod)
 						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 						ent:Spawn()
+						self:DispenseRefinedItem(ent)
 					end
 					if Prod[3] and (self:GetStoredProduct3() > 0) then
 						self:SetStoredProduct3(self:GetStoredProduct3() - 1)
 						local ent = ents.Create(Prod[3] or Prod)
 						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
-						ent:Spawn()	
+						ent:Spawn()
+						self:DispenseRefinedItem(ent)
 					end
 				end
 			end
@@ -195,10 +203,12 @@ if SERVER then
 					local ent = ents.Create(Stuff[math.random(1, #Stuff)])
 					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
+					self:DispenseMinedItem(ent)
 				else
 					local ent = ents.Create(Stuff[1])
 					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
+					self:DispenseMinedItem(ent)
 				end
 			end
 		end
@@ -214,6 +224,8 @@ if SERVER then
 							local amt = math.Clamp(self:PowerTransmitRate(), 0, math.Min(self:GetStoredPower(), v:GetMaxStoredPower() - v:GetStoredPower()))
 							self:SetStoredPower(self:GetStoredPower() - amt)
 							v:SetStoredPower(v:GetStoredPower() + amt)
+							self:TransmitPower(amt)
+							v:ReceivedPower(amt)
 						end
 					end
 					if (self:IndustrialType() == "gen") or ((v:IndustrialType() == "bat") or (v:IndustrialType() == "mach")) then
@@ -221,6 +233,8 @@ if SERVER then
 							local amt = math.Clamp(self:PowerTransmitRate(), 0, math.Min(self:GetStoredPower(), v:GetMaxStoredPower() - v:GetStoredPower()))
 							self:SetStoredPower(self:GetStoredPower() - amt)
 							v:SetStoredPower(v:GetStoredPower() + amt)
+							self:TransmitPower(amt)
+							v:ReceivedPower(amt)
 						end
 					end
 				end
