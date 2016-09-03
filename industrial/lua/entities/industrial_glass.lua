@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Glass can be used to craft lasers and advanced solar panels."
+	return "Glass can be used to craft lasers, gardens, and advanced solar panels."
 end
 function ENT:CanReceivePower()
 	return false
