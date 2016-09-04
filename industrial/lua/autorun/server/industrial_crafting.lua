@@ -18,13 +18,15 @@ local recipes = {
 	["macerator"] = {result = "industrial_macerator", recipe = {"industrial_machine_block", "industrial_metal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
 	["compressor"] = {result = "industrial_compressor", recipe = {"industrial_machine_block", "industrial_metal"}, power = 640, ctable = "industrial_crafting_table", func = function(ent) end},
 	["cured plate"] = {result = "industrial_cured_plate", recipe = {"industrial_carbon_plate", "industrial_zinc"}, power = 1800, ctable = "industrial_crafting_table", func = function(ent) end},
-	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end}
-	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end}
-	["napalm missile"] = {result = "industrial_missile_napalm", recipe = {"industrial_missile_empty", "industrial_fuel", "industrial_fuel"}, power = 10000, ctable = "industrial_munition_table", func = function(ent) end}
-	["nuclear fuel rod"] = {result = "industrial_fuel_rod", recipe = {"industrial_adv_alloy", "industrial_uranium"}, power = 20000, ctable = "industrial_munition_table", func = function(ent) end}
-	["artificial garden"] = {result = "industrial_garden", recipe = {"industrial_metal", "industrial_metal", "industrial_glass"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
-	["bee trap"] = {result = "industrial_bee_trap", recipe = {"industrial_wood", "industrial_wood", "industrial_flower", "industrial_flower"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
-	["apiary"] = {result = "industrial_apiary", recipe = {"industrial_wood", "industrial_wood", "industrial_wood", "industrial_wood"}, power = 120, ctable = "industrial_crafting_table", func = function(ent) end},
+	["brass"] = {result = "industrial_brass", recipe = {"industrial_metal", "industrial_zinc"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["munition table"] = {result = "industrial_munition_table", recipe = {"industrial_adv_alloy", "industrial_adv_alloy"}, power = 1200, ctable = "industrial_crafting_table", func = function(ent) end},
+	["forestry table"] = {result = "industrial_forestry_table", recipe = {"industrial_metal", "industrial_metal"}, power = 800, ctable = "industrial_crafting_table", func = function(ent) end},
+	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end},
+	["napalm missile"] = {result = "industrial_missile_napalm", recipe = {"industrial_missile_empty", "industrial_fuel", "industrial_fuel"}, power = 10000, ctable = "industrial_munition_table", func = function(ent) end},
+	["nuclear fuel rod"] = {result = "industrial_fuel_rod", recipe = {"industrial_adv_alloy", "industrial_uranium"}, power = 20000, ctable = "industrial_munition_table", func = function(ent) end},
+	["artificial garden"] = {result = "industrial_garden", recipe = {"industrial_metal", "industrial_metal", "industrial_glass"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
+	["bee trap"] = {result = "industrial_bee_trap", recipe = {"industrial_wood", "industrial_wood", "industrial_flower", "industrial_flower"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
+	["apiary"] = {result = "industrial_apiary", recipe = {"industrial_wood", "industrial_wood", "industrial_wood", "industrial_wood"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
 }
 
 function plyMeta:NearestItem(item)
@@ -62,12 +64,18 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 							v.func(ent)
 						else
 							ply:ChatPrint("Not enough ingredients nearby!")
+							ply:ChatPrint("Required ingredients:")
+							for ___, ent in pairs(v.recipe) do
+								ply:ChatPrint(scripted_ents.Get(ent:GetClass()).PrintName)
+							end
 						end
 					else
 						ply:ChatPrint("Crafting table doesn't have enough power!")
+						ply:ChatPrint("Required power: "..v.power)
 					end
 				else
-					ply:ChatPrint("No crafting table nearby!")
+					ply:ChatPrint("No table nearby!")
+					ply:ChatPrint("Required table: "..scripted_ents.Get(v.ctable).PrintName)
 				end
 			end
 		end
