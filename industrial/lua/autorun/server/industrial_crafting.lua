@@ -5,6 +5,7 @@ local recipes = {
 	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_adv_alloy", "industrial_adv_alloy", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
 	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_glass", "industrial_adv_alloy"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
 	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_honey"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
+	["gunpowder"] = {result = "industrial_gunpowder", recipe = {"industrial_coal_dust", "industrial_sand"}, power = 200, ctable = "industrial_crafting_table", func = function(ent) end},
 	["carbon mesh"] = {result = "industrial_carbon_mesh", recipe = {"industrial_coal_dust", "industrial_coal_dust"}, power = 60, ctable = "industrial_crafting_table", func = function(ent) end},
 	["nano suit"] = {result = "industrial_nano_suit", recipe = {"industrial_carbon_plate", "industrial_carbon_plate", "industrial_carbon_plate", "industrial_carbon_plate", "industrial_battery"}, power = 10000, ctable = "industrial_crafting_table", func = function(ent) end},
 	["quantum suit"] = {result = "industrial_quantum_suit", recipe = {"industrial_nano_suit", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_quantum_plate", "industrial_battery_gold"}, power = 20000, ctable = "industrial_crafting_table", func = function(ent) end},
@@ -22,9 +23,9 @@ local recipes = {
 	["munition table"] = {result = "industrial_munition_table", recipe = {"industrial_adv_alloy", "industrial_adv_alloy"}, power = 1200, ctable = "industrial_crafting_table", func = function(ent) end},
 	["forestry table"] = {result = "industrial_forestry_table", recipe = {"industrial_metal", "industrial_metal"}, power = 800, ctable = "industrial_crafting_table", func = function(ent) end},
 	
-	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_fuel"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end},
+	["empty missile casing"] = {result = "industrial_missile_empty", recipe = {"industrial_adv_alloy", "industrial_adv_alloy"}, power = 4000, ctable = "industrial_munition_table", func = function(ent) end},
 	["napalm missile"] = {result = "industrial_missile_napalm", recipe = {"industrial_missile_empty", "industrial_fuel", "industrial_fuel"}, power = 10000, ctable = "industrial_munition_table", func = function(ent) end},
-	["nuclear fuel rod"] = {result = "industrial_fuel_rod", recipe = {"industrial_adv_alloy", "industrial_uranium"}, power = 20000, ctable = "industrial_munition_table", func = function(ent) end},
+	["nuclear missile"] = {result = "industrial_missile_nuke", recipe = {"industrial_missile_empty", "industrial_uranium", "industrial_uranium"}, power = 20000, ctable = "industrial_munition_table", func = function(ent) end},
 	
 	["artificial garden"] = {result = "industrial_garden", recipe = {"industrial_metal", "industrial_metal", "industrial_glass"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
 	["bee trap"] = {result = "industrial_bee_trap", recipe = {"industrial_wood", "industrial_wood", "industrial_flower", "industrial_flower"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
@@ -53,7 +54,7 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 	if (string.sub(string.lower(txt), 1, 10) == "/craftitem") then
 		local item = string.sub(txt, 12)
 		for k, v in pairs(recipes) do
-			if (string.find(item, tostring(k))) then
+			if (string.find(item, tostring(k), 1, true)) then
 				local ctable = ply:NearestItem(v.ctable)
 				if ctable then
 					if (ctable:GetStoredPower() >= v.power) then
