@@ -31,6 +31,15 @@ local recipes = {
 	["apiary"] = {result = "industrial_apiary", recipe = {"industrial_wood", "industrial_wood", "industrial_wood", "industrial_wood"}, power = 120, ctable = "industrial_forestry_table", func = function(ent) end},
 }
 
+function IndustrialMod_CreateRecipe(name, tab)
+	if (recipes[name] != nil) then
+		recipes[name] = tab
+		return true
+	else
+		return false
+	end
+end
+
 function plyMeta:NearestItem(item)
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 100)) do
 		if (item == v:GetClass()) then
