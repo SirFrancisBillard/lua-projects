@@ -10,7 +10,7 @@ hook.Add("HUDPaint", "IndustrialMod_DrawHints", function()
 	if IsValid(trent) and (trent.GetStoredPower != nil) and (trent:IndustrialType() != "base") and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
 		draw.SimpleTextOutlined("Power: "..trent:GetStoredPower().."/"..trent:GetMaxStoredPower(), "Default", halfScrW, halfScrH + 25, clrWhite, 1, 1, 1, clrBlack)
 	end
-	if IsValid(trent) and (trent.IndustrialType != nil) then
+	if IsValid(trent) and (trent.IndustrialType != nil) and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
 		draw.SimpleTextOutlined(scripted_ents.Get(trent:GetClass()).PrintName, "Default", halfScrW, halfScrH - 25, clrWhite, 1, 1, 1, clrBlack)
 	end
 end)
