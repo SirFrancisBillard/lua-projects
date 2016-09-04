@@ -16,5 +16,5 @@ function ENT:HelpText()
 	return "Some items can be ground down into more usable materials."
 end
 function ENT:RefineryData()
-	return true, {"industrial_coal", "industrial_metal", "industrial_foliage"}, 1, {"industrial_coal_dust", "industrial_sand", "industrial_biofuel"}, 10, 20, false
+	return true, {"industrial_coal", "industrial_metal", "industrial_foliage"}, 1, {"industrial_coal_dust", "industrial_sand", "industrial_biofuel"}, 10, 20, true
 end

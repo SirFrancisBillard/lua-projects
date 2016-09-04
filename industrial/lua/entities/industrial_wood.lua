@@ -21,6 +21,3 @@ end
 function ENT:CanTransmitPower()
 	return false
 end
-function ENT:PermaMaterial()
-	return "models/props_pipes/GutterMetal01a"
-end

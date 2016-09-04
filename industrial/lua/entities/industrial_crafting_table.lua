@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Crafting Table"
 ENT.Spawnable = true
-ENT.Model = "models/props/CS_militia/wood_table.mdl"
+ENT.Model = "models/props/CS_militia/table_kitchen.mdl"
 function ENT:IndustrialType()
 	return "mach"
 	// valid types and their uses

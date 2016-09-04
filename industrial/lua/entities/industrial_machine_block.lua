@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Machine Block"
 ENT.Spawnable = true
-ENT.Model = "models/Items/item_item_crate_chunk02.mdl"
+ENT.Model = "models/hunter/blocks/cube05x05x05.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -20,7 +20,4 @@ function ENT:CanReceivePower()
 end
 function ENT:CanTransmitPower()
 	return false
-end
-function ENT:PermaMaterial()
-	return "models/props_pipes/GutterMetal01a"
 end

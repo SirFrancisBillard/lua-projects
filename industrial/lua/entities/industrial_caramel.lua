@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Caramel"
 ENT.Spawnable = true
-ENT.Model = "models/Items/item_item_crate_chunk02.mdl"
+ENT.Model = "models/hunter/blocks/cube025x025x025.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -22,5 +22,11 @@ function ENT:CanTransmitPower()
 	return false
 end
 function ENT:PermaMaterial()
-	return "models/props_pipes/GutterMetal01a"
+	return "phoenix_storms/fender_wood"
+end
+if SERVER then
+	function ENT:OnEntityUsed(ply)
+		SafeRemoveEntity(self)
+		ply:SetHealth(math.Clamp(ply:Health() + 20, 0, ply:GetMaxHealth()))
+	end
 end

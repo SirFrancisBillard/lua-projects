@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Coal"
 ENT.Spawnable = true
-ENT.Model = "models/Items/item_item_crate_chunk02.mdl"
+ENT.Model = "models/props_junk/rock001a.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -21,6 +21,6 @@ end
 function ENT:CanTransmitPower()
 	return false
 end
-function ENT:PermaMaterial()
-	return "models/props_pipes/GutterMetal01a"
+function ENT:PermaColor()
+	return Color(60, 60, 60)
 end

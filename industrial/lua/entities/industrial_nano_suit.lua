@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Nano Suit"
 ENT.Spawnable = true
-ENT.Model = "models/thrusters/jetpack.mdl"
+ENT.Model = "models/props_c17/SuitCase_Passenger_Physics.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses

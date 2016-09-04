@@ -125,10 +125,10 @@ end
 if SERVER then
 	function ENT:DispenseMinedItem(item) end
 	function ENT:ReceiveMaterial(item) end
-	function ENT:DispenseRefinedItem(item)
+	function ENT:DispenseRefinedItem(item) end
 	function ENT:ExtraInit() end
 	function ENT:TransmitPower(amt) end
-	function ENT:ReceivePower(amt)
+	function ENT:ReceivedPower(amt) end
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
@@ -140,6 +140,8 @@ if SERVER then
 			phys:SetMass(60)
 		end
 		self:SetUseType(SIMPLE_USE or 3)
+		self:PermaMaterial()
+		self:PermaColor()
 		if (self:IndustrialType() != "base") then
 			self:SetStoredPower(0)
 		end
@@ -240,7 +242,7 @@ if SERVER then
 				end
 			end
 			-- generate power
-			if self:CanGeneratePower() or (self:GetEngineTime() > 0) then
+			if self:CanGeneratePower() or (self:EngineData() and (self:GetEngineTime() > 0)) then
 				self:SetStoredPower(math.Clamp(self:GetStoredPower() + self:PowerGenerationRate(), 0, self:GetMaxStoredPower()))
 			end
 			-- refine materials
@@ -251,7 +253,7 @@ if SERVER then
 					self:SetConvertCooldown(math.Clamp(self:GetConvertCooldown() - 1, 0, self:GetConvertCooldown()))
 				end
 				if (self:GetConvertCooldown() <= 0) then
-					if self:HasMaterials() and then
+					if self:HasMaterials() and (not MultiProd) then
 						self:UseMaterials()
 						self:SetConvertCooldown(Tim)
 						self:SetStoredProduct(self:GetStoredProduct() + 1)
@@ -324,7 +326,7 @@ if SERVER then
 						self:SetStoredMaterial1(self:GetStoredMaterial1() + 1)
 					elseif (MatAmt > 1) and (k == 2) then
 						self:SetStoredMaterial2(self:GetStoredMaterial2() + 1)
-					elseif (MatAmt > 2) ans (k == 3) then
+					elseif (MatAmt > 2) and (k == 3) then
 						self:SetStoredMaterial3(self:GetStoredMaterial3() + 1)
 					end
 				end

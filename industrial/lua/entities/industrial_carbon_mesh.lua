@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Carbon mesh can be compressed to create carbon plates.
+	return "Carbon mesh can be compressed to create carbon plates."
 end
 function ENT:CanReceivePower()
 	return false
