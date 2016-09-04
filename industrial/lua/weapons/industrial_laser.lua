@@ -56,7 +56,7 @@ if SERVER then
 	end
 end
 if CLIENT then
-	local ply = self.Owner
+	local ply = LocalPlayer()
 	local LASER = Material("cable/redlaser")
 	if ply.GetViewModel and ply:GetViewModel():IsValid() then
 		local attachmentIndex = ply:GetViewModel():LookupAttachment("muzzle")
@@ -75,8 +75,8 @@ if CLIENT then
 	end
 	function SWEP:ViewModelDrawn()
 		if ply:KeyDown(IN_ATTACK) and self.VM then
-	        	render.SetMaterial( LASER )
+			render.SetMaterial( LASER )
 			render.DrawBeam(self.VM:GetAttachment(self.Attach).Pos, self:GetOwner():GetEyeTrace().HitPos, 2, 0, 12.5, self:GetLaserColor())
-	    	end
+		end
 	end
 end
