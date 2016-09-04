@@ -59,14 +59,18 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 					if (ctable:GetStoredPower() >= v.power) then
 						local ingredients = {}
 						for _, ing in pairs(v.recipe) do
-							local itm = ply:NearestItem(ing:GetClass())
-							if itm then
-								table.insert(ingredients, itm)
+							for _k, _v in pairs(ents.FindInSphere(ply:GetPos(), 100)) do
+								if ((ing == _v:GetClass()) and (not table.HasValue(ingredients, _v:EntIndex()))) then
+									PrintTable(ingredients, 2)
+									table.insert(ingredients, _v:EntIndex())
+									print("Inserted ".._v:EntIndex())
+								end
 							end
 						end
 						if (#ingredients == #v.recipe) then
+							PrintTable(ingredients, 2)
 							for __, del in pairs(ingredients) do
-								SafeRemoveEntity(del)
+								SafeRemoveEntity(Entity(del))
 							end
 							ctable:SetStoredPower(math.Clamp(ctable:GetStoredPower() - v.power, 0, ctable:GetStoredPower()))
 							local ent = ents.Create(v.result)
@@ -77,7 +81,7 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 							ply:ChatPrint("Not enough ingredients nearby!")
 							ply:ChatPrint("Required ingredients:")
 							for ___, ent in pairs(v.recipe) do
-								ply:ChatPrint(scripted_ents.Get(ent:GetClass()).PrintName)
+								ply:ChatPrint(scripted_ents.Get(ent).PrintName)
 							end
 						end
 					else
