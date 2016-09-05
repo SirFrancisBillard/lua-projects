@@ -3,7 +3,7 @@ local entMeta = FindMetaTable("Entity")
 
 local recipes = {
 	["jetpack"] = {result = "industrial_jetpack", recipe = {"industrial_adv_alloy", "industrial_adv_alloy", "industrial_fuel"}, power = 6000, ctable = "industrial_crafting_table", func = function(ent) end},
-	["laser"] = {result = "industrial_laser", recipe = {"industrial_gold", "industrial_glass", "industrial_adv_alloy"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
+	["laser"] = {result = "industrial_laser", recipe = {"industrial_battery", "industrial_glass", "industrial_adv_alloy"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
 	["medicine"] = {result = "industrial_medicide", recipe = {"industrial_zinc", "industrial_honey"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
 	["oil well"] = {result = "industrial_oil_miner", recipe = {"industrial_metal", "industrial_metal", "industrial_metal"}, power = 400, ctable = "industrial_crafting_table", func = function(ent) end},
 	["oil refinery"] = {result = "industrial_oil_refinery", recipe = {"industrial_metal", "industrial_metal", "industrial_oil"}, power = 600, ctable = "industrial_crafting_table", func = function(ent) end},
