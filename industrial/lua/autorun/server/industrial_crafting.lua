@@ -54,10 +54,10 @@ function plyMeta:NearestItem(item)
 end
 
 hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
-	if (string.sub(string.lower(txt), 1, 10) == "/craftitem") then
-		local item = string.sub(txt, 12)
+	if (string.sub(string.lower(txt), 1, 6) == "/craft") then
+		local item = string.sub(txt, 8)
 		for k, v in pairs(recipes) do
-			if (string.find(item, tostring(k), 1, true)) then
+			if (string.find(tostring(k), item, 1, true)) then
 				local ctable = ply:NearestItem(v.ctable)
 				if ctable then
 					if (ctable:GetStoredPower() >= v.power) then
@@ -86,16 +86,33 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 							for ___, ent in pairs(v.recipe) do
 								ply:ChatPrint(scripted_ents.Get(ent).PrintName)
 							end
+							return
 						end
 					else
 						ply:ChatPrint("Crafting table doesn't have enough power!")
 						ply:ChatPrint("Required power: "..v.power)
+						return
 					end
 				else
 					ply:ChatPrint("No table nearby!")
 					ply:ChatPrint("Required table: "..scripted_ents.Get(v.ctable).PrintName)
+					return
 				end
 			end
 		end
+	end
+	if (string.sub(string.lower(txt), 1, 11) == "/howtocraft") then
+		local item = string.sub(txt, 13)
+	elseif (string.sub(string.lower(txt), 1, 13) == "/craftinglist") then
+		for k, v in pairs(recipes) do
+			ply:ChatPrint("=========================")
+			ply:ChatPrint("Recipe for "..tostring(k))
+			ply:ChatPrint("Power needed: "..tostring(v.power))
+			ply:ChatPrint("Table needed: "..scripted_ents.Get(v.ctable).PrintName)
+			for __, ent in pairs(v.recipe) do
+				ply:ChatPrint(scripted_ents.Get(ent).PrintName)
+			end
+		end
+		ply:ChatPrint("=========================")
 	end
 end)
