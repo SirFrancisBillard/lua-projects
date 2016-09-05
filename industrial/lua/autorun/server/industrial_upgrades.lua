@@ -1,3 +1,54 @@
+plyMeta = FindMetaTable("Player")
+
+function plyMeta:GetTokens()
+	return self:GetNWInt("Industrial_Tokens", 0)
+end
+
+function plyMeta:SetTokens(amt)
+	return self:SetNWInt("Industrial_Tokens", amt)
+end
+
+function plyMeta:AddTokens(amt)
+	return self:SetNWInt("Industrial_Tokens", self:GetNWInt("Industrial_Tokens", 0) + 1)
+end
+
+function plyMeta:SubtractTokens(amt)
+	return self:SetNWInt("Industrial_Tokens", math.Clamp(self:GetNWInt("Industrial_Tokens", 0) - 1, 0, self:GetNWInt("Industrial_Tokens", 0)))
+end
+
+function plyMeta:HasTokens(amt)
+	return (self:GetNWInt("Industrial_Tokens", 0) >= amt)
+end
+
+function plyMeta:BuyUpgradeIfAvailable(item, upg)
+	if (self:GetTokens() < 1) then
+		return "Not enough tokens"
+	end
+	if (string.lower(item) == "jetpack") then
+		if ply:GetNWBool("IsWearingJetpack", false) then
+			
+		end
+	end
+	if (string.lower(item) == "laser") then
+		if (IsValid(self:GetActiveWeapon()) and (self:GetActiveWeapon():GetClass() == "industrial_laser")) then
+			if (upg == "damage") then
+				self:GetActiveWeapon():SetDoDamage(self:GetActiveWeapon():GetDoDamage() + 5)
+				self:SubtractTokens(1)
+				return "Laser damage upgraded"
+			end
+		else
+			return "Please equip item to upgrade"
+		end
+	end
+	if (string.lower(item) == "nano") then
+		
+	end
+	if (string.lower(item) == "quantum") then
+		
+	end
+	return "Unknown item or upgrade"
+end
+
 hook.Add("DoPlayerDeath", "IndustrialMod_ResetNetwork", function(ply, atk, dmg)
 	if (not ply:GetNWBool("Upgrade_JetpackKeep")) then
 		ply:SetNWBool("IsWearingJetpack", false)
@@ -54,8 +105,8 @@ hook.Add("PlayerSay", "IndustrialMod_UpgradeStuff", function(ply, txt, team)
 
 			elseif (args[2] == "laser") then
 				if (args[3] == "damage") and IsValid(ply:GetActiveWeapon()) then
-					if (ply:GetActiveWeapon():GetClass() == "industrial_laser") then
-						
+					if (ply:GetActiveWeapon():GetClass() == "industrial_laser") and ply:HasTokens(1) then
+						ply:SubtractTokens
 					else
 						ply:ChatPrint("Please equip item to upgrade")
 					end
