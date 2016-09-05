@@ -1,2 +1,2 @@
-# lua-projects
-Some bigger LUA projects that I need to put somewhere. All of them are for Garry's Mod.
+# Industrial Mod
+This repository has become home of mainly the Industrial Mod, but I will upload any other large projects.
