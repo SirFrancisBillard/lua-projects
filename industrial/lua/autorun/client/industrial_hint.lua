@@ -23,6 +23,9 @@ hook.Add("HUDPaint", "IndustrialMod_DrawHints", function()
 		end
 		draw.SimpleTextOutlined("Progress: "..a.."/"..b, "Default", halfScrW, halfScrH + 50, clrWhite, 1, 1, 1, clrBlack)
 	end
+	if IsValid(trent) and (trent.GetEngineTime != nil) and (trent:IndustrialType() != "base") and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
+		draw.SimpleTextOutlined("Engine Time: "..trent:GetEngineTime(), "Default", halfScrW, halfScrH + 50, clrWhite, 1, 1, 1, clrBlack)
+	end
 	if IsValid(trent) and (trent.IndustrialType != nil) and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
 		draw.SimpleTextOutlined(scripted_ents.Get(trent:GetClass()).PrintName, "Default", halfScrW, halfScrH - 25, clrWhite, 1, 1, 1, clrBlack)
 	end
