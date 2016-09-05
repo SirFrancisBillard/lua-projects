@@ -103,6 +103,18 @@ hook.Add("PlayerSay", "IndustrialMod_Crafting", function(ply, txt, isTeam)
 	end
 	if (string.sub(string.lower(txt), 1, 11) == "/howtocraft") then
 		local item = string.sub(txt, 13)
+		for k, v in pairs(recipes) do
+			if (string.find(tostring(k), item, 1, true)) then
+				ply:ChatPrint("=========================")
+				ply:ChatPrint("Recipe for "..tostring(k))
+				ply:ChatPrint("Power needed: "..tostring(v.power))
+				ply:ChatPrint("Table needed: "..scripted_ents.Get(v.ctable).PrintName)
+				for __, ent in pairs(v.recipe) do
+					ply:ChatPrint(scripted_ents.Get(ent).PrintName)
+				end
+				ply:ChatPrint("=========================")
+			end
+		end
 	elseif (string.sub(string.lower(txt), 1, 13) == "/craftinglist") then
 		for k, v in pairs(recipes) do
 			ply:ChatPrint("=========================")
