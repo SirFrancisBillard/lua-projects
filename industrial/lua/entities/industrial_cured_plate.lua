@@ -22,5 +22,5 @@ function ENT:CanTransmitPower()
 	return false
 end
 function ENT:PermaMaterial()
-	return "models/props_pipes/GutterMetal01a"
+	return "models/props/cs_office/snowmana"
 end

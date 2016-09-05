@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Bee Trap"
 ENT.Spawnable = true
-ENT.Model = "models/props_wasteland/gaspump001a.mdl"
+ENT.Model = "models/props_lab/cactus.mdl"
 function ENT:IndustrialType()
 	return "mach"
 	// valid types and their uses

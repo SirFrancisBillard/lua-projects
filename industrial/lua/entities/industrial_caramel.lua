@@ -26,7 +26,9 @@ function ENT:PermaMaterial()
 end
 if SERVER then
 	function ENT:OnEntityUsed(ply)
-		SafeRemoveEntity(self)
-		ply:SetHealth(math.Clamp(ply:Health() + 20, 0, ply:GetMaxHealth()))
+		if (ply:Health() < ply:GetMaxHealth()) then
+			SafeRemoveEntity(self)
+			ply:SetHealth(math.Clamp(ply:Health() + 20, 0, ply:GetMaxHealth()))
+		end
 	end
 end

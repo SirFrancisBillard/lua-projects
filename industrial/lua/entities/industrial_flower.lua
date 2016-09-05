@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Gold"
+ENT.PrintName = "Flower"
 ENT.Spawnable = true
-ENT.Model = "models/props_junk/rock001a.mdl"
+ENT.Model = "models/props/cs_office/Snowman_arm.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -13,17 +13,11 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Gold is an extremely rare metal used in high-tier crafting."
+	return "Flowers can be used to attract and keep bees."
 end
 function ENT:CanReceivePower()
 	return false
 end
 function ENT:CanTransmitPower()
 	return false
-end
-function ENT:PermaMaterial()
-	return "models/props/cs_office/snowmana"
-end
-function ENT:PermaColor()
-	return Color(255, 255, 100)
 end

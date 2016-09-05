@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Honey Comb"
 ENT.Spawnable = true
-ENT.Model = "models/props_lab/jar01b.mdl"
+ENT.Model = "models/noesis/donut.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -20,6 +20,9 @@ function ENT:CanReceivePower()
 end
 function ENT:CanTransmitPower()
 	return false
+end
+function ENT:PermaMaterial()
+	return "models/antlion/antlion_innards"
 end
 function ENT:PermaColor()
 	return Color(255, 195, 0)

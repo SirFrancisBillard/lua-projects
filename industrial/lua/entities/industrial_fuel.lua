@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Fuel Can"
+ENT.PrintName = "Fuel"
 ENT.Spawnable = true
 ENT.Model = "models/props_junk/gascan001a.mdl"
 function ENT:IndustrialType()

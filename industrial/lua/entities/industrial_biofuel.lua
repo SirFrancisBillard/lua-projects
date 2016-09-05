@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Biofuel"
 ENT.Spawnable = true
-ENT.Model = "models/props_junk/gascan001a.mdl"
+ENT.Model = "models/props_junk/metalgascan.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses

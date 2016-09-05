@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Base = "industrial_base"
 ENT.PrintName = "Medicine"
 ENT.Spawnable = true
-ENT.Model = "models/hunter/blocks/cube025x025x025.mdl"
+ENT.Model = "models/healthvial.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -21,12 +21,11 @@ end
 function ENT:CanTransmitPower()
 	return false
 end
-function ENT:PermaMaterial()
-	return "phoenix_storms/fender_wood"
-end
 if SERVER then
 	function ENT:OnEntityUsed(ply)
-		SafeRemoveEntity(self)
-		ply:SetHealth(math.Clamp(ply:Health() + 50, 0, ply:GetMaxHealth()))
+		if (ply:Health() < ply:GetMaxHealth()) then
+			SafeRemoveEntity(self)
+			ply:SetHealth(math.Clamp(ply:Health() + 50, 0, ply:GetMaxHealth()))
+		end
 	end
 end

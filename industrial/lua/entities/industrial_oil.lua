@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Oil Barrel"
+ENT.PrintName = "Oil"
 ENT.Spawnable = true
 ENT.Model = "models/props_c17/oildrum001.mdl"
 function ENT:IndustrialType()
