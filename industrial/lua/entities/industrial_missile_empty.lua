@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Advanced Alloy"
+ENT.PrintName = "Empty Missile Casing"
 ENT.Spawnable = true
-ENT.Model = "models/mechanics/solid_steel/i_beam_4.mdl"
+ENT.Model = "models/mechanics/solid_steel/box_beam_4.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Advanced alloy is a high tier metal used to craft missiles."
+	return "Empty missile casings are used solely to make missiles."
 end
 function ENT:CanReceivePower()
 	return false
