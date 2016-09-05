@@ -19,5 +19,8 @@ function ENT:GetMaxStoredPower()
 	return 500000
 end
 function ENT:PermaMaterial()
-	return "models/props_c17/furniturefabric001a"
+	return "models/props/cs_office/snowmana"
+end
+function ENT:PermaColor()
+	return Color(255, 255, 100)
 end

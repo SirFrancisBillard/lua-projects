@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Miner"
+ENT.PrintName = "Bee Trap"
 ENT.Spawnable = true
 ENT.Model = "models/props_wasteland/gaspump001a.mdl"
 function ENT:IndustrialType()
@@ -13,8 +13,8 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Miners will mine materials when given power."
+	return "Bee traps will catch bees that can be extracted with the use key."
 end
 function ENT:MinerData()
-	return true, {"industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_metal", "industrial_coal", "industrial_coal", "industrial_coal", "industrial_zinc", "industrial_zinc", "industrial_gold"}, true, 30, 20
+	return true, {"industrial_bee"}, false, 30, 5
 end

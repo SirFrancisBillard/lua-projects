@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Forestry Table"
+ENT.PrintName = "Apiary"
 ENT.Spawnable = true
-ENT.Model = "models/props/CS_militia/wood_table.mdl"
+ENT.Model = "models/props/CS_militia/furnace01.mdl"
 function ENT:IndustrialType()
 	return "mach"
 	// valid types and their uses
@@ -13,8 +13,8 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Forestry tables are used to make items to farm."
+	return "Apiaries can harvest honey comb from bees when given power."
 end
-function ENT:GetMaxStoredPower()
-	return 8000
+function ENT:RefineryData()
+	return true, {"industrial_bee"}, 1, "industrial_honey_comb", 30, 5, false
 end

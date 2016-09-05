@@ -1,9 +1,9 @@
 AddCSLuaFile()
 
 ENT.Base = "industrial_base"
-ENT.PrintName = "Gold"
+ENT.PrintName = "Medicine"
 ENT.Spawnable = true
-ENT.Model = "models/props_junk/rock001a.mdl"
+ENT.Model = "models/hunter/blocks/cube025x025x025.mdl"
 function ENT:IndustrialType()
 	return "base"
 	// valid types and their uses
@@ -13,7 +13,7 @@ function ENT:IndustrialType()
 	// mach - uses power
 end
 function ENT:HelpText()
-	return "Gold is an extremely rare metal used in high-tier crafting."
+	return "Medicine is used to heal."
 end
 function ENT:CanReceivePower()
 	return false
@@ -22,8 +22,11 @@ function ENT:CanTransmitPower()
 	return false
 end
 function ENT:PermaMaterial()
-	return "models/props/cs_office/snowmana"
+	return "phoenix_storms/fender_wood"
 end
-function ENT:PermaColor()
-	return Color(255, 255, 100)
+if SERVER then
+	function ENT:OnEntityUsed(ply)
+		SafeRemoveEntity(self)
+		ply:SetHealth(math.Clamp(ply:Health() + 50, 0, ply:GetMaxHealth()))
+	end
 end
