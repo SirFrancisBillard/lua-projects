@@ -50,8 +50,16 @@ hook.Add("PlayerSay", "IndustrialMod_UpgradeStuff", function(ply, txt, team)
 		if (args[1] == "/upgrade") then
 			if (args[2] == "nano") then
 
-			elseif (args[3] == "quantum") then
+			elseif (args[2] == "quantum") then
 
+			elseif (args[2] == "laser") then
+				if (args[3] == "damage") and IsValid(ply:GetActiveWeapon()) then
+					if (ply:GetActiveWeapon():GetClass() == "industrial_laser") then
+						
+					else
+						ply:ChatPrint("Please equip item to upgrade")
+					end
+				end
 			end
 		end
 	end
