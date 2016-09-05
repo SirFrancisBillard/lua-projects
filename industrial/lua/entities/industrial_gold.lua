@@ -22,8 +22,5 @@ function ENT:CanTransmitPower()
 	return false
 end
 function ENT:PermaMaterial()
-	return "models/props/cs_office/snowmana"
-end
-function ENT:PermaColor()
-	return Color(255, 255, 100)
+	return "models/props_c17/furniturefabric001a"
 end

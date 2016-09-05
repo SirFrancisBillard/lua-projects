@@ -1,17 +1,5 @@
 AddCSLuaFile()
 
-local DEBUG = false
-local function DebugPrint(txt)
-	if DEBUG then
-		print(txt)
-	end
-end
-local function DebugPrintTable(tab)
-	if DEBUG then
-		PrintTable(tab, 2)
-	end
-end
-
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Industrial Base Entity"
@@ -191,7 +179,6 @@ if SERVER then
 					ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 					ent:Spawn()
 					self:DispenseRefinedItem(ent)
-					DebugPrint("Dispensed product: 1")
 				end
 				if MultiProd then
 					if Prod[2] and (self:GetStoredProduct2() > 0) then
@@ -200,7 +187,6 @@ if SERVER then
 						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 						ent:Spawn()
 						self:DispenseRefinedItem(ent)
-						DebugPrint("Dispensed product: 2")
 					end
 					if Prod[3] and (self:GetStoredProduct3() > 0) then
 						self:SetStoredProduct3(self:GetStoredProduct3() - 1)
@@ -208,7 +194,6 @@ if SERVER then
 						ent:SetPos(self:GetPos() + self:EntitySpawnDisplacementVector())
 						ent:Spawn()
 						self:DispenseRefinedItem(ent)
-						DebugPrint("Dispensed product: 3")
 					end
 				end
 			end
@@ -268,37 +253,25 @@ if SERVER then
 					self:SetConvertCooldown(math.Clamp(self:GetConvertCooldown() - 1, 0, self:GetConvertCooldown()))
 				end
 				if (self:GetConvertCooldown() <= 0) then
-					if self:HasMaterials() and (not MultiProd) and (self:GetConvertCooldown() <= 0) then
+					if self:HasMaterials() and (not MultiProd) then
 						self:UseMaterials()
 						self:SetConvertCooldown(Tim)
-						timer.Simple(0, function()
-							self:SetStoredProduct(self:GetStoredProduct() + 1)
-							DebugPrint("Added product: 1")
-						end)
+						self:SetStoredProduct(self:GetStoredProduct() + 1)
 					end
-					if (self:GetStoredMaterial1() > 0) and MultiProd and (self:GetConvertCooldown() <= 0) then
-						self:SetStoredMaterial1(math.Clamp(self:GetStoredMaterial1() - 1, 0, self:GetStoredMaterial1()))
+					if (self:GetStoredMaterial1() > 0) and MultiProd then
+						self:SetMaterial1(math.Clamp(self:GetMaterial1() - 1, 0, self:GetMaterial1()))
 						self:SetConvertCooldown(Tim)
-						timer.Simple(0, function()
-							self:SetStoredProduct(self:GetStoredProduct() + 1)
-							DebugPrint("Added product: 1")
-						end)
+						self:SetStoredProduct(self:GetStoredProduct() + 1)
 					end
-					if (self:GetStoredMaterial2() > 0) and MultiProd and (self:GetConvertCooldown() <= 0) then
-						self:SetStoredMaterial2(math.Clamp(self:GetStoredMaterial2() - 1, 0, self:GetStoredMaterial2()))
+					if (self:GetStoredMaterial2() > 0) and MultiProd then
+						self:SetMaterial2(math.Clamp(self:GetMaterial2() - 1, 0, self:GetMaterial2()))
 						self:SetConvertCooldown(Tim)
-						timer.Simple(0, function()
-							self:SetStoredProduct2(self:GetStoredProduct2() + 1)
-							DebugPrint("Added product: 2")
-						end)
+						self:SetStoredProduct2(self:GetStoredProduct2() + 1)
 					end
-					if (self:GetStoredMaterial3() > 0) and MultiProd and (self:GetConvertCooldown() <= 0) then
-						self:SetStoredMaterial3(math.Clamp(self:GetStoredMaterial3() - 1, 0, self:GetStoredMaterial3()))
+					if (self:GetStoredMaterial3() > 0) and MultiProd then
+						self:SetMaterial3(math.Clamp(self:GetMaterial3() - 1, 0, self:GetMaterial3()))
 						self:SetConvertCooldown(Tim)
-						timer.Simple(0, function()
-							self:SetStoredProduct3(self:GetStoredProduct3() + 1)
-							print("Added product: 3")
-						end)
+						self:SetStoredProduct3(self:GetStoredProduct3() + 1)
 					end
 				end
 			end
@@ -342,22 +315,19 @@ if SERVER then
 		return true
 	end
 	function ENT:ExtraTouch(toucher) end
-	function ENT:StartTouch(toucher)
+	function ENT:Touch(toucher)
 		-- refinery materials
 		if self:RefineryData() then
-			local IsRef, Mats, MatAmt, Prod, Tim, Pow, MultiProd = self:RefineryData()
+			local IsRef, Mats, MatAmt, Prod, Tim, Pow = self:RefineryData()
 			for k, v in pairs(Mats) do
 				if (toucher:GetClass() == v) then
-					toucher:Remove()
-					if (k == 1) and IsValid(toucher) then
+					SafeRemoveEntity(toucher)
+					if (k == 1) then
 						self:SetStoredMaterial1(self:GetStoredMaterial1() + 1)
-						DebugPrint("Added material: 1")
-					elseif ((MatAmt > 1) or (MultiProd and Prod[2])) and (k == 2) then
+					elseif (MatAmt > 1) and (k == 2) then
 						self:SetStoredMaterial2(self:GetStoredMaterial2() + 1)
-						DebugPrint("Added material: 2")
-					elseif ((MatAmt > 2) or (MultiProd and Prod[3])) and (k == 3) then
+					elseif (MatAmt > 2) and (k == 3) then
 						self:SetStoredMaterial3(self:GetStoredMaterial3() + 1)
-						DebugPrint("Added material: 3")
 					end
 				end
 			end
