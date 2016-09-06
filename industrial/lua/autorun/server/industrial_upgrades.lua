@@ -49,6 +49,14 @@ function plyMeta:BuyUpgradeIfAvailable(item, upg)
 	return "Unknown item or upgrade"
 end
 
+function plyMeta:SaveTokens()
+	return self:SetPData("Industrial_Tokens", self:GetNWInt("Industrial_Tokens", 0))
+end
+
+function plyMeta:LoadTokens()
+	return self:SetNWInt("Industrial_Tokens", self:GetPData("Industrial_Tokens", 0))
+end
+
 hook.Add("DoPlayerDeath", "IndustrialMod_ResetNetwork", function(ply, atk, dmg)
 	if (not ply:GetNWBool("Upgrade_JetpackKeep")) then
 		ply:SetNWBool("IsWearingJetpack", false)
