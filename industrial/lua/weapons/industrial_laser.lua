@@ -18,12 +18,12 @@ SWEP.DrawCrosshair = true
 
 SWEP.Primary.Ammo = "None"
 SWEP.Primary.ClipSize = -1
-SWEP.Primary.DefaultClip -1
+SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = true
 
 SWEP.Secondary.Ammo = "None"
 SWEP.Secondary.ClipSize = -1
-SWEP.Secondary.DefaultClip -1
+SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = true
 
 local LASER = Material("cable/redlaser")
@@ -54,7 +54,7 @@ end
 function SWEP:Initialize()
 	self:SetHoldType("ar2")
 	self:SetDoDamage(5)
-	self:SetCharge(100)
+	self:SetCharge(500)
 	self:SetLaserColorR(255)
 	self:SetLaserColorG(0)
 	self:SetLaserColorB(0)
@@ -76,8 +76,13 @@ function SWEP:ShootBullet()
 	bullet.Damage = self:GetDoDamage()
 	bullet.AmmoType = "Pistol"
 	self.Owner:FireBullets(bullet)
-	self:ShootEffects()
 end
+
+function SWEP:CanSecondaryAttack()
+	return false
+end
+	
+function SWEP:SecondaryAttack() end
 
 if SERVER then
 	function SWEP:Reload()
@@ -87,12 +92,6 @@ if SERVER then
 		end
 	end
 
-	function SWEP:CanSecondaryAttack()
-		return false
-	end
-	
-	function SWEP:SecondaryAttack() end
-	
 	function SWEP:CanPrimaryAttack()
 		return ((self:GetCharge() > 0) and (self:GetNextPrimaryFire() < CurTime()))
 	end
@@ -147,5 +146,11 @@ if CLIENT then
 			if not posang then self.WM = nil ErrorNoHalt("Laser Rifle: Attachment lost, did they change model or something?\n") return end
 			render.DrawBeam(posang.Pos + posang.Ang:Forward() * 10 + posang.Ang:Up() * 4.4 + posang.Ang:Right(), self:GetOwner():GetEyeTrace().HitPos, 2, 0, 12.5, self:GetLaserColor())
 		end
+	end
+end
+
+if CLIENT then
+	function SWEP:CanPrimaryAttack()
+		return false
 	end
 end
