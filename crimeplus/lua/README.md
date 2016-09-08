@@ -1,5 +1,5 @@
 # Crime+ Mod for Garry's Mod
-Crime+ is a 100% free scriptfodder quality (not like that says much) mod that adds more illegal things ike drug dealing and weapon trafficking into DarkRP.
+Crime+ is a 100% free scriptfodder quality (not like that says much) mod that adds more illegal things like drug dealing and weapon trafficking into DarkRP.
 
 Files will be uploaded and tested as soon as possible, or just remade completely.
 
