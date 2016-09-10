@@ -19,4 +19,11 @@ hook.Add("HUDPaint", "CrimePlus_DrawHints", function()
 	if IsValid(trent) and (trent.GetFuel != nil) and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
 		draw.SimpleTextOutlined("Fuel: "..trent:GetFuel().."/200", "Default", halfScrW, halfScrH + 25, clrWhite, 1, 1, 1, clrBlack)
 	end
+	if IsValid(trent) and (trent.GetAlcohol != nil) and (trent:GetPos():Distance(LocalPlayer():EyePos()) < 256) then
+		if (trent.GetFermentingProgress != nil) then
+			draw.SimpleTextOutlined(trent:GetAlcohol().." Progress: "..trent:GetFermentingProgress().."/100", "Default", halfScrW, halfScrH + 25, clrWhite, 1, 1, 1, clrBlack)
+		else
+			draw.SimpleTextOutlined(trent:GetAlcohol(), "Default", halfScrW, halfScrH + 25, clrWhite, 1, 1, 1, clrBlack)
+		end
+	end
 end)
