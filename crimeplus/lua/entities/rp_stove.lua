@@ -18,7 +18,7 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
 		phys:Wake()
-		phys:SetMass(80)
+		phys:SetMass(200)
 	end
 end
 function ENT:SetupDataTables()
@@ -33,7 +33,6 @@ if SERVER then
 			self:SetCanister(ent)
 			ent:SetHasStove(true)
 			ent:SetStove(self)
-			ent:SetPos(self:GetPos() + Vector(30, 12, 0))
 			local weld = constraint.Weld(self, ent, 0, 0, 0, true, false)
 		end
 	end

@@ -19,6 +19,9 @@ function ENT:Initialize()
 	if IsValid(phys) then
 		phys:Wake()
 	end
+	self:SetFermentingProgress(0)
+	self:SetAlcohol("None")
+	self:SetIsFermenting(false)
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "FermentingProgress")
