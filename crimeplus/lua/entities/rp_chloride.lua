@@ -2,14 +2,11 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
-ENT.PrintName = "Crime Base"
+ENT.PrintName = "Chloride"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/hunter/plates/plate.mdl"
+ENT.Model = "models/props_junk/garbage_plasticbottle001a.mdl"
 
-function ENT:HelpText()
-	return "No help text found!"
-end
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)

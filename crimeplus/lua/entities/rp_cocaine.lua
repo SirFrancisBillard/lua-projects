@@ -2,14 +2,11 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
-ENT.PrintName = "Crime Base"
+ENT.PrintName = "Cocaine"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/hunter/plates/plate.mdl"
+ENT.Model = "models/props_lab/jar01b.mdl"
 
-function ENT:HelpText()
-	return "No help text found!"
-end
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -22,4 +19,7 @@ function ENT:Initialize()
 	if IsValid(phys) then
 		phys:Wake()
 	end
+end
+function ENT:SellPrice()
+	return 50000
 end
