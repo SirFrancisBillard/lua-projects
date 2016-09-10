@@ -22,27 +22,26 @@ function ENT:Initialize()
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "CookingProgress")
-	self:NetworkVar("Bool", 0, "IsCooking")
-	self:NetworkVar("Bool", 1, "HasSodium")
-	self:NetworkVar("Bool", 2, "HasChloride")
+	self:NetworkVar("Bool", 0, "HasSodium")
+	self:NetworkVar("Bool", 1, "HasChloride")
+	self:NetworkVar("Entity", 0, "Stove")
+end
+function ENT:IsOnStove()
+	for k, v in pairs(ents.FindInSphere(self:GetPos(), 12)) do
+		if (v:GetClass() == "rp_stove") and v:GetHasCanister() and (v:GetCanister():GetFuel() > 0) then
+			self:SetStove(v)
+			return true
+		end
+	end
 end
 function ENT:CanCook()
-	return (self:GetHasSodium() and self:GetHasChloride() and self:GetIsCooking())
+	return (self:GetHasSodium() and self:GetHasChloride() and self:IsOnStove())
 end
 function ENT:DoneCooking()
 	return (self:GetCookingProgress() >= 100)
 end
 
 if SERVER then
-	function ENT:Touch(ent)
-		if IsValid(ent) and (ent:GetClass() == "rp_stove") then
-			if (ent:GetHasCanister() and (ent:GetCanister():GetFuel() > 0)) then
-				self:SetIsCooking(true)
-			else
-				self:SetIsCooking(false)
-			end
-		end
-	end
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
 			if (ent:GetClass() == "rp_sodium") and (not self:GetHasSodium()) then
@@ -58,6 +57,7 @@ if SERVER then
 	function ENT:Think()
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, 100))
+			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, 200))
 		end
 		self:NextThink(CurTime() + 1)
 		return true
