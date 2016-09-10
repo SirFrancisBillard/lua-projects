@@ -31,7 +31,7 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() and self:GetHasStove() then
 			self:SetHasStove(false)
-			self:GetStove():SetHasGas(false)
+			self:GetStove():SetHasCanister(false)
 			constraint.RemoveAll(self)
 		end
 	end

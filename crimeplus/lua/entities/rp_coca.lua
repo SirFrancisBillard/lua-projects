@@ -38,6 +38,7 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			if self:DoneGrowing() then
+				self:SetGrowth(0)
 				local coke = ents.Create("rp_leaves")
 				coke:SetPos(self:GetPos() + Vector(0, 0, 30))
 				coke:Spawn()
