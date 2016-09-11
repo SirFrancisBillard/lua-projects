@@ -18,7 +18,7 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
 		phys:Wake()
-		phys:SetMass(20)
+		phys:SetMass(40)
 	end
 	self:SetFuel(200)
 end
@@ -29,11 +29,22 @@ function ENT:SetupDataTables()
 end
 
 if SERVER then
+	function ENT:Think()
+		local phys = self:GetPhysicsObject()
+		if self:GetHasStove() and IsValid(phys) then
+			phys:SetMass(0)
+		elseif IsValid(phys) then
+			phys:SetMass(40)
+		end
+	end
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() and self:GetHasStove() then
 			self:SetHasStove(false)
 			self:GetStove():SetHasCanister(false)
 			constraint.RemoveAll(self)
+		end
+		if IsValid(caller) and caller:IsPlayer() and (self:GetFuel() <= 0) then
+			SafeRemoveEntity(self)
 		end
 	end
 end
