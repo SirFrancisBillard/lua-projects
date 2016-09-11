@@ -47,10 +47,12 @@ if SERVER then
 			if (ent:GetClass() == "rp_sodium") and (not self:GetHasSodium()) then
 				SafeRemoveEntity(ent)
 				self:SetHasSodium(true)
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 			if (ent:GetClass() == "rp_chloride") and (not self:GetHasChloride()) then
 				SafeRemoveEntity(ent)
 				self:SetHasChloride(true)
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 		end
 	end
@@ -58,6 +60,8 @@ if SERVER then
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, 100))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, 200))
+			ParticleEffect("generic_smoke", self:GetPos(), self:GetAngles(), self)
+			
 		end
 		self:NextThink(CurTime() + 1)
 		return true

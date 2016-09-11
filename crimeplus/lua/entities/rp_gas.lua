@@ -42,8 +42,12 @@ if SERVER then
 			self:SetHasStove(false)
 			self:GetStove():SetHasCanister(false)
 			constraint.RemoveAll(self)
+			self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
 		end
 		if IsValid(caller) and caller:IsPlayer() and (self:GetFuel() <= 0) then
+			self:SetHasStove(false)
+			self:GetStove():SetHasCanister(false)
+			constraint.RemoveAll(self)
 			SafeRemoveEntity(self)
 		end
 	end

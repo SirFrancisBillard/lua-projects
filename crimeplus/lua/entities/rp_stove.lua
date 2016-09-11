@@ -34,6 +34,7 @@ if SERVER then
 			ent:SetHasStove(true)
 			ent:SetStove(self)
 			local weld = constraint.Weld(self, ent, 0, 0, 0, true, false)
+			self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
 		end
 	end
 end

@@ -35,6 +35,7 @@ if SERVER then
 				logic:SetPos(self:GetPos() + Vector(0, 0, 30))
 				logic:Spawn()
 				logic:SetAlcohol(self:GetAlcohol())
+				self:EmitSound("physics/glass/glass_bottle_impact_hard"..math.random(1, 3)..".wav")
 			else
 				SafeRemoveEntity(self)
 			end

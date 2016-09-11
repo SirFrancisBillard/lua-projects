@@ -42,21 +42,25 @@ if SERVER then
 				SafeRemoveEntity(ent)
 				self:SetIsFermenting(true)
 				self:SetAlcohol("Pruno")
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 			if (ent:GetClass() == "rp_banana") and (not self:GetIsFermenting()) then
 				SafeRemoveEntity(ent)
 				self:SetIsFermenting(true)
 				self:SetAlcohol("Rum")
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 			if (ent:GetClass() == "rp_potato") and (not self:GetIsFermenting()) then
 				SafeRemoveEntity(ent)
 				self:SetIsFermenting(true)
 				self:SetAlcohol("Vodka")
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 			if (ent:GetClass() == "rp_melon") and (not self:GetIsFermenting()) then
 				SafeRemoveEntity(ent)
 				self:SetIsFermenting(true)
 				self:SetAlcohol("Moonshine")
+				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
 			end
 		end
 	end
@@ -73,10 +77,11 @@ if SERVER then
 				self:SetIsFermenting(false)
 				self:SetFermentingProgress(0)
 				local logic = ents.Create("rp_sixpack")
-				logic:SetPos(self:GetPos() + Vector(0, 0, 30))
+				logic:SetPos(self:GetPos() + Vector(0, 0, 60))
 				logic:Spawn()
 				logic:SetAlcohol(self:GetAlcohol())
 				self:SetAlcohol("None")
+				self:EmitSound("physics/glass/glass_bottle_impact_hard"..math.random(1, 3)..".wav")
 			end
 		end
 	end

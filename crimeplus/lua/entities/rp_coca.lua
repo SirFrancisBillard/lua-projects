@@ -42,6 +42,7 @@ if SERVER then
 				local coke = ents.Create("rp_leaves")
 				coke:SetPos(self:GetPos() + Vector(0, 0, 30))
 				coke:Spawn()
+				self:EmitSound("physics/wood/wood_box_impact_soft"..math.random(1, 3)..".wav")
 			end
 		end
 	end
