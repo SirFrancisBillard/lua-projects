@@ -113,12 +113,16 @@ if CLIENT then
 		self:DrawModel()
 		local Pos = self:GetPos()
 		local Ang = self:GetAngles()
+		local Ang2 = self:GetAngles()
 
 		surface.SetFont("Trebuchet24")
 
 		Ang:RotateAroundAxis(Ang:Up(), 90)
+		Ang2:RotateAroundAxis(Ang2:Up(), 90)
+		Ang2:RotateAroundAxis(Ang2:Forward(), 90)
 
 		local PrinterWidth = 130
+		local FrontHeight = 40
 		local BorderWidth = 20
 		local BorderColor = self.Display.Border or Color(255, 0, 0)
 		local BackgroundColor = self.Display.Background or Color(255, 100, 100)
@@ -140,6 +144,12 @@ if CLIENT then
 			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 2), "Ink: "..self:GetInk(), "Trebuchet24", BorderColor, TextColor)
 			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 3), "Batteries: "..self:GetBatteries(), "Trebuchet24", BorderColor, TextColor)
 			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 4), err, "Trebuchet24", BorderColor, TextColor)
+		cam.End3D2D()
+		cam.Start3D2D(Pos + (Ang2:Up() * 17) + (Ang2:Right() * 4), Ang2, 0.11)
+			draw.RoundedBox(2, -PrinterWidth, -PrinterWidth, PrinterWidth * 2, FrontHeight * 2, BorderColor)
+			draw.RoundedBox(2, -PrinterWidth + BorderWidth, -PrinterWidth + BorderWidth, (PrinterWidth * 2) - (BorderWidth * 2), (FrontHeight * 2) - (BorderWidth * 2), BackgroundColor)
+			draw.WordBox(2, SingleDouble, SingleDouble - 13, self.PrintName, "Trebuchet24", BorderColor, TextColor)
+			
 		cam.End3D2D()
 	end
 end
