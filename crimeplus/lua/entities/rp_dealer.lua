@@ -39,7 +39,7 @@ if SERVER then
 			elseif (randy == 3) then
 				caller:ChatPrint("We don't appreciate your kind.")
 			elseif (randy == 4) then
-				caller:ChatPrint("What do you need?.")
+				caller:ChatPrint("What do you need?")
 			elseif (randy == 5) then
 				caller:ChatPrint("Make it quick, I got five warrants.")
 			end
