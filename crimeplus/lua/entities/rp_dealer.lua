@@ -41,5 +41,6 @@ if SERVER then
 	end
 	function ENT:Think()
 		self:SetSequence("idle_all_02")
+		self:DropToFloor()
 	end
 end
