@@ -35,7 +35,7 @@ if SERVER then
 				caller:ChatPrint("NOT THE PURPLE")
 			elseif (randy == 5) then
 				caller:ChatPrint("WHY DO BANANAS HAVE TENTACLES")
-			else
+			end
 			self:EmitSound("vo/npc/male01/help01.wav")
 		end
 	end
