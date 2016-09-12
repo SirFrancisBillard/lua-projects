@@ -15,13 +15,13 @@ function ENT:Initialize()
 	if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetUseType(SIMPLE_USE)
+		self.DrugDealer = ents.Create("prop_ragdoll")
+		self:DeleteOnRemove(self.DrugDealer)
 	end
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
 		phys:Wake()
 	end
-	self.DrugDealer = ents.Create("prop_ragdoll")
-	self:DeleteOnRemove(self.DrugDealer)
 end
 
 if SERVER then
