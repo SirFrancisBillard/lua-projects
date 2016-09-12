@@ -149,7 +149,6 @@ if CLIENT then
 			draw.RoundedBox(2, -PrinterWidth, -PrinterWidth, PrinterWidth * 2, FrontHeight * 2, BorderColor)
 			draw.RoundedBox(2, -PrinterWidth + BorderWidth, -PrinterWidth + BorderWidth, (PrinterWidth * 2) - (BorderWidth * 2), (FrontHeight * 2) - (BorderWidth * 2), BackgroundColor)
 			draw.WordBox(2, SingleDouble, SingleDouble - 13, self.PrintName, "Trebuchet24", BorderColor, TextColor)
-			
 		cam.End3D2D()
 	end
 end
