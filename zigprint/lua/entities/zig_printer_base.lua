@@ -9,10 +9,14 @@ ENT.Model = "models/props_c17/consolebox01a.mdl"
 
 ENT.Print = {}
 ENT.Print.Max = {}
+ENT.Display = {}
 ENT.Print.Amount = 250
 ENT.Print.Time = 60
 ENT.Print.Max.Ink = 10
 ENT.Print.Max.Batteries = 10
+ENT.Display.Background = Color(255, 100, 100)
+ENT.Display.Border = Color(255, 0, 0)
+ENT.Display.Text = Color(255, 255, 255)
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
@@ -26,7 +30,6 @@ function ENT:Initialize()
 	if IsValid(phys) then
 		phys:Wake()
 	end
-	self:StartSound()
 	self:SetStoredMoney(0)
 	self:SetPrintingProgress(0)
 	self:SetInk(0)
@@ -51,22 +54,14 @@ function ENT:OnRemove()
 		self.Noise:Stop()
 	end
 end
-function ENT:PrinterErrors()
-	local errors = {}
-	local was_error = false
+function ENT:PrinterError()
 	if (self:GetInk() < 1) then
-		errors["no_ink"] = "Printer requires ink!"
-		was_error = true
+		return "No ink"
 	end
 	if (self:GetBatteries() < 1) then
-		errors["no_battery"] = "Printer requires a battery!"
-		was_error = true
+		return "No battery"
 	end
-	if was_error then
-		return errors
-	else
-		return {"No errors."}
-	end
+	return "No errors"
 end
 
 if SERVER then
@@ -91,13 +86,13 @@ if SERVER then
 			if (self.RealPrintTime < 1) then
 				self.RealPrintTime = 1
 			end
-			if (self:GetPrintingProgress() == self.RealPrintTime) then
-				self:SetPrintingProgress(0)
-				self:SetStoredMoney(math.Clamp(self:GetStoredMoney() + self.RealPrintAmount, 0, 2000000000))
-			end
 			if self:CanPrint() then
 				self:SetPrintingProgress(math.Clamp(self:GetPrintingProgress() + 1, 0, self.RealPrintTime))
 				self:StartSound()
+			end
+			if (self:GetPrintingProgress() == self.RealPrintTime) then
+				self:SetPrintingProgress(0)
+				self:SetStoredMoney(math.Clamp(self:GetStoredMoney() + self.RealPrintAmount, 0, 2000000000))
 			end
 		end
 		self:NextThink(CurTime() + 1)
@@ -125,22 +120,26 @@ if CLIENT then
 
 		local PrinterWidth = 130
 		local BorderWidth = 20
-		local BorderColor = Color(255, 0, 0)
-		local BackgroundColor = Color(255, 100, 100)
-		local TextColor = Color(255, 255, 255)
+		local BorderColor = self.Display.Border or Color(255, 0, 0)
+		local BackgroundColor = self.Display.Background or Color(255, 100, 100)
+		local TextColor = self.Display.Text or Color(255, 255, 255)
 
 		local SingleSingle = -PrinterWidth + BorderWidth
 		local SingleDouble = -PrinterWidth + (BorderWidth * 2)
 		local DoubleSingle = (-PrinterWidth * 2) + BorderWidth
 		local DoubleDouble = (-PrinterWidth * 2) + (BorderWidth * 2)
 
-		local prog = Lerp(self:GetPrintingProgress() / self.Print.Time , 0, 100)
+		local prog = math.ceil(Lerp(self:GetPrintingProgress() / (self.Print.Time - (5 * self:GetBatteries())), 0, 100))
+		local err = self:PrinterError()
 
 		cam.Start3D2D(Pos + Ang:Up() * 11.5, Ang, 0.11)
 			draw.RoundedBox(2, -PrinterWidth, -PrinterWidth, PrinterWidth * 2, PrinterWidth * 2, BorderColor)
 			draw.RoundedBox(2, -PrinterWidth + BorderWidth, -PrinterWidth + BorderWidth, (PrinterWidth * 2) - (BorderWidth * 2), (PrinterWidth * 2) - (BorderWidth * 2), BackgroundColor)
 			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 0), "Money: $"..string.Comma(self:GetStoredMoney()), "Trebuchet24", BorderColor, TextColor)
 			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 1), "Progress: "..prog.."%", "Trebuchet24", BorderColor, TextColor)
+			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 2), "Ink: "..self:GetInk(), "Trebuchet24", BorderColor, TextColor)
+			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 3), "Batteries: "..self:GetBatteries(), "Trebuchet24", BorderColor, TextColor)
+			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 4), err, "Trebuchet24", BorderColor, TextColor)
 		cam.End3D2D()
 	end
 end
