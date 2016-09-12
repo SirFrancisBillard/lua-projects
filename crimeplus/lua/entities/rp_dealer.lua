@@ -5,7 +5,7 @@ ENT.Base = "base_ai"
 ENT.PrintName = "Drug Addict"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/player/group03/male_08.mdl"
+ENT.Model = "models/Humans/Group01/male_02.mdl"
 ENT.AutomaticFrameAdvance = true
 
 function ENT:Initialize()
