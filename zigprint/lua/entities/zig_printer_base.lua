@@ -7,16 +7,16 @@ ENT.Category = "ZigPrint"
 ENT.Spawnable = true
 ENT.Model = "models/props_c17/consolebox01a.mdl"
 
-ENT.Print = {}
-ENT.Print.Max = {}
-ENT.Display = {}
-ENT.Print.Amount = 250
-ENT.Print.Time = 60
-ENT.Print.Max.Ink = 10
-ENT.Print.Max.Batteries = 10
-ENT.Display.Background = Color(255, 100, 100)
-ENT.Display.Border = Color(255, 0, 0)
-ENT.Display.Text = Color(255, 255, 255)
+ENT.Print = ENT.Print or {}
+ENT.Print.Max = ENT.Print.Max or {}
+ENT.Display = ENT.Display or {}
+ENT.Print.Amount = ENT.Print.Amount or 250
+ENT.Print.Time = ENT.Print.Time or 60
+ENT.Print.Max.Ink = ENT.Print.Max.Ink or 10
+ENT.Print.Max.Batteries = ENT.Print.Max.Ink or 10
+ENT.Display.Background = ENT.Display.Background or Color(255, 100, 100)
+ENT.Display.Border = ENT.Display.Border or Color(255, 0, 0)
+ENT.Display.Text = ENT.Display.Text or Color(255, 255, 255)
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
@@ -43,7 +43,7 @@ function ENT:SetupDataTables()
 end
 function ENT:StartSound()
 	self.Noise = CreateSound(self, Sound("ambient/levels/labs/equipment_printer_loop1.wav"))
-	self.Noise:SetSoundLevel(45)
+	self.Noise:SetSoundLevel(50)
 	self.Noise:PlayEx(1, 50)
 end
 function ENT:CanPrint()
