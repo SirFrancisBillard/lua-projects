@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
-ENT.Type = "ai"
-ENT.Base = "base_ai"
-ENT.PrintName = "Drug Addict"
+ENT.Type = "anim"
+ENT.Base = "base_gmodentity"
+ENT.PrintName = "Drug Dealer"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
 ENT.Model = "models/Humans/Group03/male_08.mdl"
@@ -12,14 +12,9 @@ function ENT:Initialize()
 	self:SetModel(self.Model)
 	if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
-		self:SetNPCState(NPC_STATE_SCRIPT)
 		self:SetSolid(SOLID_BBOX)
 		self:SetUseType(SIMPLE_USE)
-		self:SetHullType(HULL_HUMAN)
-		self:SetHullSizeNormal()
 		self:DropToFloor()
-		self:CapabilitiesAdd(CAP_ANIMATEDFACE || CAP_TURN_HEAD)
-		self:SetMaxYawSpeed(90)
 	end
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
@@ -44,8 +39,7 @@ if SERVER then
 			end
 		end
 	end
-end
-
-function ENT:Think()
-	self:SetSequence("idle_all_02")
+	function ENT:Think()
+		self:SetSequence("idle_all_02")
+	end
 end
