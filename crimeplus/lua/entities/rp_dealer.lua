@@ -45,6 +45,7 @@ if SERVER then
 		self.DrugDealer:SetSequence("idle_all_01")
 		self.DrugDealer:SetModel("models/player/group03/male_08.mdl")
 		self.DrugDealer:SetPos(self:GetPos() - Vector(0, 0, 16))
+		self:SetColor(Color(0, 0, 0, 0))
 	end
 end
 
