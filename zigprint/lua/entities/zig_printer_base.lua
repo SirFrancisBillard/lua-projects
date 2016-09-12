@@ -129,7 +129,7 @@ if CLIENT then
 		local DoubleSingle = (-PrinterWidth * 2) + BorderWidth
 		local DoubleDouble = (-PrinterWidth * 2) + (BorderWidth * 2)
 
-		local prog = math.ceil(Lerp(self:GetPrintingProgress() / (self.Print.Time - (5 * self:GetBatteries())), 0, 100))
+		local prog = math.ceil(Lerp(self:GetPrintingProgress() / (math.max(self.Print.Time - (5 * self:GetBatteries()), 1)), 0, 100))
 		local err = self:PrinterError()
 
 		cam.Start3D2D(Pos + Ang:Up() * 11.5, Ang, 0.11)
