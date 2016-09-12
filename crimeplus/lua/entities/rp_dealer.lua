@@ -10,13 +10,13 @@ ENT.AutomaticFrameAdvance = true
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
-	self:SetMoveType(MOVETYPE_VPHYSICS)
 	if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetNPCState(NPC_STATE_SCRIPT)
 		self:SetSolid(SOLID_BBOX)
 		self:SetUseType(SIMPLE_USE)
 		self:SetHullType(HULL_HUMAN)
+		self:SetHullSizeNormal()
 		self:DropToFloor()
 		self:CapabilitiesAdd(CAP_ANIMATEDFACE || CAP_TURN_HEAD)
 		self:SetMaxYawSpeed(90)
