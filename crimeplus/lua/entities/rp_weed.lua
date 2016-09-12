@@ -26,3 +26,14 @@ end
 function ENT:Think()
 	self:SetColor(Color(0, 255, 0))
 end
+function ENT:Use(activator, caller)
+	if IsValid(caller) and caller:IsPlayer() then
+		for k, v in pairs(ents.FindInSphere(self:GetPos(), 128)) do
+			if (v:GetClass() == "rp_dealer") or (v:GetClass() == "rp_market") or (v:GetClass() == "rp_addict") then
+				caller:addMoney(self:SellPrice())
+				caller:ChatPrint("You have sold "..string.lower(self.PrintName).." for $"..string.Comma(self:SellPrice()))
+				SafeRemoveEntity(self)
+			end
+		end
+	end
+end

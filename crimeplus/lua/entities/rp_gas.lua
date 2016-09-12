@@ -32,7 +32,7 @@ if SERVER then
 	function ENT:Think()
 		local phys = self:GetPhysicsObject()
 		if self:GetHasStove() and IsValid(phys) then
-			phys:SetMass(0)
+			phys:SetMass(1)
 		elseif IsValid(phys) then
 			phys:SetMass(40)
 		end

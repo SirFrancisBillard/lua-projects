@@ -60,7 +60,6 @@ if SERVER then
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, 100))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, 200))
-			ParticleEffect("generic_smoke", self:GetPos(), self:GetAngles(), self)
 		end
 		self:NextThink(CurTime() + 1)
 		return true
