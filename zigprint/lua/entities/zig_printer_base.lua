@@ -53,13 +53,20 @@ function ENT:OnRemove()
 end
 function ENT:PrinterErrors()
 	local errors = {}
+	local was_error = false
 	if (self:GetInk() < 1) then
 		errors["no_ink"] = "Printer requires ink!"
+		was_error = true
 	end
 	if (self:GetBatteries() < 1) then
 		errors["no_battery"] = "Printer requires a battery!"
+		was_error = true
 	end
-	return errors
+	if was_error then
+		return errors
+	else
+		return {"No errors."}
+	end
 end
 
 if SERVER then
@@ -88,8 +95,10 @@ if SERVER then
 				self:SetPrintingProgress(0)
 				self:SetStoredMoney(math.Clamp(self:GetStoredMoney() + self.RealPrintAmount, 0, 2000000000))
 			end
-			self:SetPrintingProgress(math.Clamp(self:GetPrintingProgress() + 1, 0, self.Print.Time))
-			self:StartSound()
+			if self:CanPrint() then
+				self:SetPrintingProgress(math.Clamp(self:GetPrintingProgress() + 1, 0, self.RealPrintTime))
+				self:StartSound()
+			end
 		end
 		self:NextThink(CurTime() + 1)
 		return true
@@ -101,5 +110,37 @@ if SERVER then
 				self:SetStoredMoney(0)
 			end
 		end
+	end
+end
+
+if CLIENT then
+	function ENT:Draw()
+		self:DrawModel()
+		local Pos = self:GetPos()
+		local Ang = self:GetAngles()
+
+		surface.SetFont("Trebuchet24")
+
+		Ang:RotateAroundAxis(Ang:Up(), 90)
+
+		local PrinterWidth = 130
+		local BorderWidth = 20
+		local BorderColor = Color(255, 0, 0)
+		local BackgroundColor = Color(255, 100, 100)
+		local TextColor = Color(255, 255, 255)
+
+		local SingleSingle = -PrinterWidth + BorderWidth
+		local SingleDouble = -PrinterWidth + (BorderWidth * 2)
+		local DoubleSingle = (-PrinterWidth * 2) + BorderWidth
+		local DoubleDouble = (-PrinterWidth * 2) + (BorderWidth * 2)
+
+		local prog = Lerp(self:GetPrintingProgress() / self.Print.Time , 0, 100)
+
+		cam.Start3D2D(Pos + Ang:Up() * 11.5, Ang, 0.11)
+			draw.RoundedBox(2, -PrinterWidth, -PrinterWidth, PrinterWidth * 2, PrinterWidth * 2, BorderColor)
+			draw.RoundedBox(2, -PrinterWidth + BorderWidth, -PrinterWidth + BorderWidth, (PrinterWidth * 2) - (BorderWidth * 2), (PrinterWidth * 2) - (BorderWidth * 2), BackgroundColor)
+			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 0), "Money: $"..string.Comma(self:GetStoredMoney()), "Trebuchet24", BorderColor, TextColor)
+			draw.WordBox(2, SingleDouble, SingleDouble + (40 * 1), "Progress: "..prog.."%", "Trebuchet24", BorderColor, TextColor)
+		cam.End3D2D()
 	end
 end
