@@ -16,4 +16,4 @@ ENT.Print.Max.Ink = 10
 ENT.Print.Max.Batteries = 10
 ENT.Display.Background = Color(150, 255, 150)
 ENT.Display.Border = Color(0, 255, 0)
-ENT.Display.Text = Color(255, 255, 255)
+ENT.Display.Text = Color(0, 0, 0)

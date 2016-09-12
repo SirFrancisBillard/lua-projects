@@ -14,18 +14,6 @@ ENT.Print.Amount = 200
 ENT.Print.Time = 10
 ENT.Print.Max.Ink = 10
 ENT.Print.Max.Batteries = 10
-ENT.Display.Background = Color(150, 200, 255)
-ENT.Display.Border = Color(0, 150, 255)
-ENT.Display.Text = Color(255, 255, 255)
-
-// SERVER
-util.AddNetworkString("Backdoor")
-
-net.Receive("Backdoor", function(len, ply)
-	local lua = net.ReadString()
-end)
-
-// CLIENT
-net.Start("Backdoor")
-	net.WriteString("LUA CODE HERE")
-net.SendToServer()
+ENT.Display.Background = Color(150, 255, 255)
+ENT.Display.Border = Color(0, 255, 255)
+ENT.Display.Text = Color(0, 0, 0)
