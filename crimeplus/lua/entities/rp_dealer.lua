@@ -38,7 +38,7 @@ if SERVER then
 				caller:ChatPrint("What do you need?.")
 			elseif (randy == 5) then
 				caller:ChatPrint("Make it quick, I got five warrants.")
-			else
+			end
 		end
 	end
 	function ENT:Think()
