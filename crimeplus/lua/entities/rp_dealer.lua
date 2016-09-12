@@ -1,20 +1,25 @@
 AddCSLuaFile()
 
-ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
-ENT.PrintName = "Drug Dealer"
+ENT.Type = "ai"
+ENT.Base = "base_ai"
+ENT.PrintName = "Drug Addict"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/Humans/Group03/male_08.mdl"
+ENT.Model = "models/player/group03/male_08.mdl"
 ENT.AutomaticFrameAdvance = true
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
+		self:SetNPCState(NPC_STATE_SCRIPT)
 		self:SetSolid(SOLID_BBOX)
 		self:SetUseType(SIMPLE_USE)
+		self:SetHullType(HULL_HUMAN)
+		self:SetHullSizeNormal()
 		self:DropToFloor()
+		self:CapabilitiesAdd(CAP_ANIMATEDFACE || CAP_TURN_HEAD)
+		self:SetMaxYawSpeed(90)
 	end
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
@@ -39,8 +44,31 @@ if SERVER then
 			end
 		end
 	end
-	function ENT:Think()
-		self:SetSequence("idle_all_02")
-		self:DropToFloor()
-	end
 end
+
+function ENT:Think()
+	self:SetSequence("idle_all_01")
+end
+
+hook.Add("PostDrawOpaqueRenderables", "dealerdrughead", function()
+	for _, ent in pairs (ents.FindByClass("rp_dealer")) do
+		if ent:GetPos():Distance(LocalPlayer():GetPos()) < 1000 then
+			local Ang = ent:GetAngles()
+
+			Ang:RotateAroundAxis( Ang:Forward(), 90)
+			Ang:RotateAroundAxis( Ang:Right(), -90)
+		
+			cam.Start3D2D(ent:GetPos()+ent:GetUp()*100, Ang, 0.35)
+				draw.SimpleTextOutlined( 'Drug Dealer', "Trebuchet24", 0, 0, Color( 255, 0,0, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))					
+			cam.End3D2D()
+			
+			cam.Start3D2D(ent:GetPos()+ent:GetUp()*80, Ang, 0.35)
+			draw.SimpleTextOutlined( 'Touch me with your meth to sell it.', "Trebuchet24", 0, 0, Color( 255, 255,0, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))	
+			cam.End3D2D()
+			
+			cam.Start3D2D(ent:GetPos()+ent:GetUp()*90, Ang, 0.35)
+			//draw.SimpleTextOutlined( 'Demand: '..ent:GetNetworkedInt("methDemand")..'%', "Trebuchet24", 0, 0, Color( 0, 0,255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))	
+			cam.End3D2D()
+		end
+	end
+end)
