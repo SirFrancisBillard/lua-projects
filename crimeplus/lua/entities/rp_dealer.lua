@@ -1,26 +1,25 @@
 AddCSLuaFile()
 
-ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
-ENT.PrintName = "Drug Dealer"
+ENT.Type = "ai"
+ENT.Base = "base_ai"
+ENT.PrintName = "Drug Addict"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/props_borealis/bluebarrel001.mdl"
-ENT.DrugDealer = false
+ENT.Model = "models/player/group03/male_08.mdl"
+ENT.AutomaticFrameAdvance = true
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
-	self:SetSolid(SOLID_VPHYSICS)
 	if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
+		self:SetNPCState(NPC_STATE_SCRIPT)
+		self:SetSolid(SOLID_BBOX)
 		self:SetUseType(SIMPLE_USE)
-		self.DrugDealer = ents.Create("prop_ragdoll")
-		self.DrugDealer:SetModel("models/player/group03/male_08.mdl")
-		self.DrugDealer:SetSequence("idle_all_01")
-		self.DrugDealer:SetPos(self:GetPos() - Vector(0, 0, 16))
-		self.DrugDealer:Spawn()
-		self:DeleteOnRemove(self.DrugDealer)
+		self:SetHullType(HULL_HUMAN)
+		self:DropToFloor()
+		self:CapabilitiesAdd(CAP_ANIMATEDFACE || CAP_TURN_HEAD)
+		self:SetMaxYawSpeed(90)
 	end
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
@@ -45,12 +44,8 @@ if SERVER then
 			end
 		end
 	end
-	function ENT:Think()
-		self.DrugDealer:SetSequence("idle_all_01")
-		self.DrugDealer:SetModel("models/player/group03/male_08.mdl")
-		self.DrugDealer:SetPos(self:GetPos() - Vector(0, 0, 16))
-		self:SetColor(Color(0, 0, 0, 0))
-	end
 end
 
-
+function ENT:Think()
+	self:SetSequence("idle_all_02")
+end
