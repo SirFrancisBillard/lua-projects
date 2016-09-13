@@ -1,8 +1,3 @@
-----------------------------------------
---Name: "car_bomb_defuser.lua"
---By: "Sir Francis Billard"
-----------------------------------------
-
 SWEP.PrintName = "Car Bomb Defuser"
 SWEP.Author = "Sir Francis Billard"
 SWEP.Instructions = "Left click to defuse a car bomb.\nRight click to check if a car has a bomb."
@@ -28,14 +23,14 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 
 function SWEP:CanSecondaryAttack()
-	return self:GetNextSecondaryFire() < CurTime()
+	return (self:GetNextSecondaryFire() < CurTime())
 end
 
 function SWEP:CanPrimaryAttack()
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	self.Owner:LagCompensation(false)
-	return trent.HasCarBombPlanted and IsValid(trent) and trent:IsVehicle() and self.Owner:GetPos():Distance(trent:GetPos()) < 512
+	return trent.HasCarBombPlanted and IsValid(trent) and trent:IsVehicle() and (self.Owner:GetPos():Distance(trent:GetPos()) < 512)
 end
 
 function SWEP:Deploy()
@@ -47,7 +42,7 @@ end
 function SWEP:Reload() end
 
 function SWEP:SecondaryAttack()
-	if !self:CanSecondaryAttack() then return end
+	if (not self:CanSecondaryAttack()) then return end
 	self:SetNextSecondaryFire(CurTime() + 0.5)
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
@@ -61,7 +56,7 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:PrimaryAttack()
-	if !self:CanPrimaryAttack() then return end
+	if (not self:CanPrimaryAttack()) then return end
 	self:SetNextPrimaryFire(CurTime() + 3)
 	if SERVER then
 		self.Owner:ChatPrint("Defusing...")
