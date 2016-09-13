@@ -33,7 +33,7 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Weapon:Clip1() <= 0 then
+	if (self.Weapon:Clip1() <= 0) then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + 1)
 		self:Reload()
@@ -43,8 +43,8 @@ function SWEP:CanPrimaryAttack()
 end
 
 function SWEP:PrimaryAttack()
-	if (!self:CanPrimaryAttack()) then return end
-	self.Weapon:EmitSound("weapons/usp/usp1.wav")
+	if (not self:CanPrimaryAttack()) then return end
+	self.Weapon:EmitSound(Sound("weapons/usp/usp1.wav"))
 	self:TakePrimaryAmmo(1)
 	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self.Owner:ViewPunch(Angle(-1, 0, 0))
@@ -67,7 +67,7 @@ function SWEP:PrimaryAttack()
 			if bitch:IsPlayer() then
 				if IsValid(bitch) then
 					bitch:UnSpectate()
-					bitch:SetPos(OldPos + Vector(0, 0, 20))
+					bitch:SetPos(rag:GetPos() + Vector(0, 0, 20))
 				end
 				SafeRemoveEntity(rag)
 			elseif bitch:IsNPC() then
