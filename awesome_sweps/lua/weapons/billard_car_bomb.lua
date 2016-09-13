@@ -1,8 +1,3 @@
-----------------------------------------
---Name: "car_bomb.lua"
---By: "Sir Francis Billard"
-----------------------------------------
-
 SWEP.PrintName = "Car Bomb"
 SWEP.Author = "Sir Francis Billard"
 SWEP.Instructions = "Left click to plant bomb.\nRight click to change bomb type.\nReload to change bomb timer."
@@ -17,10 +12,6 @@ SWEP.SwayScale = 1
 SWEP.DrawAmmo = false
 SWEP.Slot = 4
 
-SWEP.DetonateTime = 0
-SWEP.BombType = false
-SWEP.ReloadSpamTime = 0
-
 SWEP.Primary.Ammo = "None"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
@@ -31,6 +22,14 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 
+function SWEP:SetupDataTables()
+	self:NetworkVar("Int", 0, "DetonateTime")
+	self:NetworkVar("Int", 1, "ReloadSpamTime")
+	self:NetworkVar("Bool", 0, "IsPlanting")
+	self:NetworkVar("Bool", 1, "BombType")
+	self:NetworkVar("Bool", 2, "Deploying")
+end
+
 function SWEP:CanSecondaryAttack()
 	return self:GetNextSecondaryFire() < CurTime()
 end
@@ -39,12 +38,18 @@ function SWEP:CanPrimaryAttack()
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	self.Owner:LagCompensation(false)
-	return !trent.HasCarBombPlanted and IsValid(trent) and trent:IsVehicle() and self.Owner:GetPos():Distance(trent:GetPos()) < 512
+	return (not self:GetDeploying()) and (not self:GetIsPlanting()) (not trent.HasCarBombPlanted) and IsValid(trent) and trent:IsVehicle() and (self.Owner:GetPos():Distance(trent:GetPos()) < 512)
 end
 
 function SWEP:Deploy()
+	self:SetDeploying(true)
 	self:SetHoldType("slam")
 	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
+	timer.Simple(self:SequenceDuration() + 0.1, function()
+		if IsValid(self) then
+			self:SetDeploying(false)
+		end
+	end)
 	return true
 end
 
