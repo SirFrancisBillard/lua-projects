@@ -54,28 +54,18 @@ function SWEP:PrimaryAttack()
 	if IsValid(self.Owner) and IsValid(self.Owner:GetEyeTrace().Entity) and (self.Owner:GetEyeTrace().Entity:IsPlayer() or self.Owner:GetEyeTrace().Entity:IsNPC()) then
 		local bitch = self.Owner:GetEyeTrace().Entity
 		local rag = ents.Create("prop_ragdoll")
-		local OldPos = bitch:GetPos()
 		rag:SetPos(bitch:GetPos())
 		rag:SetModel(bitch:GetModel())
 		rag:Spawn()
+		bitch:SetPos(OldPos + Vector(0, 0, -800))
 		if bitch:IsPlayer() then
-			bitch:SpectateEntity(rag)
-		elseif bitch:IsNPC() then
-			bitch:SetPos(OldPos + Vector(0, 0, -800))
+			bitch:ChatPrint("You have been tranquilized")
 		end
-		timer.Simple(5, function()
-			if bitch:IsPlayer() then
-				if IsValid(bitch) then
-					bitch:UnSpectate()
-					bitch:SetPos(rag:GetPos() + Vector(0, 0, 20))
-				end
-				SafeRemoveEntity(rag)
-			elseif bitch:IsNPC() then
-				if IsValid(bitch) then
-					bitch:SetPos(OldPos + Vector(0, 0, 20))
-				end
-				SafeRemoveEntity(rag)
+		timer.Simple(10, function()
+			if IsValid(bitch) then
+				bitch:SetPos(rag:GetPos() + Vector(0, 0, 20))
 			end
+			SafeRemoveEntity(rag)
 		end)
 	end
 	if self.Owner:IsPlayer() then
