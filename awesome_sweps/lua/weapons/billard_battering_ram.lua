@@ -1,11 +1,6 @@
-----------------------------------------
---Name: "battering_ram.lua"
---By: "Sir Francis Billard"
-----------------------------------------
-
 SWEP.PrintName = "Battering Ram"
 SWEP.Author = "Sir Francis Billard"
-SWEP.Instructions = "Left or right click to knock down a door."
+SWEP.Instructions = "Left click to knock down a door."
 SWEP.Spawnable = true
 
 SWEP.ViewModel = "models/weapons/c_rpg.mdl"
@@ -45,11 +40,11 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:CanPrimaryAttack()
-	return self:GetNextPrimaryFire() < CurTime()
+	return (self:GetNextPrimaryFire() < CurTime())
 end
 
 function SWEP:PrimaryAttack()
-	if !self:CanPrimaryAttack() then return end
+	if (not self:CanPrimaryAttack()) then return end
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(true)
 	end
