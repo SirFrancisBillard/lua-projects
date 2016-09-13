@@ -25,20 +25,19 @@ SWEP.Secondary.Automatic = false
 function SWEP:SetupDataTables()
 	self:NetworkVar("Int", 0, "DetonateTime")
 	self:NetworkVar("Int", 1, "ReloadSpamTime")
-	self:NetworkVar("Bool", 0, "IsPlanting")
-	self:NetworkVar("Bool", 1, "BombType")
-	self:NetworkVar("Bool", 2, "Deploying")
+	self:NetworkVar("Bool", 0, "BombType")
+	self:NetworkVar("Bool", 1, "Deploying")
 end
 
 function SWEP:CanSecondaryAttack()
-	return self:GetNextSecondaryFire() < CurTime()
+	return (self:GetNextSecondaryFire() < CurTime()) and (not self:GetDeploying())
 end
 
 function SWEP:CanPrimaryAttack()
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	self.Owner:LagCompensation(false)
-	return (not self:GetDeploying()) and (not self:GetIsPlanting()) (not trent.HasCarBombPlanted) and IsValid(trent) and trent:IsVehicle() and (self.Owner:GetPos():Distance(trent:GetPos()) < 512)
+	return (not self:GetDeploying()) (not trent.HasCarBombPlanted) and IsValid(trent) and trent:IsVehicle() and (self.Owner:GetPos():Distance(trent:GetPos()) < 512)
 end
 
 function SWEP:Deploy()
@@ -54,37 +53,37 @@ function SWEP:Deploy()
 end
 
 function SWEP:Reload()
-	if self.ReloadSpamTime < CurTime() then
-		self.ReloadSpamTime = CurTime() + 0.5
+	if (self:GetReloadSpamTime() <= CurTime()) then
+		self:SetReloadSpamTime(CurTime() + 0.5)
 		self:EmitSound(Sound("weapons/c4/c4_beep1.wav"))
-		if self.DetonateTime < 26 then
-			self.DetonateTime = self.DetonateTime + 5
+		if self:GetDetonateTime() < 26 then
+			self:SetDetonateTime(self:GetDetonateTime() + 5)
 		else
-			self.DetonateTime = 5
+			self:SetDetonateTime(5)
 		end
 		if SERVER then
-			self.Owner:ChatPrint("Timer has been set to "..self.DetonateTime.." seconds.")
+			self.Owner:ChatPrint("Timer has been set to "..self:GetDetonateTime().." seconds.")
 		end
 	end
 end
 
 function SWEP:SecondaryAttack()
-	if !self:CanSecondaryAttack() then return end
+	if (not self:CanSecondaryAttack()) then return end
 	self:SetNextSecondaryFire(CurTime() + 0.5)
 	self:EmitSound(Sound("weapons/c4/c4_beep1.wav"))
-	self.BombType = !self.BombType
+	self:SetBombType(not self:GetBombType())
 	if SERVER then
-		self.Owner:ChatPrint(self.BombType and "Bomb type switched to timed." or "Bomb type switched to ignition.")
+		self.Owner:ChatPrint(self:GetBombType() and "Bomb type switched to timed." or "Bomb type switched to ignition.")
 	end
 end
 
 function SWEP:PrimaryAttack()
-	if !self:CanPrimaryAttack() then return end
-	self:SetNextPrimaryFire(CurTime() + 10)
+	if (not self:CanPrimaryAttack()) then return end
+	self:SetNextPrimaryFire(CurTime() + 1)
 	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	timer.Simple(self:SequenceDuration() + 0.1, function()
-		if !self:CanPrimaryAttack() then return end
-		if IsValid(self.Owner) then
+		if (not self:CanPrimaryAttack()) or (not IsValid(self)) then return end
+		if IsValid(self.Owner) and IsValid(self.Owner:GetActiveWeapon()) and (self.Owner:GetActiveWeapon():GetClass() == self.ClassName) then
 			self:EmitSound(Sound("weapons/c4/c4_plant.wav"))
 			if self.Owner:IsPlayer() then
 				self.Owner:LagCompensation(true)
@@ -96,12 +95,12 @@ function SWEP:PrimaryAttack()
 			if SERVER then
 				self.Owner:StripWeapon(self.ClassName)
 			end
-			if self.BombType then
-				if self.DetonateTime < 1 then
-					self.DetonateTime = 5
+			if self:GetBombType() then
+				if self:GetDetonateTime() < 1 then
+					self:SetDetonateTime(5)
 				end
-				timer.Simple(self.DetonateTime, function()
-					if !IsValid(veh) then return end
+				timer.Simple(self:GetDetonateTime(), function()
+					if (not IsValid(veh)) then return end
 					if IsValid(veh:GetDriver()) and SERVER then
 						veh:GetDriver():Kill()
 					end
