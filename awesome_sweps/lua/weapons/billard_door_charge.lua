@@ -1,8 +1,3 @@
-----------------------------------------
---Name: "door_charge.lua"
---By: "Sir Francis Billard"
-----------------------------------------
-
 SWEP.PrintName = "Door Charge"
 SWEP.Author = "Sir Francis Billard"
 SWEP.Instructions = "Left click to plant charge.\nRight click to detonate.\nReload to change bomb type."
@@ -17,11 +12,6 @@ SWEP.SwayScale = 1
 SWEP.DrawAmmo = false
 SWEP.Slot = 4
 
-SWEP.BombPlanted = false
-SWEP.PlantedDoor = "None"
-SWEP.BombType = true
-SWEP.ReloadSpamTime = 0
-
 SWEP.Primary.Ammo = "None"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
@@ -32,6 +22,8 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 
+SWEP.PlantedDoor = "None"
+
 local IsDoor = {
 	["prop_door_rotating"] = true,
 	["func_movelinear"] = true,
@@ -39,8 +31,14 @@ local IsDoor = {
 	["func_door_rotating"] = true
 }
 
+function SWEP:SetupDataTables()
+	self:NetworkVar("Bool", 0, "BombPlanted")
+	self:NetworkVar("Bool", 1, "BombType")
+	self:NetworkVar("Int", 0, "ReloadSpamTime")
+end
+
 function SWEP:Detonate()
-	if IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor) and self.BombPlanted then
+	if IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor) and self:GetBombPlanted() then
 		self.Owner:StripWeapon(self.ClassName)
 		SafeRemoveEntity(self.SlamProp)
 		self.SlamProp = nil
@@ -49,7 +47,7 @@ function SWEP:Detonate()
 		util.Effect("HelicopterMegaBomb", boom)
 		local door = self.PlantedDoor
 		local matthew = door:GetMaterial() or ""
-		if self.BombType then
+		if self:GetBombType() then
 			door:SetMaterial("Models/effects/vol_light001")
 		end
 		self.PlantedDoor = "None"
@@ -79,7 +77,7 @@ end
 
 function SWEP:Deploy()
 	self:SetHoldType("slam")
-	if self.BombPlanted then
+	if self:GetBombPlanted() then
 		self.Weapon:SendWeaponAnim(ACT_SLAM_DETONATOR_IDLE)
 	else
 		self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
@@ -88,32 +86,32 @@ function SWEP:Deploy()
 end
 
 function SWEP:Reload()
-	if self.ReloadSpamTime < CurTime() then
-		self.ReloadSpamTime = CurTime() + 0.5
+	if (self:GetReloadSpamTime() < CurTime()) then
+		self:SetReloadSpamTime(CurTime() + 0.5)
 		self:EmitSound(Sound("weapons/c4/c4_beep1.wav"))
-		self.BombType = !self.BombType
-		self.Owner:ChatPrint(self.BombType and "Bomb type switched to destroy door." or "Bomb type switched to open door.")
+		self:SetBombType(not self:GetBombType())
+		self.Owner:ChatPrint(self:GetBombType() and "Bomb type switched to destroy door." or "Bomb type switched to open door.")
 	end
 end
 
 function SWEP:CanSecondaryAttack()
-	return self.BombPlanted and IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor)
+	return self:GetBombPlanted() and IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor)
 end
 
 function SWEP:CanPrimaryAttack()
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	self.Owner:LagCompensation(false)
-	return !self.BombPlanted and IsValid(trent) and IsDoor[trent:GetClass()] and self.Owner:GetPos():Distance(trent:GetPos()) < 256
+	return !self:GetBombPlanted() and IsValid(trent) and IsDoor[trent:GetClass()] and self.Owner:GetPos():Distance(trent:GetPos()) < 256
 end
 
 function SWEP:SecondaryAttack()
-	if !self:CanSecondaryAttack() then return end
+	if (not self:CanSecondaryAttack()) then return end
 	self:Detonate()
 end
 
 function SWEP:PrimaryAttack()
-	if !self:CanPrimaryAttack() or !SERVER then return end
+	if (not self:CanPrimaryAttack()) or (not SERVER) then return end
 	self:SetNextPrimaryFire(CurTime() + 5)
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
@@ -121,17 +119,17 @@ function SWEP:PrimaryAttack()
 	local trnorm = self.Owner:GetEyeTrace().HitNormal
 	self.Owner:LagCompensation(false)
 	self.Weapon:SendWeaponAnim(ACT_SLAM_STICKWALL_ATTACH)
-	timer.Simple(1, function()
+	timer.Simple(self:SequenceLength() + 0.1, function()
 		if IsValid(self.Owner) and IsValid(self.Weapon) then
+			self.PlantedDoor = trent
 			self:EmitSound(Sound("weapons/c4/c4_plant.wav"))
 			self.SlamProp = ents.Create("prop_physics")
 			self.SlamProp:SetModel("models/weapons/w_slam.mdl")
-			self.SlamProp:SetPos(trpos)
 			self.SlamProp:SetAngles(trnorm:Angle() + Angle(90, 0, 0))
+			self.SlamProp:SetPos(trpos + (self:GetAngles() * 6))
 			self.SlamProp:Spawn()
-			self.PlantedDoor = trent
 			constraint.Weld(self.PlantedDoor, self.SlamProp, 0, 0, 0, true, false)
-			self.BombPlanted = true
+			self:SetBombPlanted(true)
 			self.Weapon:SendWeaponAnim(ACT_SLAM_DETONATOR_IDLE)
 		end
 	end)
