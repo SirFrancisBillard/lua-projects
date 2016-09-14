@@ -34,6 +34,7 @@ local IsDoor = {
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 0, "BombPlanted")
 	self:NetworkVar("Bool", 1, "BombType")
+	self:NetworkVar("Float", 0, "PlantTime")
 	self:NetworkVar("Int", 0, "ReloadSpamTime")
 end
 
@@ -46,7 +47,7 @@ function SWEP:Detonate()
 		boom:SetOrigin(self.PlantedDoor:GetPos())
 		util.Effect("HelicopterMegaBomb", boom)
 		local door = self.PlantedDoor
-		local matthew = door:GetMaterial() or ""
+		local matthew = (door:GetMaterial() or "")
 		if self:GetBombType() then
 			door:SetMaterial("Models/effects/vol_light001")
 		end
@@ -77,17 +78,14 @@ end
 
 function SWEP:Deploy()
 	self:SetHoldType("slam")
-	if self:GetBombPlanted() then
-		self.Weapon:SendWeaponAnim(ACT_SLAM_DETONATOR_IDLE)
-	else
-		self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
-	end
+	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
+	self:SetBombPlanted(false)
 	return true
 end
 
 function SWEP:Reload()
 	if (self:GetReloadSpamTime() < CurTime()) then
-		self:SetReloadSpamTime(CurTime() + 0.5)
+		self:SetReloadSpamTime(CurTime() + 1)
 		self:EmitSound(Sound("weapons/c4/c4_beep1.wav"))
 		self:SetBombType(not self:GetBombType())
 		self.Owner:ChatPrint(self:GetBombType() and "Bomb type switched to destroy door." or "Bomb type switched to open door.")
@@ -95,14 +93,14 @@ function SWEP:Reload()
 end
 
 function SWEP:CanSecondaryAttack()
-	return self:GetBombPlanted() and IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor)
+	return self:GetBombPlanted() and ((CurTime() - self:GetPlantTime()) > 2) and IsEntity(self.PlantedDoor) and IsValid(self.PlantedDoor)
 end
 
 function SWEP:CanPrimaryAttack()
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	self.Owner:LagCompensation(false)
-	return !self:GetBombPlanted() and IsValid(trent) and IsDoor[trent:GetClass()] and self.Owner:GetPos():Distance(trent:GetPos()) < 256
+	return (not self:GetBombPlanted()) and IsValid(trent) and IsDoor[trent:GetClass()] and (self.Owner:GetPos():Distance(trent:GetPos()) < 256)
 end
 
 function SWEP:SecondaryAttack()
@@ -113,20 +111,21 @@ end
 function SWEP:PrimaryAttack()
 	if (not self:CanPrimaryAttack()) or (not SERVER) then return end
 	self:SetNextPrimaryFire(CurTime() + 5)
+	self.Weapon:SendWeaponAnim(ACT_SLAM_STICKWALL_ATTACH)
 	self.Owner:LagCompensation(true)
 	local trent = self.Owner:GetEyeTrace().Entity
 	local trpos = self.Owner:GetEyeTrace().HitPos
 	local trnorm = self.Owner:GetEyeTrace().HitNormal
 	self.Owner:LagCompensation(false)
-	self.Weapon:SendWeaponAnim(ACT_SLAM_STICKWALL_ATTACH)
-	timer.Simple(self:SequenceLength() + 0.1, function()
+	timer.Simple(0.3, function()
 		if IsValid(self.Owner) and IsValid(self.Weapon) then
+			self:SetPlantTime(CurTime())
 			self.PlantedDoor = trent
 			self:EmitSound(Sound("weapons/c4/c4_plant.wav"))
 			self.SlamProp = ents.Create("prop_physics")
 			self.SlamProp:SetModel("models/weapons/w_slam.mdl")
 			self.SlamProp:SetAngles(trnorm:Angle() + Angle(90, 0, 0))
-			self.SlamProp:SetPos(trpos + (self:GetAngles() * 6))
+			self.SlamProp:SetPos(trpos + (self:GetAngles():Forward() * -2))
 			self.SlamProp:Spawn()
 			constraint.Weld(self.PlantedDoor, self.SlamProp, 0, 0, 0, true, false)
 			self:SetBombPlanted(true)
