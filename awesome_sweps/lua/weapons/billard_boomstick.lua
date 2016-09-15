@@ -17,7 +17,7 @@ SWEP.Slot = 3
 SWEP.Primary.Ammo = "Buckshot"
 SWEP.Primary.ClipSize = 6
 SWEP.Primary.DefaultClip = 18
-SWEP.Primary.Automatic = false
+SWEP.Primary.Automatic = true
 
 SWEP.Secondary.Ammo = "SMG1_Grenade"
 SWEP.Secondary.ClipSize = 1
@@ -35,9 +35,13 @@ function SWEP:ShouldDropOnDie()
 	return true
 end
 
+function SWEP:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Reloading")
+end
+
 function SWEP:ShootBullet(damage, num_bullets, aimcone)
 	local bullet = {}
-	bullet.Num = num_bullets
+	bullet.Num 	= num_bullets
 	bullet.Src = self.Owner:GetShootPos()
 	bullet.Dir = self.Owner:GetAimVector()
 	bullet.Spread = Vector(aimcone, aimcone, 0)
@@ -50,24 +54,50 @@ function SWEP:ShootBullet(damage, num_bullets, aimcone)
 end
 
 function SWEP:Deploy()
+	if SERVER then
+		self:SetReloading(false)
+	end
+	self:EmitSound(Sound("weapons/shotgun/shotgun_cock.wav"))
 	self:SetHoldType("shotgun")
 	self.Weapon:SendWeaponAnim(ACT_VM_DRAW)
 	self.Owner:AnimRestartGesture(fuck, ACT_SHOTGUN_RELOAD_FINISH, true)
 	return true
 end
 
+function SWEP:Holster()
+	self:SetReloading(false)
+	return true
+end
+
 function SWEP:Reload()
-	self.Weapon:DefaultReload(ACT_VM_DRAW)
+	if self:GetReloading() then return end
 	if (self.Weapon:Clip1() < self.Primary.ClipSize and self.Weapon:Ammo1() > 0) or (self.Weapon:Clip2() < self.Secondary.ClipSize and self.Weapon:Ammo2() > 0) then
+		if SERVER then
+			self:SetReloading(true)
+		end
+		self.Weapon:SendWeaponAnim(ACT_VM_HOLSTER)
+		timer.Simple(self:SequenceDuration() + 1, function()
+			if (not IsValid(self)) or (not IsValid(self.Owner)) then return end
+			if IsValid(self.Owner:GetActiveWeapon()) then
+				if (self.Owner:GetActiveWeapon():GetClass() != self.ClassName) then
+					return
+				end
+			end
+			self:DefaultReload(ACT_VM_DRAW)
+			self:SetNextPrimaryFire(CurTime() + 1)
+			self:SetNextSecondaryFire(CurTime() + 1)
+			self:SetReloading(false)
+			if SERVER then
+				self:EmitSound(Sound("weapons/shotgun/shotgun_cock.wav"))
+			end
+		end)
 		self.Owner:AnimRestartGesture(fuck, ACT_SHOTGUN_RELOAD_FINISH, true)
-		self:EmitSound(Sound("weapons/shotgun/shotgun_reload"..math.random(1, 3)..".wav"))
-		self:SetNextPrimaryFire(CurTime() + 1)
-		self:SetNextSecondaryFire(CurTime() + 1)
+		
 	end
 end
 
 function SWEP:PrimaryAttack()
-	if (not self:CanPrimaryAttack()) then return end
+	if (not self:CanPrimaryAttack()) or self:GetReloading() then return end
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(true)
 	end
@@ -76,7 +106,7 @@ function SWEP:PrimaryAttack()
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(false)
 	end
-	self:ShootBullet(20, 8, 0.08)
+	self:ShootBullet(20, 24, 0.08)
 	self:TakePrimaryAmmo(1)
 	self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:EmitSound(Sound("weapons/xm1014/xm1014-1.wav"))
@@ -94,7 +124,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if (not self:CanSecondaryAttack()) then return end
+	if (not self:CanSecondaryAttack()) or self:GetReloading() then return end
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(true)
 	end
@@ -109,7 +139,7 @@ function SWEP:SecondaryAttack()
 	self:EmitSound(Sound("weapons/rpg/rocketfire1.wav"))
 	self.Owner:ViewPunch(Angle(-8, 0, 0))
 	timer.Simple(self.Owner:GetPos():Distance(trpos) / 2048, function()
-		if !IsValid(self) then return end
+		if (not IsValid(self)) then return end
 		local boom = EffectData()
 		boom:SetOrigin(trpos)
 		util.Effect("HelicopterMegaBomb", boom)
