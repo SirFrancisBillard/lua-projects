@@ -25,6 +25,7 @@ function ENT:SellPrice()
 end
 function ENT:Think()
 	self:SetColor(Color(0, 255, 255))
+	self:SetMaterial("models/debug/debugwhite")
 end
 function ENT:Use(activator, caller)
 	if IsValid(caller) and caller:IsPlayer() then

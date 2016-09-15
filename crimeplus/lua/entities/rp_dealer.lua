@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 ENT.Type = "ai"
 ENT.Base = "base_ai"
-ENT.PrintName = "Drug Addict"
+ENT.PrintName = "Drug Dealer"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
 ENT.Model = "models/player/group03/male_08.mdl"
@@ -47,28 +47,21 @@ if SERVER then
 end
 
 function ENT:Think()
-	self:SetSequence("idle_all_01")
+	self:SetSequence("idle_all_02")
 end
 
-hook.Add("PostDrawOpaqueRenderables", "dealerdrughead", function()
-	for _, ent in pairs (ents.FindByClass("rp_dealer")) do
-		if ent:GetPos():Distance(LocalPlayer():GetPos()) < 1000 then
-			local Ang = ent:GetAngles()
+if CLIENT then
+	function ENT:Draw()
+		self:DrawModel()
+		local Ang = self:GetAngles()
 
-			Ang:RotateAroundAxis( Ang:Forward(), 90)
-			Ang:RotateAroundAxis( Ang:Right(), -90)
+		Ang:RotateAroundAxis( Ang:Forward(), 90)
+		Ang:RotateAroundAxis( Ang:Right(), -90)
 		
-			cam.Start3D2D(ent:GetPos()+ent:GetUp()*100, Ang, 0.35)
-				draw.SimpleTextOutlined( 'Drug Dealer', "Trebuchet24", 0, 0, Color( 255, 0,0, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))					
-			cam.End3D2D()
-			
-			cam.Start3D2D(ent:GetPos()+ent:GetUp()*80, Ang, 0.35)
-			draw.SimpleTextOutlined( 'Touch me with your meth to sell it.', "Trebuchet24", 0, 0, Color( 255, 255,0, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))	
-			cam.End3D2D()
-			
-			cam.Start3D2D(ent:GetPos()+ent:GetUp()*90, Ang, 0.35)
-			//draw.SimpleTextOutlined( 'Demand: '..ent:GetNetworkedInt("methDemand")..'%', "Trebuchet24", 0, 0, Color( 0, 0,255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 1, Color(0, 0, 0, 255))	
-			cam.End3D2D()
-		end
+		cam.Start3D2D(self:GetPos() + (self:GetUp() * 100), Ang, 0.35)
+			draw.SimpleText("Drug Dealer", "Trebuchet24", 0, 0, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+			draw.SimpleText("Bring me drugs for cash", "Trebuchet24", 0, 40, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		cam.End3D2D()
 	end
-end)
+		
+end

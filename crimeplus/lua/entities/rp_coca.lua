@@ -47,3 +47,24 @@ if SERVER then
 		end
 	end
 end
+
+if CLIENT then
+	function ENT:Draw()
+		self:DrawModel()
+
+		local Pos = self:GetPos()
+		local Ang = self:GetAngles()
+
+		surface.SetFont("Trebuchet24")
+
+		Ang:RotateAroundAxis(Ang:Forward(), 90)
+
+		cam.Start3D2D(Pos + (Ang:Up() * 15) + (Ang:Right() * -10), Ang, 0.12)
+			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
+			if (self:GetGrowth() > 0) then
+				draw.RoundedBox(2, -50, -65, self:GetGrowth(), 30, Color(0, 225, 0, 100))
+			end
+			draw.SimpleText("Growth", "Trebuchet24", -40, -63, Color(255, 255, 255, 255))
+		cam.End3D2D()
+	end
+end
