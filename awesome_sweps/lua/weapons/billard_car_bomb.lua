@@ -122,8 +122,8 @@ function SWEP:PrimaryAttack()
 					self:SetDetonateTime(5)
 				end
 				timer.Simple(self:GetDetonateTime(), function()
-					if (not IsValid(veh)) then return end
-					if SERVER and IsValid(veh:GetDriver()) then
+					if (not IsValid(veh)) or (not SERVER) then return end
+					if IsValid(veh:GetDriver()) then
 						veh:GetDriver():Kill()
 					end
 					local boom = EffectData()
