@@ -32,7 +32,11 @@ end
 function ENT:IsReadyForStove()
 	return ((CurTime() - self:GetLastStove()) > 2)
 end
-
+self:SetHasStove(false)
+			self:GetStove():SetHasCanister(false)
+			constraint.RemoveAll(self)
+			self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
+			self:SetLastStove(CurTime())
 if SERVER then
 	function ENT:Think()
 		local phys = self:GetPhysicsObject()
@@ -53,5 +57,13 @@ if SERVER then
 			self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
 			self:SetLastStove(CurTime())
 		end
+	end
+	function ENT:OnRemove()
+		if (not self:GetHasStove()) then return end
+		self:SetHasStove(false)
+		self:GetStove():SetHasCanister(false)
+		constraint.RemoveAll(self)
+		self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
+		self:SetLastStove(CurTime())
 	end
 end
