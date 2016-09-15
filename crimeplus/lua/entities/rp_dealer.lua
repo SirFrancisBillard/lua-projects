@@ -28,7 +28,7 @@ function ENT:Initialize()
 end
 
 if SERVER then
-	function ENT:Use(activator, caller)
+	function ENT:StartTouch(caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			local randy = math.random(1, 5)
 			if (randy == 1) then
@@ -55,13 +55,12 @@ if CLIENT then
 		self:DrawModel()
 		local Ang = self:GetAngles()
 
-		Ang:RotateAroundAxis( Ang:Forward(), 90)
-		Ang:RotateAroundAxis( Ang:Right(), -90)
+		Ang:RotateAroundAxis(Ang:Forward(), 90)
+		Ang:RotateAroundAxis(Ang:Right(), -90)
 		
 		cam.Start3D2D(self:GetPos() + (self:GetUp() * 100), Ang, 0.35)
 			draw.SimpleText("Drug Dealer", "Trebuchet24", 0, 0, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 			draw.SimpleText("Bring me drugs for cash", "Trebuchet24", 0, 40, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		cam.End3D2D()
 	end
-		
 end
