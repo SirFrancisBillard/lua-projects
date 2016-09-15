@@ -37,7 +37,7 @@ end
 
 function SWEP:ShootBullet(damage, num_bullets, aimcone)
 	local bullet = {}
-	bullet.Num 	= num_bullets
+	bullet.Num = num_bullets
 	bullet.Src = self.Owner:GetShootPos()
 	bullet.Dir = self.Owner:GetAimVector()
 	bullet.Spread = Vector(aimcone, aimcone, 0)
