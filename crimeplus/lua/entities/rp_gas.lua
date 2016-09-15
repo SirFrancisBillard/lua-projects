@@ -21,11 +21,16 @@ function ENT:Initialize()
 		phys:SetMass(40)
 	end
 	self:SetFuel(200)
+	self:SetLastStove(CurTime())
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "HasStove")
 	self:NetworkVar("Entity", 0, "Stove")
+	self:NetworkVar("Float", 0, "LastStove")
 	self:NetworkVar("Int", 0, "Fuel")
+end
+function ENT:IsReadyForStove()
+	return ((CurTime() - self:GetLastStove()) > 2)
 end
 
 if SERVER then
@@ -38,14 +43,15 @@ if SERVER then
 		end
 	end
 	function ENT:Use(activator, caller)
+		if IsValid(caller) and caller:IsPlayer() and (self:GetFuel() <= 0) and (not self:GetHasStove()) then
+			SafeRemoveEntity(self)
+		end
 		if IsValid(caller) and caller:IsPlayer() and self:GetHasStove() then
 			self:SetHasStove(false)
 			self:GetStove():SetHasCanister(false)
 			constraint.RemoveAll(self)
 			self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
-		end
-		if IsValid(caller) and caller:IsPlayer() and (self:GetFuel() <= 0) and (not self:GetHasStove()) then
-			SafeRemoveEntity(self)
+			self:SetLastStove(CurTime())
 		end
 	end
 end
