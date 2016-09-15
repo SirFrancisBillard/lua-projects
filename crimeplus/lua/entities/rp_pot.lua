@@ -19,6 +19,7 @@ function ENT:Initialize()
 	if IsValid(phys) then
 		phys:Wake()
 	end
+	self:SetCookingProgress(0)
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "CookingProgress")
@@ -75,5 +76,31 @@ if SERVER then
 				meth:Spawn()
 			end
 		end
+	end
+end
+
+// CLEITN
+
+if CLIENT then
+	function ENT:Draw()
+		self:DrawModel()
+
+		local Pos = self:GetPos()
+		local Ang = self:GetAngles()
+
+		surface.SetFont("Trebuchet24")
+
+		Ang:RotateAroundAxis(Ang:Forward(), 90)
+
+		cam.Start3D2D(Pos + (Ang:Up() * 8) + (Ang:Right() * -2), Ang, 0.12)
+			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
+			if (self:GetCookingProgress() > 0) then
+				draw.RoundedBox(2, -50, -65, self:GetCookingProgress(), 30, Color(0, 225, 0, 100))
+			end
+			draw.SimpleText("Progress", "Trebuchet24", -40, -63, Color(255, 255, 255, 255))
+			draw.WordBox(2, -55, -30, "Ingredients:", "Trebuchet24", Color(0, 225, 0, 100), Color(255, 255, 255, 255))
+			draw.WordBox(2, -35, 5, "Sodium", "Trebuchet24", self:GetHasSodium() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
+			draw.WordBox(2, -40, 40, "Chloride", "Trebuchet24", self:GetHasChloride() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
+		cam.End3D2D()
 	end
 end
