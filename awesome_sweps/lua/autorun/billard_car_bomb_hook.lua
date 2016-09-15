@@ -1,6 +1,7 @@
 hook.Add("PlayerEnteredVehicle", "CarBombDetonate", function(ply, veh, role)
 	if veh.HasCarBombPlanted then
 		timer.Simple(1, function()
+			if (not IsValid(veh)) then return end
 			if IsValid(ply) then
 				ply:Kill()
 			end
@@ -15,8 +16,9 @@ hook.Add("PlayerEnteredVehicle", "CarBombDetonate", function(ply, veh, role)
 end)
 
 hook.Add("PlayerUse", "CarBombDetonateSCars", function(ply, ent)
-	if ent.HasCarBombPlanted and string.Left(ent:GetClass(), 18) == "sent_sakarias_car_"  then
+	if ent.HasCarBombPlanted and (string.Left(ent:GetClass(), 18) == "sent_sakarias_car_")  then
 		timer.Simple(1, function()
+			if (not IsValid(ent)) then return end
 			if IsValid(ply) then
 				ply:Kill()
 			end
