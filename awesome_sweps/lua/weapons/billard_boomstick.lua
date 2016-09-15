@@ -67,7 +67,7 @@ function SWEP:Reload()
 end
 
 function SWEP:PrimaryAttack()
-	if !self:CanPrimaryAttack() then return end
+	if (not self:CanPrimaryAttack()) then return end
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(true)
 	end
@@ -94,7 +94,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if !self:CanSecondaryAttack() then return end
+	if (not self:CanSecondaryAttack()) then return end
 	if self.Owner:IsPlayer() then
 		self.Owner:LagCompensation(true)
 	end
