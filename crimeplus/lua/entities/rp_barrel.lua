@@ -77,6 +77,7 @@ if CLIENT then
 		surface.SetFont("Trebuchet24")
 
 		Ang:RotateAroundAxis(Ang:Forward(), 90)
+		Ang:RotateAroundAxis(Ang:Right(), -90)
 
 		cam.Start3D2D(Pos + (Ang:Up() * 15) + (Ang:Right() * -10), Ang, 0.12)
 			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))

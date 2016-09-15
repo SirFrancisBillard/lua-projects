@@ -20,6 +20,9 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 	self:SetCookingProgress(0)
+	local Ang = self:GetAngles()
+	Ang:RotateAroundAxis(Ang:Up(), 90)
+	self:SetAngles(Ang)
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "CookingProgress")
