@@ -74,14 +74,13 @@ if CLIENT then
 		local Pos = self:GetPos()
 		local Ang = self:GetAngles()
 
-		surface.SetFont("Trebuchet24")
-
 		Ang:RotateAroundAxis(Ang:Forward(), 90)
+		Ang:RotateAroundAxis(Ang:Up(), 180)
 
-		cam.Start3D2D(Pos + (Ang:Up() * 8) + (Ang:Right() * -2), Ang, 0.12)
-			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
+		cam.Start3D2D(Pos + (Ang:Up() * 4.5) + (Ang:Right() * -6) + (Ang:Forward() * 4), Ang, 0.12)
+			draw.RoundedBox(2, -50, -65, 30, 200, Color(140, 0, 0, 100))
 			if (self:GetFuel() > 0) then
-				draw.RoundedBox(2, -50, -65, self:GetFuel(), 30, Color(0, 225, 0, 100))
+				draw.RoundedBox(2, -50, -65, 30, self:GetFuel(), Color(0, 225, 0, 100))
 			end
 		cam.End3D2D()
 	end
