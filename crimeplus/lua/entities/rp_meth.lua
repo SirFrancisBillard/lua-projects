@@ -21,7 +21,9 @@ function ENT:Initialize()
 	end
 end
 function ENT:SellPrice()
-	return 80000
+	local gm = GAMEMODE or GM
+	local gm.Config = gm.Config or {}
+	return gm.Config.MethSellPrice or 10000
 end
 function ENT:Think()
 	self:SetColor(Color(0, 255, 255))
