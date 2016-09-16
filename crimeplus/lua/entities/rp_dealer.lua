@@ -63,5 +63,4 @@ if CLIENT then
 			draw.SimpleText("Bring me drugs for cash", "Trebuchet24", 0, 40, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		cam.End3D2D()
 	end
-		
 end
