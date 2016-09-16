@@ -36,7 +36,7 @@ if SERVER then
 			elseif (randy == 2) then
 				caller:ChatPrint("Get lost, buddy.")
 			elseif (randy == 3) then
-				caller:ChatPrint("We don't appreciate your kind.")
+				caller:ChatPrint("THey don't appreciate your kind around here.")
 			elseif (randy == 4) then
 				caller:ChatPrint("What do you need?")
 			elseif (randy == 5) then
@@ -55,8 +55,8 @@ if CLIENT then
 		self:DrawModel()
 		local Ang = self:GetAngles()
 
-		Ang:RotateAroundAxis( Ang:Forward(), 90)
-		Ang:RotateAroundAxis( Ang:Right(), -90)
+		Ang:RotateAroundAxis(Ang:Forward(), 90)
+		Ang:RotateAroundAxis(Ang:Right(), -90)
 		
 		cam.Start3D2D(self:GetPos() + (self:GetUp() * 100), Ang, 0.35)
 			draw.SimpleText("Drug Dealer", "Trebuchet24", 0, 0, Color(255, 0,0, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
