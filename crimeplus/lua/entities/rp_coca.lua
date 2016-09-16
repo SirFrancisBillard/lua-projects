@@ -19,6 +19,9 @@ function ENT:Initialize()
 	if IsValid(phys) then
 		phys:Wake()
 	end
+	local Ang = self:GetAngles()
+	Ang:RotateAroundAxis(Ang:Up(), 90)
+	self:SetAngles(Ang)
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "Growth")
