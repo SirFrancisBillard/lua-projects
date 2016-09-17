@@ -39,10 +39,12 @@ if SERVER then
 			if (ent:GetClass() == "rp_leaves") and (not self:GetHasLeaves()) then
 				SafeRemoveEntity(ent)
 				self:SetHasLeaves(true)
+				self:EmitSound(Sound("physics/cardboard/cardboard_box_impact_hard"..math.random(1, 7)..".wav"))
 			end
 			if (ent:GetClass() == "rp_caustic") and (not self:GetHasCaustic()) then
 				SafeRemoveEntity(ent)
 				self:SetHasCaustic(true)
+				self:EmitSound(Sound("ambient/water/drip"..math.random(1, 4)..".wav"))
 			end
 		end
 	end

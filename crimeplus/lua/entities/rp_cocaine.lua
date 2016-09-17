@@ -21,9 +21,7 @@ function ENT:Initialize()
 	end
 end
 function ENT:SellPrice()
-	local gm = GAMEMODE or GM
-	local gm.Config = gm.Config or {}
-	return gm.Config.CocaineSellPrice or 6000
+	return 6000
 end
 function ENT:Use(activator, caller)
 	if IsValid(caller) and caller:IsPlayer() then

@@ -34,7 +34,7 @@ function ENT:IsOnStove()
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 12)) do
 		if (v:GetClass() == "rp_stove") and v:GetHasCanister() and (v:GetCanister():GetFuel() > 0) then
 			self:SetStove(v)
-			return true
+			return IsValid(self)
 		end
 	end
 end
@@ -51,12 +51,12 @@ if SERVER then
 			if (ent:GetClass() == "rp_sodium") and (not self:GetHasSodium()) then
 				SafeRemoveEntity(ent)
 				self:SetHasSodium(true)
-				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
+				self:EmitSound(Sound("ambient/water/drip"..math.random(1, 4)..".wav"))
 			end
 			if (ent:GetClass() == "rp_chloride") and (not self:GetHasChloride()) then
 				SafeRemoveEntity(ent)
 				self:SetHasChloride(true)
-				self:EmitSound("ambient/water/drip"..math.random(1, 4)..".wav")
+				self:EmitSound(Sound("ambient/water/drip"..math.random(1, 4)..".wav"))
 			end
 		end
 	end
