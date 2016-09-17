@@ -86,3 +86,27 @@ if SERVER then
 		end
 	end
 end
+
+if CLIENT then
+	function ENT:Draw()
+		self:DrawModel()
+
+		local Pos = self:GetPos()
+		local Ang = self:GetAngles()
+
+		surface.SetFont("Trebuchet24")
+
+		Ang:RotateAroundAxis(Ang:Forward(), 90)
+		Ang:RotateAroundAxis(Ang:Right(), -90)
+
+		cam.Start3D2D(Pos + (Ang:Up() * 15) + (Ang:Right() * -27.5), Ang, 0.12)
+			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
+			if (self:GetFermentingProgress() > 0) then
+				draw.RoundedBox(2, -50, -65, self:GetFermentingProgress(), 30, Color(0, 225, 0, 100))
+			end
+			draw.SimpleText("Progress", "Trebuchet24", -40, -63, Color(255, 255, 255, 255))
+			draw.WordBox(2, -35, -30, "Making:", "Trebuchet24", Color(0, 225, 0, 100), Color(255, 255, 255, 255))
+			draw.WordBox(2, (self:GetAlcohol() == "None") and -22.5 or (self:GetAlcohol() == "Moonshine") and -45 or (self:GetAlcohol() == "Rum") and -20 or -27.5, 5, self:GetAlcohol(), "Trebuchet24", (self:GetAlcohol() != "None") and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
+		cam.End3D2D()
+	end
+end
