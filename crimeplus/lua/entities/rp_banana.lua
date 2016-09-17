@@ -2,10 +2,10 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
-ENT.PrintName = "Banana Bunch"
+ENT.PrintName = "Banana"
 ENT.Category = "Crime+"
 ENT.Spawnable = true
-ENT.Model = "models/props/cs_italy/bananna_bunch.mdl"
+ENT.Model = "models/props/cs_italy/bananna.mdl"
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
@@ -18,5 +18,6 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
 		phys:Wake()
+		phys:SetMass(10)
 	end
 end
