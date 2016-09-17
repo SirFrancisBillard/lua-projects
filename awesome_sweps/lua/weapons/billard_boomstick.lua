@@ -112,7 +112,7 @@ function SWEP:PrimaryAttack()
 	self:EmitSound(Sound("weapons/shotgun/shotgun_fire"..math.random(6, 7)..".wav"))
 	self.Owner:ViewPunch(Angle(-2, 0, 0))
 	if trent:GetPos():Distance(self.Owner:GetPos()) < 256 then
-		if IsDoor[trent:GetClass()] then
+		if IsDoor[trent:GetClass()] and SERVER then
 			trent:Fire("Unlock", "", 0)
 			trent:Fire("Open", "", 0)
 			local sparks = EffectData()
