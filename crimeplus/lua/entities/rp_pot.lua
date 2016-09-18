@@ -23,6 +23,10 @@ function ENT:Initialize()
 	local Ang = self:GetAngles()
 	Ang:RotateAroundAxis(Ang:Up(), 90)
 	self:SetAngles(Ang)
+	if CLIENT then
+		self.EmitTime = CurTime()
+		self.FirePlace = ParticleEmitter(self:GetPos())
+	end
 end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "CookingProgress")
@@ -51,12 +55,14 @@ if SERVER then
 			if (ent:GetClass() == "rp_sodium") and (not self:GetHasSodium()) then
 				SafeRemoveEntity(ent)
 				self:SetHasSodium(true)
-				self:EmitSound(Sound("ambient/water/drip"..math.random(1, 4)..".wav"))
+				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
+				self:VisualEffect()
 			end
 			if (ent:GetClass() == "rp_chloride") and (not self:GetHasChloride()) then
 				SafeRemoveEntity(ent)
 				self:SetHasChloride(true)
-				self:EmitSound(Sound("ambient/water/drip"..math.random(1, 4)..".wav"))
+				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
+				self:VisualEffect()
 			end
 		end
 	end
@@ -64,6 +70,9 @@ if SERVER then
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, 100))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, 200))
+			if (math.random(1, 2) == 2) then
+				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_gurgle"..math.random(2, 8)..".wav"))
+			end
 		end
 		self:NextThink(CurTime() + 1)
 		return true
@@ -77,8 +86,16 @@ if SERVER then
 				local meth = ents.Create("rp_meth")
 				meth:SetPos(self:GetPos() + Vector(0, 0, 30))
 				meth:Spawn()
+				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
 			end
 		end
+	end
+	function ENT:VisualEffect()
+		local smoke = EffectData()
+		smoke:SetStart(self:GetPos())
+		smoke:SetOrigin(self:GetPos() + Vector(0, 0, 8))
+		smoke:SetScale(8)
+		util.Effect("GlassImpact", smoke, true, true)
 	end
 end
 
@@ -105,5 +122,22 @@ if CLIENT then
 			draw.WordBox(2, -35, 5, "Sodium", "Trebuchet24", self:GetHasSodium() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
 			draw.WordBox(2, -40, 40, "Chloride", "Trebuchet24", self:GetHasChloride() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
 		cam.End3D2D()
+	end
+	function ENT:Think()
+		if (self.EmitTime <= CurTime()) and self:CanCook() and (not self:DoneCooking()) then
+			local smoke = self.FirePlace:Add("particle/smokesprites_000"..math.random(1,9), self:GetPos())
+			smoke:SetVelocity(Vector(0, 0, 150))
+			smoke:SetDieTime(math.Rand(0.6, 2.3))
+			smoke:SetStartAlpha(math.Rand(150, 200))
+			smoke:SetEndAlpha(0)
+			smoke:SetStartSize(math.random(0, 5))
+			smoke:SetEndSize(math.random(33, 55))
+			smoke:SetRoll(math.Rand(180, 480))
+			smoke:SetRollDelta(math.Rand(-3, 3))
+			smoke:SetColor(125, 125, 125)
+			smoke:SetGravity(Vector(0, 0, 10))
+			smoke:SetAirResistance(256)
+			self.EmitTime = CurTime() + 0.1
+		end
 	end
 end

@@ -21,6 +21,7 @@ function ENT:Initialize()
 		phys:SetMass(40)
 	end
 	self:SetFuel(200)
+	self:SetBoom(40)
 	self:SetLastStove(CurTime())
 	local Ang = self:GetAngles()
 	Ang:RotateAroundAxis(Ang:Up(), 90)
@@ -31,6 +32,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Entity", 0, "Stove")
 	self:NetworkVar("Float", 0, "LastStove")
 	self:NetworkVar("Int", 0, "Fuel")
+	self:NetworkVar("Int", 1, "Boom")
 end
 function ENT:IsReadyForStove()
 	return ((CurTime() - self:GetLastStove()) > 2)
@@ -64,6 +66,34 @@ if SERVER then
 		constraint.RemoveAll(self)
 		self:EmitSound("physics/metal/metal_barrel_impact_soft"..math.random(1, 4)..".wav")
 		self:SetLastStove(CurTime())
+	end
+	function ENT:OnTakeDamage(dmg)
+		if (self:GetFuel() < 2) then return end
+		self:SetBoom(self:GetBoom() - dmg:GetDamage())
+		if (self:GetBoom() <= dmg:GetDamage()) then
+			self:Explode()
+		end
+	end
+	function ENT:Explode()
+		if (self:GetFuel() < 2) then return end
+		local ExplosionSize = (self:GetFuel() / 2)
+		local explosion = ents.Create("env_explosion")			
+		explosion:SetPos(self:GetPos())
+		explosion:SetKeyValue("iMagnitude", ExplosionSize)
+		explosion:Spawn()
+		explosion:Activate()
+		explosion:Fire("Explode", 0, 0)
+		local shake = ents.Create("env_shake")
+		shake:SetPos(self:GetPos())
+		shake:SetKeyValue("amplitude", (ExplosionSize * 2))
+		shake:SetKeyValue("radius", ExplosionSize)
+		shake:SetKeyValue("duration", "1.5")
+		shake:SetKeyValue("frequency", "255")
+		shake:SetKeyValue("spawnflags", "4")
+		shake:Spawn()
+		shake:Activate()
+		shake:Fire("StartShake", "", 0)
+		SafeRemoveEntity(self)
 	end
 end
 
