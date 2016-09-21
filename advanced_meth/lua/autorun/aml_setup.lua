@@ -42,7 +42,7 @@ AML_STAGE_CHLOROFORM = 7
 AML_MESSAGE_IMPURE_FLOUR_MORE = "The Meth did not bind enough in the crystalization process."
 AML_MESSAGE_IMPURE_FLOUR_LESS = "The Meth is too diluted with fillers."
 AML_MESSAGE_IMPURE_RED_PHOSPHORUS_MORE = "The Meth is too weak and not satisfactory to addiction."
-AML_MESSAGE_IMPURE_RED_PHOSPHORUS_LESS = "The Meth is too strong and can be toxic for use."\
+AML_MESSAGE_IMPURE_RED_PHOSPHORUS_LESS = "The Meth is too strong and can be toxic for use."
 AML_MESSAGE_IMPURE_LYE_SOLUTION_MORE = "The Meth is too acidic."
 AML_MESSAGE_IMPURE_LYE_SOLUTION_LESS = "The Meth is too basic."
 
