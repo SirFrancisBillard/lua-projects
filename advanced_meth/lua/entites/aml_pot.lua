@@ -22,6 +22,7 @@ function ENT:Initialize()
 	self:SetStage(AML_STAGE_NONE)
 	self:SetChemicalMismatch(false)
 	self:SetMethPurity(0)
+	self:SetTemperature(0)
 	local Ang = self:GetAngles()
 	Ang:RotateAroundAxis(Ang:Up(), 90)
 	self:SetAngles(Ang)
@@ -31,6 +32,7 @@ function ENT:Initialize()
 	end
 end
 function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Exploding")
 	self:NetworkVar("Int", 0, "CookingProgress")
 	self:NetworkVar("Int", 1, "Stage")
 	self:NetworkVar("Int", 2, "RedPhos")
@@ -42,6 +44,10 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 8, "Flour")
 	self:NetworkVar("Int", 9, "Water")
 	self:NetworkVar("Int", 10, "MethPurity")
+	self:NetworkVar("Int", 11, "Temperature")
+	self:NetworkVar("Int", 12, "UsedRedPhos")
+	self:NetworkVar("Int", 13, "UsedFlour")
+	self:NetworkVar("Int", 14, "UsedLye")
 	self:NetworkVar("Entity", 0, "Stove")
 end
 function ENT:IsOnStove()
@@ -98,20 +104,32 @@ function ENT:HasAllChemicalsForStage(stage)
 		return (self:GetLiquidMeth() > 0 and self:GetFlour() > 0 and self:GetWater() > 0)
 	end
 end
+function ENT:GetCurrentStage()
+	if self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) then
+		return AML_STAGE_RED_ACID
+	elseif self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) then
+		return AML_STAGE_LIQUID_METH
+	elseif self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH) then
+		return AML_STAGE_CRYSTAL_METH
+	else
+		return AML_STAGE_NONE
+	end
+end
 function ENT:CheckForMismatch(stage)
 	local a = self.HasAnyChemicalsForStage
 	return (a(AML_STAGE_RED_ACID) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_LIQUID_METH) and (a(AML_STAGE_RED_ACID) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_CRYSTAL_METH) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_RED_ACID)))
 end
 function ENT:CanCook()
-	return ((self:GetPureEph() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0) or (self:GetRedAcid() > 0 and self:GetLye() > 0) or (self:GetLiquidMeth() > 0 and self:GetFlour() > 0 and self:GetWater() > 0) and self:IsOnStove())
-end
-function ENT:WhatIsCooking()
-	return (self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) and AML_STAGE_RED_ACID) or (self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) and AML_STAGE_LIQUID_METH) or (self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH) and AML_STAGE_CRYSTAL_METH)
+	return ((self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) or self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) or self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH)) and self:IsOnStove() and (not self:GetExploding()))
 end
 function ENT:DoneCooking()
 	return (self:GetCookingProgress() >= AML_CONFIG_COOKING_TIME) and
 end
 if SERVER then
+	function ENT:Explode()
+		util.BlastDamage(self, self, self:GetPos(), 256, 128)
+		SafeRemoveEntity(self)
+	end
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
 			if self:ProcessIngredient(ent) then
@@ -120,8 +138,13 @@ if SERVER then
 		end
 	end
 	function ENT:Think()
-		if self:CheckForMismatch() then
-			
+		if self:CheckForMismatch() and (not self:GetExploding()) then
+			self:SetExploding(true)
+		end
+		if self:DoneCooking() and (not self:GetExploding()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
+			if (self:GetCurrentStage() == EML_STAGE_RED_ACID) then
+				
+		end
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, self:GetTotalCookingTime()))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, AML_CONFIG_FUEL_AMOUNT))
@@ -156,6 +179,7 @@ end
 if CLIENT then
 	function ENT:Draw()
 		self:DrawModel()
+		--[[
 		local Pos = self:GetPos()
 		local Ang = self:GetAngles()
 		surface.SetFont("Trebuchet24")
@@ -170,19 +194,24 @@ if CLIENT then
 			draw.WordBox(2, -35, 5, "Sodium", "Trebuchet24", self:GetHasSodium() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
 			draw.WordBox(2, -40, 40, "Chloride", "Trebuchet24", self:GetHasChloride() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
 		cam.End3D2D()
+		]]
 	end
 	function ENT:Think()
 		if (self.EmitTime <= CurTime()) and self:CanCook() and (not self:DoneCooking()) then
 			local smoke = self.FirePlace:Add("particle/smokesprites_000"..math.random(1,9), self:GetPos())
-			smoke:SetVelocity(Vector(0, 0, 150))
-			smoke:SetDieTime(math.Rand(0.6, 2.3))
+			smoke:SetVelocity(Vector(0, 0, 100))
+			smoke:SetDieTime(math.Rand(1.2, 2.8))
 			smoke:SetStartAlpha(math.Rand(150, 200))
 			smoke:SetEndAlpha(0)
 			smoke:SetStartSize(math.random(5, 15))
 			smoke:SetEndSize(math.random(20, 35))
 			smoke:SetRoll(math.Rand(180, 480))
 			smoke:SetRollDelta(math.Rand(-3, 3))
-			smoke:SetColor(125, 125, 125)
+			if (self:GetRedPhos() > 0) then
+				smoke:SetColor(AML_CONFIG_SMOKE_RED)
+			else
+				smoke:SetColor(AML_CONFIG_SMOKE_REGULAR)
+			end
 			smoke:SetGravity(Vector(0, 0, 10))
 			smoke:SetAirResistance(256)
 			self.EmitTime = CurTime() + 0.1
