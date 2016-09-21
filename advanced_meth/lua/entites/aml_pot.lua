@@ -3,13 +3,28 @@ AML_CLASS_METH = self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Pot"
-ENT.Category = "Crime+"
+ENT.Category = "Meth Cooking"
 ENT.Spawnable = true
 ENT.Model = "models/props_c17/metalPot001a.mdl"
-GetStageForChem = {
+local StageForChem = {
 	[AML_CLASS_PURE_EPHEDRINE] = AML_STAGE_RED_ACID,
 	[AML_CLASS_RED_PHOSPHORUS] = AML_STAGE_RED_ACID,
-	[AML_CLASS_PURE_EPHEDRINE] = AML_STAGE_RED_ACID,
+	[AML_CLASS_HYDROGEN_IODIDE] = AML_STAGE_RED_ACID,
+	[AML_FLUID_RED_ACID] = AML_STAGE_LIQUID_METH,
+	[AML_CLASS_LYE_SOLUTION] = AML_STAGE_LIQUID_METH,
+	[AML_FLUID_LIQUID_METH] = AML_STAGE_CRYSTAL_METH,
+	[AML_CLASS_WATER] = AML_STAGE_CRYSTAL_METH,
+	[AML_CLASS_FLOUR] = AML_STAGE_CRYSTAL_METH,
+}
+local ChemFunc = {
+	[AML_CLASS_PURE_EPHEDRINE] = self:SetPureEph,
+	[AML_CLASS_RED_PHOSPHORUS] = AML_STAGE_RED_ACID,
+	[AML_CLASS_HYDROGEN_IODIDE] = AML_STAGE_RED_ACID,
+	[AML_FLUID_RED_ACID] = AML_STAGE_LIQUID_METH,
+	[AML_CLASS_LYE_SOLUTION] = AML_STAGE_LIQUID_METH,
+	[AML_FLUID_LIQUID_METH] = AML_STAGE_CRYSTAL_METH,
+	[AML_CLASS_WATER] = AML_STAGE_CRYSTAL_METH,
+	[AML_CLASS_FLOUR] = AML_STAGE_CRYSTAL_METH,
 }
 function ENT:Initialize()
 	self:SetModel(self.Model)
@@ -26,6 +41,7 @@ function ENT:Initialize()
 	self:SetCookingProgress(0)
 	self:SetStage(AML_STAGE_NONE)
 	self:SetChemicalMismatch(false)
+	self:SetMethPurity(0)
 	local Ang = self:GetAngles()
 	Ang:RotateAroundAxis(Ang:Up(), 90)
 	self:SetAngles(Ang)
@@ -37,9 +53,14 @@ end
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "CookingProgress")
 	self:NetworkVar("Int", 1, "Stage")
-	self:NetworkVar("Int", 2, "Ingredient1")
-	self:NetworkVar("Int", 3, "Ingredient2")
-	self:NetworkVar("Int", 4, "Ingredient3")
+	self:NetworkVar("Int", 2, "RedPhos")
+	self:NetworkVar("Int", 3, "PureEph")
+	self:NetworkVar("Int", 4, "RedAcid")
+	self:NetworkVar("Int", 5, "Lye")
+	self:NetworkVar("Int", 6, "LiquidMeth")
+	self:NetworkVar("Int", 7, "Flour")
+	self:NetworkVar("Int", 8, "Water")
+	self:NetworkVar("Int", 9, "MethPurity")
 	self:NetworkVar("Entity", 0, "Stove")
 end
 function ENT:IsOnStove()
@@ -82,7 +103,7 @@ function ENT:CanCook()
 	elseif	(self:GetStage() == AML_STAGE_LIQUID_METH) then
 		can = (self:GetRedAcid() and self:GetLye())
 	elseif (self:GetStage() == AML_STAGE_CRYSTAL_METH) then
-		can = (self:GetPureEph() and self:GetRedPhos() and self:GetHydroIodide())
+		can = (self:GetLiquidMeth() and self:GetFlour() and self:GetWater())
 	end
 	return (can and self:IsOnStove())
 end
@@ -161,8 +182,8 @@ if CLIENT then
 			smoke:SetDieTime(math.Rand(0.6, 2.3))
 			smoke:SetStartAlpha(math.Rand(150, 200))
 			smoke:SetEndAlpha(0)
-			smoke:SetStartSize(math.random(0, 5))
-			smoke:SetEndSize(math.random(33, 55))
+			smoke:SetStartSize(math.random(5, 15))
+			smoke:SetEndSize(math.random(20, 35))
 			smoke:SetRoll(math.Rand(180, 480))
 			smoke:SetRollDelta(math.Rand(-3, 3))
 			smoke:SetColor(125, 125, 125)
