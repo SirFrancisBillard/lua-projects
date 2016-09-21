@@ -16,16 +16,6 @@ local StageForChem = {
 	[AML_CLASS_WATER] = AML_STAGE_CRYSTAL_METH,
 	[AML_CLASS_FLOUR] = AML_STAGE_CRYSTAL_METH,
 }
-local ChemFunc = {
-	[AML_CLASS_PURE_EPHEDRINE] = self:SetPureEph,
-	[AML_CLASS_RED_PHOSPHORUS] = AML_STAGE_RED_ACID,
-	[AML_CLASS_HYDROGEN_IODIDE] = AML_STAGE_RED_ACID,
-	[AML_FLUID_RED_ACID] = AML_STAGE_LIQUID_METH,
-	[AML_CLASS_LYE_SOLUTION] = AML_STAGE_LIQUID_METH,
-	[AML_FLUID_LIQUID_METH] = AML_STAGE_CRYSTAL_METH,
-	[AML_CLASS_WATER] = AML_STAGE_CRYSTAL_METH,
-	[AML_CLASS_FLOUR] = AML_STAGE_CRYSTAL_METH,
-}
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -55,12 +45,13 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 1, "Stage")
 	self:NetworkVar("Int", 2, "RedPhos")
 	self:NetworkVar("Int", 3, "PureEph")
-	self:NetworkVar("Int", 4, "RedAcid")
-	self:NetworkVar("Int", 5, "Lye")
-	self:NetworkVar("Int", 6, "LiquidMeth")
-	self:NetworkVar("Int", 7, "Flour")
-	self:NetworkVar("Int", 8, "Water")
-	self:NetworkVar("Int", 9, "MethPurity")
+	self:NetworkVar("Int", 4, "HydroIodide")
+	self:NetworkVar("Int", 5, "RedAcid")
+	self:NetworkVar("Int", 6, "Lye")
+	self:NetworkVar("Int", 7, "LiquidMeth")
+	self:NetworkVar("Int", 8, "Flour")
+	self:NetworkVar("Int", 9, "Water")
+	self:NetworkVar("Int", 10, "MethPurity")
 	self:NetworkVar("Entity", 0, "Stove")
 end
 function ENT:IsOnStove()
@@ -71,58 +62,38 @@ function ENT:IsOnStove()
 		end
 	end
 end
-function ENT:CheckForMismatch(stage)
-	if (self:GetStage() != stage) and (self:GetStage() != AML_STAGE_NONE) then
-		self:SetChemicalMismatch(true)
-		return true
-	elseif (self:GetStage() == AML_STAGE_NONE) then
-		self:SetStage()
-	end
-	return false
-end
 function ENT:ProcessIngredient(ent)
 	local class = ent:GetClass()
 	if (class == AML_CLASS_PURE_EPHEDRINE) then
-		if not self:CheckForMismatch(AML_STAGE_RED_ACID) then
-			self:SetIngredient1(self:GetIngredient1() + 1)
-		end
-	elseif
+		self:SetPureEph(self:GetPureEph() + 1)
+	elseif (class == AML_CLASS_RED_PHOSPHORUS) then
+		self:SetRedPhos(self:GetRedPhos() + 1)
+	elseif (class == AML_CLASS_HYDROGEN_IODIDE) then
+		self:SetHydroIodide(self:GetHydroIodide() + 1)
+	elseif (class == AML_CLASS_LYE_SOLUTION) then
+		self:SetLye(self:GetLye() + 1)
+	elseif (class == AML_CLASS_WATER) then
+		self:SetWater(self:GetWater() + 1)
+	elseif (class == AML_CLASS_FLOUR) then
+		self:SetFlour(self:GetFlour() + 1)
+	end
 end
 function ENT:IngredientEffect(ent)
 	SafeRemoveEntity(ent)
 	self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
 	self:VisualEffect()
 end
-function ENT:AdjustForRecipe()
-
-end
 function ENT:CanCook()
-	local can
-	if (self:GetStage() == AML_STAGE_RED_ACID) then
-		can = (self:GetPureEph() and self:GetRedPhos() and self:GetHydroIodide())
-	elseif	(self:GetStage() == AML_STAGE_LIQUID_METH) then
-		can = (self:GetRedAcid() and self:GetLye())
-	elseif (self:GetStage() == AML_STAGE_CRYSTAL_METH) then
-		can = (self:GetLiquidMeth() and self:GetFlour() and self:GetWater())
-	end
-	return (can and self:IsOnStove())
+	return ((self:GetPureEph() and self:GetRedPhos() and self:GetHydroIodide()) or (self:GetRedAcid() and self:GetLye()) or (self:GetLiquidMeth() and self:GetFlour() and self:GetWater()) and self:IsOnStove())
 end
 function ENT:DoneCooking()
-	return (self:GetCookingProgress() >= 100) and
+	return (self:GetCookingProgress() >= AML_CONFIG_COOKING_TIME) and
 end
 if SERVER then
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
-			if (ent:GetClass() == "rp_sodium") and (not self:GetHasSodium()) then
-				SafeRemoveEntity(ent)
-				self:SetHasSodium(true)
-				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
-				self:VisualEffect()
-			end
-			if (ent:GetClass() == "rp_chloride") and (not self:GetHasChloride()) then
-				self:SetHasChloride(true)
-				self:IngredientEffect(ent)
-			end
+			self:ProcessIngredient(ent)
+			self:IngredientEffect(ent)
 		end
 	end
 	function ENT:Think()
