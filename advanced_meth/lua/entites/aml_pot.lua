@@ -6,16 +6,6 @@ ENT.PrintName = "Pot"
 ENT.Category = "Meth Cooking"
 ENT.Spawnable = true
 ENT.Model = "models/props_c17/metalPot001a.mdl"
-local StageForChem = {
-	[AML_CLASS_PURE_EPHEDRINE] = AML_STAGE_RED_ACID,
-	[AML_CLASS_RED_PHOSPHORUS] = AML_STAGE_RED_ACID,
-	[AML_CLASS_HYDROGEN_IODIDE] = AML_STAGE_RED_ACID,
-	[AML_FLUID_RED_ACID] = AML_STAGE_LIQUID_METH,
-	[AML_CLASS_LYE_SOLUTION] = AML_STAGE_LIQUID_METH,
-	[AML_FLUID_LIQUID_METH] = AML_STAGE_CRYSTAL_METH,
-	[AML_CLASS_WATER] = AML_STAGE_CRYSTAL_METH,
-	[AML_CLASS_FLOUR] = AML_STAGE_CRYSTAL_METH,
-}
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -83,8 +73,17 @@ function ENT:IngredientEffect(ent)
 	self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
 	self:VisualEffect()
 end
+function ENT:HasAnyChemicalsForStage(stage)
+	if (stage == AML_STAGE_RED_ACID) then
+		return (self:GetPureEph() > 0 or self:GetRedPhos() > 0 or self:GetHydroIodide() > 0)
+	elseif (stage == AML_STAGE_LIQUID_METH) then
+		return (self:GetRedAcid() > 0 or self:GetLye() > 0)
+	elseif (stage == AML_STAGE_CRYSTAL_METH) then
+		return (self:GetLiquidMeth() > 0 or self:GetFlour() > 0 or self:GetWater() > 0)
+	end
+end
 function ENT:CanCook()
-	return ((self:GetPureEph() and self:GetRedPhos() and self:GetHydroIodide()) or (self:GetRedAcid() and self:GetLye()) or (self:GetLiquidMeth() and self:GetFlour() and self:GetWater()) and self:IsOnStove())
+	return ((self:GetPureEph() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0) or (self:GetRedAcid() > 0 and self:GetLye() > 0) or (self:GetLiquidMeth() > 0 and self:GetFlour() > 0 and self:GetWater() > 0) and self:IsOnStove())
 end
 function ENT:DoneCooking()
 	return (self:GetCookingProgress() >= AML_CONFIG_COOKING_TIME) and
@@ -109,11 +108,11 @@ if SERVER then
 	end
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
-			if self:DoneCooking() and (self:GetStage() == AML_STAGE_METH) then
+			if self:DoneCooking() and (self:GetStage() == AML_STAGE_CRYSTAL_METH) then
 				self:SetCookingProgress(0)
 				self:SetHasSodium(false)
 				self:SetHasChloride(false)
-				local meth = ents.Create(AML_)
+				local meth = ents.Create(AML_CLASS_CRYSTAL_METH)
 				meth:SetPos(self:GetPos() + Vector(0, 0, 30))
 				meth:Spawn()
 				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
@@ -138,7 +137,7 @@ if CLIENT then
 		cam.Start3D2D(Pos + (Ang:Up() * 8) + (Ang:Right() * -2), Ang, 0.12)
 			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
 			if (self:GetCookingProgress() > 0) then
-				draw.RoundedBox(2, -50, -65, self:GetCookingProgress(), 30, Color(0, 225, 0, 100))
+				draw.RoundedBox(2, -50, -65, (100 / AML_CONFIG_COOKING_TIME) * self:GetCookingProgress(), 30, Color(0, 225, 0, 100))
 			end
 			draw.SimpleText("Progress", "Trebuchet24", -40, -63, Color(255, 255, 255, 255))
 			draw.WordBox(2, -55, -30, "Ingredients:", "Trebuchet24", Color(0, 225, 0, 100), Color(255, 255, 255, 255))
