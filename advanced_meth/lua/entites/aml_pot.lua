@@ -1,5 +1,5 @@
 AddCSLuaFile()
-AML_CLASS_METH = self.ClassName
+AML_CLASS_POT = self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Pot"
@@ -56,17 +56,24 @@ function ENT:ProcessIngredient(ent)
 	local class = ent:GetClass()
 	if (class == AML_CLASS_PURE_EPHEDRINE) then
 		self:SetPureEph(self:GetPureEph() + 1)
+		return true
 	elseif (class == AML_CLASS_RED_PHOSPHORUS) then
 		self:SetRedPhos(self:GetRedPhos() + 1)
+		return true
 	elseif (class == AML_CLASS_HYDROGEN_IODIDE) then
 		self:SetHydroIodide(self:GetHydroIodide() + 1)
+		return true
 	elseif (class == AML_CLASS_LYE_SOLUTION) then
 		self:SetLye(self:GetLye() + 1)
+		return true
 	elseif (class == AML_CLASS_WATER) then
 		self:SetWater(self:GetWater() + 1)
+		return true
 	elseif (class == AML_CLASS_FLOUR) then
 		self:SetFlour(self:GetFlour() + 1)
+		return true
 	end
+	return false
 end
 function ENT:IngredientEffect(ent)
 	SafeRemoveEntity(ent)
@@ -82,8 +89,24 @@ function ENT:HasAnyChemicalsForStage(stage)
 		return (self:GetLiquidMeth() > 0 or self:GetFlour() > 0 or self:GetWater() > 0)
 	end
 end
+function ENT:HasAllChemicalsForStage(stage)
+	if (stage == AML_STAGE_RED_ACID) then
+		return (self:GetPureEph() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0)
+	elseif (stage == AML_STAGE_LIQUID_METH) then
+		return (self:GetRedAcid() > 0 and self:GetLye() > 0)
+	elseif (stage == AML_STAGE_CRYSTAL_METH) then
+		return (self:GetLiquidMeth() > 0 and self:GetFlour() > 0 and self:GetWater() > 0)
+	end
+end
+function ENT:CheckForMismatch(stage)
+	local a = self.HasAnyChemicalsForStage
+	return (a(AML_STAGE_RED_ACID) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_LIQUID_METH) and (a(AML_STAGE_RED_ACID) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_CRYSTAL_METH) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_RED_ACID)))
+end
 function ENT:CanCook()
 	return ((self:GetPureEph() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0) or (self:GetRedAcid() > 0 and self:GetLye() > 0) or (self:GetLiquidMeth() > 0 and self:GetFlour() > 0 and self:GetWater() > 0) and self:IsOnStove())
+end
+function ENT:WhatIsCooking()
+	return (self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) and AML_STAGE_RED_ACID) or (self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) and AML_STAGE_LIQUID_METH) or (self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH) and AML_STAGE_CRYSTAL_METH)
 end
 function ENT:DoneCooking()
 	return (self:GetCookingProgress() >= AML_CONFIG_COOKING_TIME) and
@@ -91,11 +114,14 @@ end
 if SERVER then
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
-			self:ProcessIngredient(ent)
-			self:IngredientEffect(ent)
+			if self:ProcessIngredient(ent) then
+				self:IngredientEffect(ent)
+			end
 		end
 	end
 	function ENT:Think()
+		if self:CheckForMismatch() then
+			
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, self:GetTotalCookingTime()))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, AML_CONFIG_FUEL_AMOUNT))
