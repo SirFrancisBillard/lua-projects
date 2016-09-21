@@ -168,7 +168,7 @@ if SERVER then
 			self:SetCookingProgress(0)
 		end
 		if self:CanCook() and (not self:DoneCooking()) then
-			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, self:GetTotalCookingTime()))
+			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, AML_CONFIG_TIME_POT))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, AML_CONFIG_FUEL_AMOUNT))
 			if (math.random(1, 2) == 2) then
 				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_gurgle"..math.random(2, 8)..".wav"))
@@ -176,19 +176,6 @@ if SERVER then
 		end
 		self:NextThink(CurTime() + 1)
 		return true
-	end
-	function ENT:Use(activator, caller)
-		if IsValid(caller) and caller:IsPlayer() then
-			if self:DoneCooking() and (self:GetStage() == AML_STAGE_CRYSTAL_METH) then
-				self:SetCookingProgress(0)
-				self:SetHasSodium(false)
-				self:SetHasChloride(false)
-				local meth = ents.Create(AML_CLASS_CRYSTAL_METH)
-				meth:SetPos(self:GetPos() + Vector(0, 0, 30))
-				meth:Spawn()
-				self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
-			end
-		end
 	end
 	function ENT:VisualEffect()
 		local smoke = EffectData()
