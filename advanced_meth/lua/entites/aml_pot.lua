@@ -1,5 +1,5 @@
 AddCSLuaFile()
-AML_CLASS_POT = self.ClassName
+AML_CLASS_POT = AML_CLASS_POT or self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Pot"
@@ -34,7 +34,7 @@ end
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "Exploding")
 	self:NetworkVar("Int", 0, "CookingProgress")
-	self:NetworkVar("Int", 1, "Stage")
+	self:NetworkVar("Int", 1, "Temperature")
 	self:NetworkVar("Int", 2, "RedPhos")
 	self:NetworkVar("Int", 3, "PureEph")
 	self:NetworkVar("Int", 4, "HydroIodide")
@@ -44,10 +44,9 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 8, "Flour")
 	self:NetworkVar("Int", 9, "Water")
 	self:NetworkVar("Int", 10, "MethPurity")
-	self:NetworkVar("Int", 11, "Temperature")
-	self:NetworkVar("Int", 12, "UsedRedPhos")
-	self:NetworkVar("Int", 13, "UsedFlour")
-	self:NetworkVar("Int", 14, "UsedLye")
+	self:NetworkVar("Int", 11, "UsedRedPhos")
+	self:NetworkVar("Int", 12, "UsedFlour")
+	self:NetworkVar("Int", 13, "UsedLye")
 	self:NetworkVar("Entity", 0, "Stove")
 end
 function ENT:IsOnStove()
@@ -142,8 +141,31 @@ if SERVER then
 			self:SetExploding(true)
 		end
 		if self:DoneCooking() and (not self:GetExploding()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
-			if (self:GetCurrentStage() == EML_STAGE_RED_ACID) then
-				
+			if (self:GetCurrentStage() == AML_STAGE_RED_ACID) then
+				self:SetUsedRedPhos(self:GetUsedRedPhos() + self:GetRedPhos())
+				self:SetRedPos(0)
+				self:SetPureEphe(0)
+				self:SetHydroIodide(0)
+				self:SetRedAcid(self:GetRedAcid() + 1)
+			elseif (self:GetCurrentStage() == AML_STAGE_LIQUID_METH) then
+				self:SetUsedLye(self:GetUsedLye() + self:GetLye())
+				self:SetLye(0)
+				self:SetRedAcid(0)
+				self:SetHydroIodide(0)
+				self:SetLiquidMeth(self:GetLiquidMeth() + 1)
+			elseif (self:GetCurrentStage() == AML_STAGE_CRYSTAL_METH) then
+				self:SetUsedFlour(self:GetUsedFlour() + self:GetFlour())
+				self:SetFlour(0)
+				self:SetWater(0)
+				self:SetLiquidMeth(0)
+				local meth = ents.Create(AML_CLASS_CRYSTAL_METH)
+				meth:SetPos(self:GetPos() + Vector(0, 0, 12))
+				meth:Spawn()
+				meth:SetUsedRedPhos(self:GetUsedRedPhos())
+				meth:SetUsedLye(self:GetUsedLye())
+				meth:SetUsedFlour(self:GetUsedFlour())
+			end
+			self:SetCookingProgress(0)
 		end
 		if self:CanCook() and (not self:DoneCooking()) then
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, self:GetTotalCookingTime()))
