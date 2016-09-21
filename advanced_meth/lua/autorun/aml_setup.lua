@@ -22,6 +22,9 @@ AML_CLASS_GAS = "aml_gas"
 AML_CLASS_FLASK = "aml_flask"
 AML_CLASS_BARREL = "aml_barrel"
 
+-- Meth class
+AML_CLASS_CRYSTAL_METH = "aml_meth"
+
 -- Fluid enumerations
 AML_FLUID_NONE = 0
 AML_FLUID_LYE_SOLUTION = 1
