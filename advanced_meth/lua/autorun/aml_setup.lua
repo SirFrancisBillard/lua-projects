@@ -63,4 +63,3 @@ end
 
 -- Have different values every time gamemode loads
 hook.Add("OnGamemodeLoaded", "AdvancedMeth_OnGamemodeLoaded", ReloadMethPurityAmounts)
-
