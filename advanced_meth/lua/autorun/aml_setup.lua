@@ -1,3 +1,10 @@
+-- General data
+AML_NAME_LONG = "Advanced Meth Lab"
+AML_NAME_SHORT = "AML"
+AML_VERSION = 0.6
+AML_AUTHOR = "Sir Francis Billard"
+AML_PREFIX = "[AML] "
+
 -- Classes in case they ever change
 
 -- Base classes
@@ -26,7 +33,7 @@ AML_CLASS_GAS = "aml_gas"
 AML_CLASS_FLASK = "aml_flask"
 AML_CLASS_BARREL = "aml_barrel"
 
--- Meth class
+-- ye olde baby blue
 AML_CLASS_CRYSTAL_METH = "aml_meth"
 
 -- Fluid enumerations
