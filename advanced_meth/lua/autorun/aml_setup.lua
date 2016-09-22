@@ -1,5 +1,9 @@
 -- Classes in case they ever change
 
+-- Base classes
+AML_CLASS_BASE = "aml_base"
+AML_CLASS_BASE_INGREDIENT = "aml_base_ingredient"
+
 -- Ingredient classes
 AML_CLASS_PSEUDO_EPHEDRINE = "aml_pseudo_ephe"
 AML_CLASS_PURE_EPHEDRINE = "aml_pure_ephe"
