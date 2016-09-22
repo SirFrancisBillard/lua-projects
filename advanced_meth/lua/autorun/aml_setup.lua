@@ -36,6 +36,20 @@ AML_CLASS_BARREL = "aml_barrel"
 -- ye olde baby blue
 AML_CLASS_CRYSTAL_METH = "aml_meth"
 
+-- Ingredient names
+AML_NAME_PSEUDO_EPHEDRINE = "Pseuo Ephedrine"
+AML_NAME_PURE_EPHEDRINE = "Pure Ephedrine"
+AML_NAME_RED_PHOSPHORUS = "Red Phosphorus"
+AML_NAME_HYDROGEN_IODIDE = "Hydrogen Iodide"
+AML_NAME_CHLOROFORM = "Chloroform"
+AML_NAME_CHLORINE = "Chloride"
+AML_NAME_METHANE = "Methane"
+AML_NAME_POTASSIUM_HYDROXIDE = "Potassium Hydroxide"
+AML_NAME_POTASSIUM_CARBONATE = "Potassium Carbonate"
+AML_NAME_CALCIUM_HYDROXIDE = "Calcium Hydroxide"
+AML_NAME_WATER = "Water"
+AML_NAME_FLOUR = "Flour"
+
 -- Fluid enumerations
 AML_FLUID_NONE = 0
 AML_FLUID_LYE_SOLUTION = 1
