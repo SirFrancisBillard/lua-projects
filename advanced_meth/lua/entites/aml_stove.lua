@@ -25,7 +25,7 @@ function ENT:SetupDataTables()
 end
 if SERVER then
 	function ENT:StartTouch(ent)
-		if IsValid(ent) and (ent:GetClass() == "rp_gas") and (not self:GetHasCanister()) and (not ent:GetHasStove()) then
+		if IsValid(ent) and (ent:GetClass() == AML_CLASS_GAS) and (not self:GetHasCanister()) and (not ent:GetHasStove()) then
 			if (not ent:IsReadyForStove()) then return end
 			self:SetHasCanister(true)
 			self:SetCanister(ent)

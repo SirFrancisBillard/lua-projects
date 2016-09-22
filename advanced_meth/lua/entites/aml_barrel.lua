@@ -1,5 +1,4 @@
 AddCSLuaFile()
-AML_CLASS_POT = AML_CLASS_POT or self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Barrel"
@@ -27,48 +26,22 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Int", 1, "PE")
 	self:NetworkVar("Int", 2, "Chloroform")
 end
-function ENT:IsOnStove()
-	for k, v in pairs(ents.FindInSphere(self:GetPos(), 12)) do
-		if (v:GetClass() == AML_CLASS_STOVE) and v:GetHasCanister() and (v:GetCanister():GetFuel() > 0) then
-			self:SetStove(v)
-			return IsValid(self)
-		end
-	end
-end
-function ENT:ProcessIngredient(ent)
-	local class = ent:GetClass()
-	if (class == AML_CLASS_PURE_EPHEDRINE) then
-		self:SetPureEph(self:GetPureEph() + 1)
-		return true
-	elseif (class == AML_CLASS_RED_PHOSPHORUS) then
-		self:SetRedPhos(self:GetRedPhos() + 1)
-		return true
-	elseif (class == AML_CLASS_HYDROGEN_IODIDE) then
-		self:SetHydroIodide(self:GetHydroIodide() + 1)
-		return true
-	elseif (class == AML_CLASS_LYE_SOLUTION) then
-		self:SetLye(self:GetLye() + 1)
-		return true
-	elseif (class == AML_CLASS_WATER) then
-		self:SetWater(self:GetWater() + 1)
-		return true
-	elseif (class == AML_CLASS_FLOUR) then
-		self:SetFlour(self:GetFlour() + 1)
-		return true
-	end
-	return false
-end
 function ENT:IngredientEffect(ent)
 	SafeRemoveEntity(ent)
 	self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
 	self:VisualEffect()
 end
 if SERVER then
-
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
 			if (ent:GetClass() == AML_CLASS_CHLOROFORM) then
 				self:IngredientEffect(ent)
+				self:SetChloroform(self:GetChloroform() + 1)
+			end
+			if (ent:GetClass() == AML_CLASS_PSEUDO_EPHEDRINE) then
+				self:IngredientEffect(ent)
+				self:SetPE(self:GetPE() + 1)
+			end
 		end
 	end
 	function ENT:Think()

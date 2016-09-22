@@ -11,7 +11,7 @@ if CLIENT then
 		local pos = self:GetPos()
 		local ang = self:GetAngles()
 		
-		cam.Start3D2D(pos+Vector(0,0,25),Angle(0,LocalPlayer():EyeAngles().y-90,90),0.125)
+		cam.Start3D2D(pos + Vector(0, 0, 16), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
 			draw.SimpleTextOutlined(self.PrintName, "Trebuchet24", 8, -98, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25, 100))
 		cam.End3D2D()
 	end

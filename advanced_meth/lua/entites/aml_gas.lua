@@ -1,5 +1,4 @@
 AddCSLuaFile()
-AML_CLASS_GAS = self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Gas"

@@ -18,8 +18,7 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 	self:SetCookingProgress(0)
-	self:SetStage(AML_STAGE_NONE)
-	self:SetChemicalMismatch(false)
+	self:SetMismatched(false)
 	self:SetMethPurity(0)
 	self:SetTemperature(0)
 	local Ang = self:GetAngles()
@@ -31,11 +30,11 @@ function ENT:Initialize()
 	end
 end
 function ENT:SetupDataTables()
-	self:NetworkVar("Bool", 0, "Exploding")
+	self:NetworkVar("Bool", 0, "Mismatched")
 	self:NetworkVar("Int", 0, "CookingProgress")
 	self:NetworkVar("Int", 1, "Temperature")
 	self:NetworkVar("Int", 2, "RedPhos")
-	self:NetworkVar("Int", 3, "PureEph")
+	self:NetworkVar("Int", 3, "PureEphe")
 	self:NetworkVar("Int", 4, "HydroIodide")
 	self:NetworkVar("Int", 5, "RedAcid")
 	self:NetworkVar("Int", 6, "Lye")
@@ -58,7 +57,7 @@ function ENT:IsOnStove()
 end
 function ENT:Cough()
 	if not AML_CONFIG_COUGHING then return end
-	for k, v in pairs(ents.FindInSphere(256)) then
+	for k, v in pairs(ents.FindInSphere(256)) do
 		if IsValid(v) and v:IsPlayer() and (math.random(1, 2) == 1) then
 			v:ViewPunch(Angle(math.random(10, 30), 0, 0))
 			v:EmitSound(Sound("ambient/voices/cough"..math.random(1, 4)..".wav"))
@@ -68,7 +67,7 @@ end
 function ENT:ProcessIngredient(ent)
 	local class = ent:GetClass()
 	if (class == AML_CLASS_PURE_EPHEDRINE) then
-		self:SetPureEph(self:GetPureEph() + 1)
+		self:SetPureEphe(self:GetPureEphe() + 1)
 		return true
 	elseif (class == AML_CLASS_RED_PHOSPHORUS) then
 		self:SetRedPhos(self:GetRedPhos() + 1)
@@ -95,7 +94,7 @@ function ENT:IngredientEffect(ent)
 end
 function ENT:HasAnyChemicalsForStage(stage)
 	if (stage == AML_STAGE_RED_ACID) then
-		return (self:GetPureEph() > 0 or self:GetRedPhos() > 0 or self:GetHydroIodide() > 0)
+		return (self:GetPureEphe() > 0 or self:GetRedPhos() > 0 or self:GetHydroIodide() > 0)
 	elseif (stage == AML_STAGE_LIQUID_METH) then
 		return (self:GetRedAcid() > 0 or self:GetLye() > 0)
 	elseif (stage == AML_STAGE_CRYSTAL_METH) then
@@ -104,7 +103,7 @@ function ENT:HasAnyChemicalsForStage(stage)
 end
 function ENT:HasAllChemicalsForStage(stage)
 	if (stage == AML_STAGE_RED_ACID) then
-		return (self:GetPureEph() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0)
+		return (self:GetPureEphe() > 0 and self:GetRedPhos() > 0 and self:GetHydroIodide() > 0)
 	elseif (stage == AML_STAGE_LIQUID_METH) then
 		return (self:GetRedAcid() > 0 and self:GetLye() > 0)
 	elseif (stage == AML_STAGE_CRYSTAL_METH) then
@@ -127,10 +126,10 @@ function ENT:CheckForMismatch(stage)
 	return (a(AML_STAGE_RED_ACID) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_LIQUID_METH) and (a(AML_STAGE_RED_ACID) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_CRYSTAL_METH) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_RED_ACID)))
 end
 function ENT:CanCook()
-	return ((self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) or self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) or self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH)) and self:IsOnStove() and (not self:GetExploding()))
+	return ((self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) or self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) or self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH)) and self:IsOnStove())
 end
 function ENT:DoneCooking()
-	return (self:GetCookingProgress() >= AML_CONFIG_COOKING_TIME) and
+	return (self:GetCookingProgress() >= AML_CONFIG_TIME_POT)
 end
 if SERVER then
 	function ENT:Explode()
@@ -146,12 +145,12 @@ if SERVER then
 	end
 	function ENT:Think()
 		if self:CheckForMismatch() and (not self:GetExploding()) then
-			self:SetExploding(true)
+			self:SetMismatched(true)
 		end
-		if self:DoneCooking() and (not self:GetExploding()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
+		if self:DoneCooking() and (not self:GetMismatched()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
 			if (self:GetCurrentStage() == AML_STAGE_RED_ACID) then
 				self:SetUsedRedPhos(self:GetUsedRedPhos() + self:GetRedPhos())
-				self:SetRedPos(0)
+				self:SetRedPhos(0)
 				self:SetPureEphe(0)
 				self:SetHydroIodide(0)
 				self:SetRedAcid(self:GetRedAcid() + 1)
@@ -173,10 +172,10 @@ if SERVER then
 				meth:SetUsedLye(self:GetUsedLye())
 				meth:SetUsedFlour(self:GetUsedFlour())
 			end
+			self:SetCurrentStage(AML_STAGE_NONE)
 			self:SetCookingProgress(0)
 		end
 		if self:CanCook() and (not self:DoneCooking()) then
-			if 
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, AML_CONFIG_TIME_POT))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, AML_CONFIG_FUEL_AMOUNT))
 			if (math.random(1, 2) == 2) then
@@ -185,6 +184,9 @@ if SERVER then
 		end
 		self:NextThink(CurTime() + 1)
 		return true
+	end
+	function ENT:Use(activator, caller)
+		self:SetAngles(Angle(self:GetAngles().p, caller:GetAngles().y + 180, 0))
 	end
 	function ENT:VisualEffect()
 		local smoke = EffectData()
@@ -215,20 +217,23 @@ if CLIENT then
 		]]
 	end
 	function ENT:Think()
+		self.EmitTime = self.EmitTime or CurTime()
 		if (self.EmitTime <= CurTime()) and self:CanCook() and (not self:DoneCooking()) then
 			local smoke = self.FirePlace:Add("particle/smokesprites_000"..math.random(1,9), self:GetPos())
-			smoke:SetVelocity(Vector(0, 0, 100))
+			smoke:SetVelocity(Vector(0, 0, 120))
 			smoke:SetDieTime(math.Rand(1.2, 2.8))
 			smoke:SetStartAlpha(math.Rand(150, 200))
 			smoke:SetEndAlpha(0)
-			smoke:SetStartSize(math.random(5, 15))
+			smoke:SetStartSize(math.random(5, 12))
 			smoke:SetEndSize(math.random(20, 35))
 			smoke:SetRoll(math.Rand(180, 480))
 			smoke:SetRollDelta(math.Rand(-3, 3))
 			if (self:GetRedPhos() > 0) then
-				smoke:SetColor(AML_CONFIG_SMOKE_RED)
+				smoke:SetColor(AML_CONFIG_SMOKE_RED.r, AML_CONFIG_SMOKE_RED.g, AML_CONFIG_SMOKE_RED.b)
+			elseif (self:GetLiquidMeth() > 0) then
+				smoke:SetColor(AML_CONFIG_SMOKE_METH.r, AML_CONFIG_SMOKE_METH.g, AML_CONFIG_SMOKE_METH.b)
 			else
-				smoke:SetColor(AML_CONFIG_SMOKE_REGULAR)
+				smoke:SetColor(AML_CONFIG_SMOKE_REGULAR.r, AML_CONFIG_SMOKE_REGULAR.g, AML_CONFIG_SMOKE_REGULAR.b)
 			end
 			smoke:SetGravity(Vector(0, 0, 10))
 			smoke:SetAirResistance(256)
