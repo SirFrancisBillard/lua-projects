@@ -1,5 +1,4 @@
 AddCSLuaFile()
-AML_CLASS_POT = AML_CLASS_POT or self.ClassName
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Pot"
@@ -54,6 +53,15 @@ function ENT:IsOnStove()
 		if (v:GetClass() == AML_CLASS_STOVE) and v:GetHasCanister() and (v:GetCanister():GetFuel() > 0) then
 			self:SetStove(v)
 			return IsValid(self)
+		end
+	end
+end
+function ENT:Cough()
+	if not AML_CONFIG_COUGHING then return end
+	for k, v in pairs(ents.FindInSphere(256)) then
+		if IsValid(v) and v:IsPlayer() and (math.random(1, 2) == 1) then
+			v:ViewPunch(Angle(math.random(10, 30), 0, 0))
+			v:EmitSound(Sound("ambient/voices/cough"..math.random(1, 4)..".wav"))
 		end
 	end
 end
@@ -168,6 +176,7 @@ if SERVER then
 			self:SetCookingProgress(0)
 		end
 		if self:CanCook() and (not self:DoneCooking()) then
+			if 
 			self:SetCookingProgress(math.Clamp(self:GetCookingProgress() + 1, 0, AML_CONFIG_TIME_POT))
 			self:GetStove():GetCanister():SetFuel(math.Clamp(self:GetStove():GetCanister():GetFuel() - 1, 0, AML_CONFIG_FUEL_AMOUNT))
 			if (math.random(1, 2) == 2) then
