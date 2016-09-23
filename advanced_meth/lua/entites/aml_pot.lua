@@ -1,10 +1,9 @@
 AddCSLuaFile()
-ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
-ENT.PrintName = "Pot"
-ENT.Category = "Meth Cooking"
-ENT.Spawnable = true
-ENT.Model = "models/props_c17/metalPot001a.mdl"
+ENT.PrintName = AML_NAME_POT
+ENT.Category = AML_SPAWN_CATEGORY
+ENT.Spawnable = AML_SPAWNABLE
+ENT.AdminSpawnable = AML_SPAWNABLE_ADMIN
+ENT.Model = AML_MODEL_POT
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
