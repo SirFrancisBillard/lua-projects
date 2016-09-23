@@ -1,10 +1,9 @@
 AddCSLuaFile()
-ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
-ENT.PrintName = "Gas"
-ENT.Category = "Meth Cooking"
-ENT.Spawnable = true
-ENT.Model = "models/props_junk/propane_tank001a.mdl"
+ENT.PrintName = AML_NAME_GAS
+ENT.Category = AML_SPAWN_CATEGORY
+ENT.Spawnable = AML_SPAWNABLE
+ENT.AdminSpawnable = AML_SPAWNABLE_ADMIN
+ENT.Model = AML_MODEL_GAS
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
@@ -91,9 +90,9 @@ if SERVER then
 		shake:Activate()
 		shake:Fire("StartShake", "", 0)
 		if self:GetHasStove() then
-    		self:SetHasStove(false)
-    		self:GetStove():SetHasCanister(false)
-    		constraint.RemoveAll(self)
+	    		self:SetHasStove(false)
+	    		self:GetStove():SetHasCanister(false)
+	    		constraint.RemoveAll(self)
 		end
 		SafeRemoveEntity(self)
 	end
