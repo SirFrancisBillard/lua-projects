@@ -1,6 +1,4 @@
 AddCSLuaFile()
-ENT.Type = "anim"
-ENT.Base = "base_gmodentity"
 ENT.PrintName = AML_NAME_BARREL
 ENT.Category = AML_SPAWN_CATEGORY
 ENT.Spawnable = AML_SPAWNABLE
