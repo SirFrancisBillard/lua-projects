@@ -53,6 +53,11 @@ AML_VERSION = 0.6
 AML_AUTHOR = "Sir Francis Billard"
 AML_PREFIX = "[AML] "
 
+-- Spawning data
+AML_SPAWN_CATEGORY = "Advanced Meth Lab"
+AML_SPAWNABLE = true
+AML_SPAWNABLE_ADMIN = false
+
 -- Base classes
 AML_CLASS_BASE = "aml_base"
 AML_CLASS_BASE_INGREDIENT = "aml_base_ingredient"
@@ -96,6 +101,17 @@ AML_NAME_CALCIUM_HYDROXIDE = "Calcium Hydroxide"
 AML_NAME_WATER = "Water"
 AML_NAME_FLOUR = "Flour"
 
+-- Item names
+AML_NAME_POT = "Pot"
+AML_NAME_STOVE = "Stove"
+AML_NAME_SMALL_POT = "Small Pot"
+AML_NAME_GAS = "Gas Canister"
+AML_NAME_FLASK = "Flask"
+AML_NAME_BARREL = "Mixing Barrel"
+
+-- Meth name
+AML_NAME_CRYSTAL_METH = "Methamphetamine"
+
 -- Ingredient models
 AML_MODEL_PSEUDO_EPHEDRINE = "can of pills"
 AML_MODEL_PURE_EPHEDRINE = "blue can of pills"
@@ -109,6 +125,17 @@ AML_MODEL_POTASSIUM_CARBONATE = "glass bottle wrapped in paper"
 AML_MODEL_CALCIUM_HYDROXIDE = "cardboard milk carton"
 AML_MODEL_WATER = "water bottle"
 AML_MODEL_FLOUR = "crumpled up chip bag"
+
+-- Item models
+AML_MODEL_POT = "models/props_c17/metalPot001a.mdl"
+AML_MODEL_STOVE = "models/props_c17/furnitureStove001a.mdl"
+AML_MODEL_SMALL_POT = "pot with one handle"
+AML_MODEL_GAS = "models/props_junk/propane_tank001a.mdl"
+AML_MODEL_FLASK = "glass jug"
+AML_MODEL_BARREL = "plastic blue barrel"
+
+-- Meth model
+AML_MODEL_CRYSTAL_METH = "blue concrete chunk"
 
 -- Fluid enumerations
 AML_FLUID_NONE = 0
