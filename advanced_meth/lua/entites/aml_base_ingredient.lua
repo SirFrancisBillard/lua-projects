@@ -1,5 +1,5 @@
 AddCSLuaFile()
-ENT.Base = "aml_base"
+ENT.Base = AML_CLASS_BASE
 ENT.PrintName = "#aml.base_ingredient.name"
 ENT.Category = AML_SPAWN_CATEGORY
 ENT.Spawnable = false
@@ -13,7 +13,7 @@ if CLIENT then
 		local pos = self:OBBMaxs()
 		local ang = self:GetAngles()
 		
-		cam.Start3D2D(Vector(0, 0, pos.z) + Vector(0, 0, 6), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
+		cam.Start3D2D(Vector(0, 0, pos.z + 6), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
 			draw.SimpleTextOutlined(self.PrintName, "Trebuchet24", 8, -98, self.TextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, self.OutlineColor)
 		cam.End3D2D()
 	end
