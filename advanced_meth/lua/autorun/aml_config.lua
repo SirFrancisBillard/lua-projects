@@ -18,7 +18,7 @@ AML_CONFIG_SMOKE_RED = Color(200, 0, 0)
 -- The color of smoke when cooking Lye
 AML_CONFIG_SMOKE_LYE = Color(225, 255, 225)
 -- The color of smoke when cooking Crystal Meth
-AML_CONFIG_SMOKE_METH = Color(100, 100, 200)
+AML_CONFIG_SMOKE_METH = Color(0, 200, 200)
 
 -- Meth config
 -- Does meth need a dealer to be sold?
@@ -181,10 +181,29 @@ AML_MESSAGE_IMPURE_LYE_SOLUTION_LESS = "The Meth is too basic."
 AML_MESSAGE_NO_CHEMICALS = "No chemicals"
 AML_MESSAGE_MISMATCHED = {"Chemical mismatch!", "Contents must be dumped"}
 
--- Predefine for reasons
-AML_PURITY_AMOUNT_FLOUR = math.random(1, 5)
-AML_PURITY_AMOUNT_RED_PHOSPHORUS = math.random(1, 7)
-AML_PURITY_AMOUNT_LYE_SOLUTION = math.random(1, 3)
+-- Admin cheat command
+concommand.Add("aml_purity", function(ply, cmd, args)
+	if IsValid(ply) and ply:IsPlayer() and ply:IsAdmin() and SERVER then
+		ply:ChatPrint("Hey, Doc!")
+		ply:ChatPrint("Here are today's numbers:")
+		ply:ChatPrint(AML_NAME_RED_PHOSPHORUS..": "..AML_PURITY_AMOUNT_RED_PHOSPHORUS)
+		ply:ChatPrint(AML_NAME_LYE_SOLUTION..": "..AML_PURITY_AMOUNT_LYE_SOLUTION)
+		ply:ChatPrint(AML_NAME_FLOUR..": "..AML_PURITY_AMOUNT_FLOUR)
+	end
+end)
+
+
+-- Disable autorefreshing these values
+AML_PURITY_AMOUNT_FLOUR = AML_PURITY_AMOUNT_FLOUR or math.random(1, 5)
+AML_PURITY_AMOUNT_RED_PHOSPHORUS = AML_PURITY_AMOUNT_RED_PHOSPHORUS or math.random(1, 7)
+AML_PURITY_AMOUNT_LYE_SOLUTION = AML_PURITY_AMOUNT_RED_PHOSPHORUS or math.random(1, 3)
+
+-- Disallow client cheating
+if CLIENT then
+	AML_PURITY_AMOUNT_FLOUR = 0
+	AML_PURITY_AMOUNT_RED_PHOSPHORUS = 0
+	AML_PURITY_AMOUNT_LYE_SOLUTION = 0
+end
 
 -- Purity amounts
 function ReloadMethPurityAmounts()
@@ -195,3 +214,7 @@ end
 
 -- Have different values every time gamemode loads
 hook.Add("OnGamemodeLoaded", "AdvancedMeth_OnGamemodeLoaded", ReloadMethPurityAmounts)
+
+if CLIENT then return end
+
+print("Advanced Meth Lab config loaded!")
