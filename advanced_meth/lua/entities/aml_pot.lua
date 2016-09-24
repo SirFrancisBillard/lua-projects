@@ -1,4 +1,5 @@
 AddCSLuaFile()
+ENT.Base = AML_CLASS_BASE
 ENT.PrintName = AML_NAME_POT
 ENT.Category = AML_SPAWN_CATEGORY
 ENT.Spawnable = AML_SPAWNABLE
@@ -155,7 +156,7 @@ if SERVER then
 		end
 	end
 	function ENT:Think()
-		if self:CheckForMismatch() and (not self:GetExploding()) then
+		if self:CheckForMismatch() then
 			self:SetMismatched(true)
 		end
 		if self:DoneCooking() and (not self:GetMismatched()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
@@ -214,18 +215,33 @@ if CLIENT then
 		local mins = self:LocalToWorld(self:OBBMins())
 		local ang = self:GetAngles()
 		local top
-		
+		if (maxs.z > mins.z) then
+			top = maxs.z
+		else
+			top = mins.z
+		end
+
 		local chem = self:GetAllChemicals()
 
 		local stuff = {}
-		for k, v in SortedPairs(chem) do
-			stuff[#stuff + 1] = k..": "..(v * 100).."mL"
+		if (not self:GetMismatched()) then
+			for k, v in SortedPairs(chem) do
+				if (v > 0) then
+					stuff[#stuff + 1] = k..": "..(v * 100).."mL"
+				end
+			end
+			if (#stuff < 1) then
+				stuff[#stuff + 1] = AML_MESSAGE_NO_CHEMICALS
+			end
+		else
+			stuff[#stuff + 1] = AML_MESSAGE_MISMATCHED[2]
+			stuff[#stuff + 1] = AML_MESSAGE_MISMATCHED[1]
 		end
 		stuff[#stuff + 1] = self.PrintName
 
-		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 16), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
+		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 8), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
 			for k, v in pairs(stuff) do
-				draw.SimpleTextOutlined(v, "Trebuchet24", 0, -100 - (35 * (k - 1)), self.TextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, self.OutlineColor)
+				draw.SimpleTextOutlined(v, "Trebuchet24", 0, -100 - (35 * (k - 1)), Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25))
 			end
 		cam.End3D2D()
 	end

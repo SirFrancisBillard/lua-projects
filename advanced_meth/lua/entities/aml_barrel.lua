@@ -1,4 +1,5 @@
 AddCSLuaFile()
+ENT.Base = AML_CLASS_BASE
 ENT.PrintName = AML_NAME_BARREL
 ENT.Category = AML_SPAWN_CATEGORY
 ENT.Spawnable = AML_SPAWNABLE

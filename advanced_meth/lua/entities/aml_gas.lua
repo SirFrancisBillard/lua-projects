@@ -1,4 +1,5 @@
 AddCSLuaFile()
+ENT.Base = AML_CLASS_BASE
 ENT.PrintName = AML_NAME_GAS
 ENT.Category = AML_SPAWN_CATEGORY
 ENT.Spawnable = AML_SPAWNABLE
@@ -90,9 +91,9 @@ if SERVER then
 		shake:Activate()
 		shake:Fire("StartShake", "", 0)
 		if self:GetHasStove() then
-	    		self:SetHasStove(false)
-	    		self:GetStove():SetHasCanister(false)
-	    		constraint.RemoveAll(self)
+    		self:SetHasStove(false)
+    		self:GetStove():SetHasCanister(false)
+    		constraint.RemoveAll(self)
 		end
 		SafeRemoveEntity(self)
 	end

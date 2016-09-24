@@ -1,4 +1,6 @@
 AddCSLuaFile()
+ENT.Type = "anim"
+ENT.Base = "base_gmodentity"
 ENT.PrintName = "Meth Cooking Base Entity"
 ENT.Category = "Meth Cooking"
 ENT.Spawnable = false 
