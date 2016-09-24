@@ -177,6 +177,10 @@ AML_MESSAGE_IMPURE_RED_PHOSPHORUS_LESS = "The Meth is too strong and can be toxi
 AML_MESSAGE_IMPURE_LYE_SOLUTION_MORE = "The Meth is too acidic."
 AML_MESSAGE_IMPURE_LYE_SOLUTION_LESS = "The Meth is too basic."
 
+-- Cooking messages
+AML_MESSAGE_NO_CHEMICALS = "No chemicals"
+AML_MESSAGE_MISMATCHED = {"Chemical mismatch!", "Contents must be dumped"}
+
 -- Predefine for reasons
 AML_PURITY_AMOUNT_FLOUR = math.random(1, 5)
 AML_PURITY_AMOUNT_RED_PHOSPHORUS = math.random(1, 7)
