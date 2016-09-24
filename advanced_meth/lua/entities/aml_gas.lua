@@ -90,9 +90,9 @@ if SERVER then
 		shake:Activate()
 		shake:Fire("StartShake", "", 0)
 		if self:GetHasStove() then
-    		self:SetHasStove(false)
-    		self:GetStove():SetHasCanister(false)
-    		constraint.RemoveAll(self)
+	    		self:SetHasStove(false)
+	    		self:GetStove():SetHasCanister(false)
+	    		constraint.RemoveAll(self)
 		end
 		SafeRemoveEntity(self)
 	end
