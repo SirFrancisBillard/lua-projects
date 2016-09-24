@@ -37,7 +37,7 @@ if SERVER then
 		else
 			difference = (AML_PURITY_AMOUNT_FLOUR - self:GetUsedFlour())
 		end
-		purity = (purity - difference)
+		purity = (math.Clamp(purity - (difference * 3), 0, purity))
 		self:SetPurity(purity)
 		self:NextThink(CurTime() + 0.2)
 		return true
@@ -45,9 +45,16 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			if (not AML_CONFIG_NEED_DEALER) then
-				if (not caller.addMoney) then return end
-				caller:addMoney(AML_CONFIG_METH_PRICE * (self:GetPurity() / 100))
-				SafeRemoveEntity(self)
+				local amount = AML_CONFIG_METH_PRICE * (self:GetPurity() / 50) * (self:GetPurity() / 50)
+				if caller.addMoney then
+					SafeRemoveEntity(self)
+					caller:addMoney(amount)
+					caller:ChatPrint("You have sold meth for $"..string.Comma(amount))
+				else
+					local bleh = amount > (AML_CONFIG_METH_PRICE / 10)
+					caller:ChatPrint("This meth is worth"..(bleh and " " or " only ").."$"..string.Comma(amount)..", "..(bleh and "too bad" or "thank god").." you can't sell it!")
+				end
+				
 			end
 		end
 	end

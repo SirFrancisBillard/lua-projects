@@ -18,7 +18,6 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 	self:SetCookingProgress(0)
-	self:SetMismatched(false)
 	self:SetMethPurity(0)
 	self:SetTemperature(0)
 	local Ang = self:GetAngles()
@@ -219,19 +218,15 @@ if CLIENT then
 		local chem = self:GetAllChemicals()
 
 		local stuff = {}
-		if (not self:GetMismatched()) then
-			for k, v in SortedPairs(chem) do
-				if (v > 0) then
-					stuff[#stuff + 1] = k..": "..(v * 100).."mL"
-				end
+		for k, v in SortedPairs(chem) do
+			if (v > 0) then
+				stuff[#stuff + 1] = k..": "..(v * 100).."mL"
 			end
-			if (#stuff < 1) then
-				stuff[#stuff + 1] = AML_MESSAGE_NO_CHEMICALS
-			end
-		else
-			stuff[#stuff + 1] = AML_MESSAGE_MISMATCHED[2]
-			stuff[#stuff + 1] = AML_MESSAGE_MISMATCHED[1]
 		end
+		if (#stuff < 1) then
+			stuff[#stuff + 1] = AML_MESSAGE_NO_CHEMICALS
+		end
+
 		stuff[#stuff + 1] = self.PrintName
 
 		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 8), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
