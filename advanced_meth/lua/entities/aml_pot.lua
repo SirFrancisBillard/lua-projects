@@ -30,7 +30,6 @@ function ENT:Initialize()
 	end
 end
 function ENT:SetupDataTables()
-	self:NetworkVar("Bool", 0, "Mismatched")
 	self:NetworkVar("Int", 0, "CookingProgress")
 	self:NetworkVar("Int", 1, "Temperature")
 	self:NetworkVar("Int", 2, "RedPhos")
@@ -66,6 +65,9 @@ function ENT:Cough()
 end
 function ENT:ProcessIngredient(ent)
 	local class = ent:GetClass()
+	if AML_TOXIC_CHEMICALS[class] then
+		self:Cough()
+	end
 	if (class == AML_CLASS_PURE_EPHEDRINE) then
 		self:SetPureEphe(self:GetPureEphe() + 1)
 		return true
@@ -133,10 +135,6 @@ function ENT:GetAllChemicals()
 		[AML_NAME_WATER] = self:GetWater()
 	}
 end
-function ENT:CheckForMismatch(stage)
-	local a = self.HasAnyChemicalsForStage
-	return (a(AML_STAGE_RED_ACID) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_LIQUID_METH) and (a(AML_STAGE_RED_ACID) or a(AML_STAGE_CRYSTAL_METH))) or (a(AML_STAGE_CRYSTAL_METH) and (a(AML_STAGE_LIQUID_METH) or a(AML_STAGE_RED_ACID)))
-end
 function ENT:CanCook()
 	return ((self:HasAllChemicalsForStage(AML_STAGE_RED_ACID) or self:HasAllChemicalsForStage(AML_STAGE_LIQUID_METH) or self:HasAllChemicalsForStage(AML_STAGE_CRYSTAL_METH)) and self:IsOnStove())
 end
@@ -156,26 +154,23 @@ if SERVER then
 		end
 	end
 	function ENT:Think()
-		if self:CheckForMismatch() then
-			self:SetMismatched(true)
-		end
-		if self:DoneCooking() and (not self:GetMismatched()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
+		if self:DoneCooking() and (self:GetCurrentStage() != AML_STAGE_NONE) then
 			if (self:GetCurrentStage() == AML_STAGE_RED_ACID) then
 				self:SetUsedRedPhos(self:GetUsedRedPhos() + self:GetRedPhos())
 				self:SetRedPhos(0)
-				self:SetPureEphe(0)
-				self:SetHydroIodide(0)
+				self:SetPureEphe(math.Clamp(self:GetPureEphe() - 1, 0, self:GetPureEphe()))
+				self:SetHydroIodide(math.Clamp(self:GetHydroIodide() - 1, 0, self:GetHydroIodide()))
 				self:SetRedAcid(self:GetRedAcid() + 1)
 			elseif (self:GetCurrentStage() == AML_STAGE_LIQUID_METH) then
 				self:SetUsedLye(self:GetUsedLye() + self:GetLye())
 				self:SetLye(0)
-				self:SetRedAcid(0)
+				self:SetRedAcid(math.Clamp(self:GetRedAcid() - 1, 0, self:GetRedAcid()))
 				self:SetLiquidMeth(self:GetLiquidMeth() + 1)
 			elseif (self:GetCurrentStage() == AML_STAGE_CRYSTAL_METH) then
 				self:SetUsedFlour(self:GetUsedFlour() + self:GetFlour())
 				self:SetFlour(0)
-				self:SetWater(0)
-				self:SetLiquidMeth(0)
+				self:SetWater(math.Clamp(self:GetWater() - 1, 0, self:GetWater()))
+				self:SetLiquidMeth(math.Clamp(self:GetLiquidMeth() - 1, 0, self:GetLiquidMeth()))
 				local meth = ents.Create(AML_CLASS_CRYSTAL_METH)
 				meth:SetPos(self:GetPos() + Vector(0, 0, 12))
 				meth:Spawn()

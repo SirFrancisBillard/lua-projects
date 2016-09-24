@@ -45,6 +45,7 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			if (not AML_CONFIG_NEED_DEALER) then
+				if (not caller.addMoney) then return end
 				caller:addMoney(AML_CONFIG_METH_PRICE * (self:GetPurity() / 100))
 				SafeRemoveEntity(self)
 			end

@@ -23,7 +23,7 @@ if SERVER then
 		return true
 	end
 	function ENT:StartTouch(ent)
-		if (self:GetFluid == AML_FLUID_NONE) then
+		if (self:GetFluid() == AML_FLUID_NONE) then
 			if (ent:GetClass() == AML_CLASS_POT) then
 				if (ent:GetRedAcid() > 0) then
 					ent:SetRedAcid(math.Clamp(ent:GetRedAcid() - 1, 0, ent:GetRedAcid()))

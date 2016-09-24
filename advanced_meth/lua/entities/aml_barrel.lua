@@ -31,6 +31,12 @@ function ENT:IngredientEffect(ent)
 	self:EmitSound(Sound("ambient/levels/canals/toxic_slime_sizzle"..math.random(2, 4)..".wav"))
 	self:VisualEffect()
 end
+function ENT:GetAllChemicals()
+	return {
+		[AML_NAME_PSEUDO_EPHEDRINE] = self:GetPE(),
+		[AML_NAME_CHLOROFORM] = self:GetChloroform()
+	}
+end
 if SERVER then
 	function ENT:StartTouch(ent)
 		if IsValid(ent) then
@@ -69,21 +75,36 @@ end
 if CLIENT then
 	function ENT:Draw()
 		self:DrawModel()
-		--[[
-		local Pos = self:GetPos()
-		local Ang = self:GetAngles()
-		surface.SetFont("Trebuchet24")
-		Ang:RotateAroundAxis(Ang:Forward(), 90)
-		cam.Start3D2D(Pos + (Ang:Up() * 8) + (Ang:Right() * -2), Ang, 0.12)
-			draw.RoundedBox(2, -50, -65, 100, 30, Color(140, 0, 0, 100))
-			if (self:GetCookingProgress() > 0) then
-				draw.RoundedBox(2, -50, -65, (100 / AML_CONFIG_COOKING_TIME) * self:GetCookingProgress(), 30, Color(0, 225, 0, 100))
+		
+		local pos = self:GetPos()
+		local maxs = self:LocalToWorld(self:OBBMaxs())
+		local mins = self:LocalToWorld(self:OBBMins())
+		local ang = self:GetAngles()
+		local top
+		if (maxs.z > mins.z) then
+			top = maxs.z
+		else
+			top = mins.z
+		end
+
+		local chem = self:GetAllChemicals()
+
+		local stuff = {}
+		for k, v in SortedPairs(chem) do
+			if (v > 0) then
+				stuff[#stuff + 1] = k..": "..(v * 100).."mL"
 			end
-			draw.SimpleText("Progress", "Trebuchet24", -40, -63, Color(255, 255, 255, 255))
-			draw.WordBox(2, -55, -30, "Ingredients:", "Trebuchet24", Color(0, 225, 0, 100), Color(255, 255, 255, 255))
-			draw.WordBox(2, -35, 5, "Sodium", "Trebuchet24", self:GetHasSodium() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
-			draw.WordBox(2, -40, 40, "Chloride", "Trebuchet24", self:GetHasChloride() and Color(0, 225, 0, 100) or Color(140, 0, 0, 100), Color(255, 255, 255, 255))
+		end
+		if (#stuff < 1) then
+			stuff[#stuff + 1] = AML_MESSAGE_NO_CHEMICALS
+		end
+
+		stuff[#stuff + 1] = self.PrintName
+
+		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 8), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
+			for k, v in pairs(stuff) do
+				draw.SimpleTextOutlined(v, "Trebuchet24", 0, -100 - (35 * (k - 1)), Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25))
+			end
 		cam.End3D2D()
-		]]
 	end
 end

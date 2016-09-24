@@ -19,11 +19,7 @@ function ENT:Initialize()
 	end
 	self:SetCookingProgress(0)
 	self:SetMismatched(false)
-	self:SetMethPurity(0)
 	self:SetTemperature(0)
-	local Ang = self:GetAngles()
-	Ang:RotateAroundAxis(Ang:Up(), 90)
-	self:SetAngles(Ang)
 	if CLIENT then
 		self.EmitTime = CurTime()
 		self.FirePlace = ParticleEmitter(self:GetPos())
@@ -61,6 +57,9 @@ function ENT:Cough()
 end
 function ENT:ProcessIngredient(ent)
 	local class = ent:GetClass()
+	if AML_TOXIC_CHEMICALS[class] then
+		self:Cough()
+	end
 	if (class == AML_CLASS_POTASSIUM_CARBONATE) then
 		self:SetPotasCarbon(self:GetPotasCarbon() + 1)
 		return true
@@ -117,17 +116,12 @@ function ENT:GetAllChemicals()
 	return {
 		[AML_NAME_POTASSIUM_CARBONATE] = self:GetPotasCarbon(),
 		[AML_NAME_CALCIUM_HYDROXIDE] = self:GetCalcHydro(),
-		[AML_NAME_POTASSIUM_HYDROXIDE] = self:PotasHydro(),
+		[AML_NAME_POTASSIUM_HYDROXIDE] = self:GetPotasHydro(),
 		[AML_NAME_WATER] = self:GetWater(),
 		[AML_NAME_LYE_SOLUTION] = self:GetLye(),
 		[AML_NAME_CHLORINE] = self:GetChlorine(),
-		[AML_NAME_METHANE] = self:GetMethane(),
-		[AML_NAME_CHLOROFORM] = self:GetChloroform()
+		[AML_NAME_METHANE] = self:GetMethane()
 	}
-end
-function ENT:CheckForMismatch(stage)
-	local a = self.HasAnyChemicalsForStage
-	return (a(AML_STAGE_POTASSIUM_HYDROXIDE) and (a(AML_STAGE_LYE_SOLUTION) or a(AML_STAGE_CHLOROFORM))) or (a(AML_STAGE_LYE_SOLUTION) and (a(AML_STAGE_POTASSIUM_HYDROXIDE) or a(AML_STAGE_CHLOROFORM))) or (a(AML_STAGE_CHLOROFORM) and (a(AML_STAGE_POTASSIUM_HYDROXIDE) or a(AML_STAGE_LYE_SOLUTION)))
 end
 function ENT:CanCook()
 	return ((self:HasAllChemicalsForStage(AML_STAGE_POTASSIUM_HYDROXIDE) or self:HasAllChemicalsForStage(AML_STAGE_LYE_SOLUTION) or self:HasAllChemicalsForStage(AML_STAGE_CHLOROFORM)) and self:IsOnStove())
@@ -148,23 +142,20 @@ if SERVER then
 		end
 	end
 	function ENT:Think()
-		if self:CheckForMismatch() then
-			self:SetMismatched(true)
-		end
 		if self:DoneCooking() and (not self:GetMismatched()) and (self:GetCurrentStage() != AML_STAGE_NONE) then
 			if (self:GetCurrentStage() == AML_STAGE_POTASSIUM_HYDROXIDE) then
-				self:SetPotasCarbon(0)
-				self:SetCalcHydro(0)
+				self:SetPotasCarbon(math.Clamp(self:GetPotasCarbon() - 1, 0, self:GetPotasCarbon()))
+				self:SetCalcHydro(math.Clamp(self:GetCalcHydro() - 1, 0, self:GetCalcHydro()))
 				self:SetPotasHydro(self:GetPotasHydro() + 1)
 			elseif (self:GetCurrentStage() == AML_STAGE_LYE_SOLUTION) then
-				self:SetPotasHydro(0)
-				self:SetWater(0)
+				self:SetPotasHydro(math.Clamp(self:GetPotasHydro() - 1, 0, self:GetPotasHydro()))
+				self:SetWater(math.Clamp(self:GetWater() - 1, 0, self:GetWater()))
 				self:SetLye(self:GetLye() + 1)
 			elseif (self:GetCurrentStage() == AML_STAGE_CHLOROFORM) then
-				self:SetChlorine(0)
-				self:SetMethane(0)
+				self:SetChlorine(math.Clamp(self:GetChlorine() - 1, 0, self:GetChlorine()))
+				self:SetMethane(math.Clamp(self:GetMethane() - 1, 0, self:GetMethane()))
 				local stuff = ents.Create(AML_CLASS_CHLOROFORM)
-				stuff:SetPos(self:GetPos() + Vector(0, 0, 12))
+				stuff:SetPos(self:GetPos() + Vector(0, 0, 18) + (self:GetAngles():Right() * -5))
 				stuff:Spawn()
 			end
 			self:SetCookingProgress(0)
@@ -223,7 +214,7 @@ if CLIENT then
 		end
 		stuff[#stuff + 1] = self.PrintName
 
-		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 8), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
+		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 10) + (ang:Right() * -5), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
 			for k, v in pairs(stuff) do
 				draw.SimpleTextOutlined(v, "Trebuchet24", 0, -100 - (35 * (k - 1)), Color(255, 255, 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25))
 			end
@@ -232,13 +223,13 @@ if CLIENT then
 	function ENT:Think()
 		self.EmitTime = self.EmitTime or CurTime()
 		if (self.EmitTime <= CurTime()) and self:CanCook() and (not self:DoneCooking()) then
-			local smoke = self.FirePlace:Add("particle/smokesprites_000"..math.random(1,9), self:GetPos())
-			smoke:SetVelocity(Vector(0, 0, 120))
+			local smoke = self.FirePlace:Add("particle/smokesprites_000"..math.random(1,9), self:GetPos() + (self:GetAngles():Right() * -5))
+			smoke:SetVelocity(Vector(0, 0, 80))
 			smoke:SetDieTime(math.Rand(1.2, 2.8))
 			smoke:SetStartAlpha(math.Rand(150, 200))
 			smoke:SetEndAlpha(0)
-			smoke:SetStartSize(math.random(5, 12))
-			smoke:SetEndSize(math.random(20, 35))
+			smoke:SetStartSize(math.random(3, 8))
+			smoke:SetEndSize(math.random(9, 18))
 			smoke:SetRoll(math.Rand(180, 480))
 			smoke:SetRollDelta(math.Rand(-3, 3))
 			if (self:GetPotasHydro() > 0) then
