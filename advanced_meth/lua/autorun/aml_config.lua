@@ -20,6 +20,12 @@ AML_CONFIG_SMOKE_LYE = Color(225, 255, 225)
 -- The color of smoke when cooking Crystal Meth
 AML_CONFIG_SMOKE_METH = Color(100, 100, 200)
 
+-- Meth config
+-- Does meth need a dealer to be sold?
+AML_CONFIG_NEED_DEALER = false
+-- What is the base price of meth?
+AML_CONFIG_METH_PRICE = 60000
+
 -- Other config
 -- How much fuel should gas canisters hold?
 AML_CONFIG_FUEL_AMOUNT = 200
@@ -88,12 +94,12 @@ AML_CLASS_BARREL = "aml_barrel"
 AML_CLASS_CRYSTAL_METH = "aml_meth"
 
 -- Ingredient names
-AML_NAME_PSEUDO_EPHEDRINE = "Pseuo Ephedrine"
+AML_NAME_PSEUDO_EPHEDRINE = "Pseudo Ephedrine"
 AML_NAME_PURE_EPHEDRINE = "Pure Ephedrine"
 AML_NAME_RED_PHOSPHORUS = "Red Phosphorus"
 AML_NAME_HYDROGEN_IODIDE = "Hydrogen Iodide"
 AML_NAME_CHLOROFORM = "Chloroform"
-AML_NAME_CHLORINE = "Chloride"
+AML_NAME_CHLORINE = "Chlorine"
 AML_NAME_METHANE = "Methane"
 AML_NAME_POTASSIUM_HYDROXIDE = "Potassium Hydroxide"
 AML_NAME_POTASSIUM_CARBONATE = "Potassium Carbonate"
@@ -112,30 +118,35 @@ AML_NAME_BARREL = "Mixing Barrel"
 -- Meth name
 AML_NAME_CRYSTAL_METH = "Methamphetamine"
 
+-- Backwards compatability for fluids in stoves
+AML_NAME_LYE_SOLUTION = "Caustic Soda"
+AML_NAME_RED_ACID = "Intermediate Acid"
+AML_NAME_LIQUID_METH = "Liquid Methamphetamine"
+
 -- Ingredient models
-AML_MODEL_PSEUDO_EPHEDRINE = "glass bottle wrapped in paper"
-AML_MODEL_PURE_EPHEDRINE = "can of pills"
-AML_MODEL_RED_PHOSPHORUS = "red rock or powder"
-AML_MODEL_HYDROGEN_IODIDE = "black gas canister"
-AML_MODEL_CHLOROFORM = "bleach bottle"
-AML_MODEL_CHLORINE = "small bleach bottle"
-AML_MODEL_METHANE = "propane tank"
-AML_MODEL_POTASSIUM_HYDROXIDE = "plastic milk jug"
-AML_MODEL_POTASSIUM_CARBONATE = "paper bag"
-AML_MODEL_CALCIUM_HYDROXIDE = "cardboard milk carton"
-AML_MODEL_WATER = "water bottle"
-AML_MODEL_FLOUR = "crumpled up chip bag"
+AML_MODEL_PSEUDO_EPHEDRINE = "models/props_junk/garbage_glassbottle002a.mdl"
+AML_MODEL_PURE_EPHEDRINE = "models/props_lab/jar01b.mdl"
+AML_MODEL_RED_PHOSPHORUS = "models/props_debris/concrete_chunk05g.mdl"
+AML_MODEL_HYDROGEN_IODIDE = "models/props_c17/canister01a.mdl"
+AML_MODEL_CHLOROFORM = "models/props_junk/garbage_plasticbottle001a.mdl"
+AML_MODEL_CHLORINE = "models/props_junk/garbage_plasticbottle002a.mdl"
+AML_MODEL_METHANE = "models/props_junk/PropaneCanister001a.mdl"
+AML_MODEL_POTASSIUM_HYDROXIDE = "models/props_junk/garbage_milkcarton001a.mdl"
+AML_MODEL_POTASSIUM_CARBONATE = "models/props_junk/garbage_metalcan001a.mdl"
+AML_MODEL_CALCIUM_HYDROXIDE = "models/props_junk/garbage_milkcarton002a.mdl"
+AML_MODEL_WATER = "models/props_junk/garbage_plasticbottle003a.mdl"
+AML_MODEL_FLOUR = "models/props_junk/garbage_bag001a.mdl"
 
 -- Item models
 AML_MODEL_POT = "models/props_c17/metalPot001a.mdl"
 AML_MODEL_STOVE = "models/props_c17/furnitureStove001a.mdl"
-AML_MODEL_SMALL_POT = "pot with one handle"
+AML_MODEL_SMALL_POT = "models/props_interiors/pot02a.mdl"
 AML_MODEL_GAS = "models/props_junk/propane_tank001a.mdl"
-AML_MODEL_FLASK = "glass jug"
-AML_MODEL_BARREL = "plastic blue barrel"
+AML_MODEL_FLASK = "models/props_junk/glassjug01.mdl"
+AML_MODEL_BARREL = "models/props_borealis/bluebarrel001.mdl"
 
 -- Meth model
-AML_MODEL_CRYSTAL_METH = "blue concrete chunk"
+AML_MODEL_CRYSTAL_METH = "models/props_debris/concrete_chunk05g.mdl"
 
 -- Fluid enumerations
 AML_FLUID_NONE = 0
