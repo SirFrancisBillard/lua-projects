@@ -36,17 +36,3 @@ if SERVER then
 		end
 	end
 end
-if CLIENT then
-	function ENT:Draw()
-		self:DrawModel()
-		local Pos = self:GetPos()
-		local Ang = self:GetAngles()
-		surface.SetFont("Trebuchet24")
-		Ang:RotateAroundAxis(Ang:Forward(), 90)
-		Ang:RotateAroundAxis(Ang:Right(), -90)
-		cam.Start3D2D(Pos + (Ang:Up() * 18) + (Ang:Right() * -2), Ang, 0.3)
-			draw.WordBox(2, -30, -50, "Stove", "Trebuchet24", Color(140, 0, 0, 100), Color(255, 255, 255, 255))
-			draw.WordBox(2, -42.5, -10, "Gas: "..(self:GetHasCanister() and self:GetCanister():GetFuel() or "None"), "Trebuchet24", Color(140, 0, 0, 100), Color(255, 255, 255, 255))
-		cam.End3D2D()
-	end
-end

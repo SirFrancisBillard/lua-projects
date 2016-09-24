@@ -9,7 +9,8 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			caller:ChatPrint("Meth Cooking Guide")
-			caller:ChatPrint([[I provide help to those looking to cook Methamphetamine.
+			caller:ChatPrint([[
+				I provide help to those looking to cook Methamphetamine.
 				I can be used by typing the name of a chemical or item in chat while near me.
 				If I recognize the chemical or item, I will provide help in what you can do with it.
 				Here are some basics:
@@ -18,7 +19,21 @@ if SERVER then
 				-Red Phosphorus
 				-Caustic Soda
 				-Flour
-				The higher the purity of Meth, the higher the price.]])
+				The higher the purity of Meth, the higher the price.
+				The following is a list of all reciipes.
+				\[Small Pot\]
+				Potassium Carbonate + Calcium Hydroxide = Potassium Hydroxide
+				Potassium Hydroxide + Water = Caustic Soda
+				Chlorine + Methane = Chloroform
+				\[Pot\]
+				Pure Ephedrine + Red Phosphorus + Hydrogen Iodide = Intermediate Acid
+				Intermediate Acid + Caustic Soda = Liquid Methamphetamine
+				Liquid Methamphetamine + Water + Flour = Methamphetamine
+				\[Mixing Barrel\]
+				Pseudo Ephedrine + Chloroform = Pure Ephedrine
+				
+				Have fun!
+				]])
 		end
 	end
 end
