@@ -63,7 +63,6 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			if not caller.isCP then return end
-
 			if caller:isCP() then
 				ply:ChatPrint("Only criminals can rob vaults!")
 			else
