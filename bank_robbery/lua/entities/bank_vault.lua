@@ -23,7 +23,7 @@ if SERVER then
 		local phys = self:GetPhysicsObject()
 		if phys:IsValid() then
 			phys:Wake()
-			phys:SetMass(60)
+			phys:SetMass(200)
 		end
 		self:SetUseType(SIMPLE_USE or 3)
 		if self.PermaMaterial then
@@ -35,21 +35,27 @@ if SERVER then
 		if self.PermaScale and (self.PermaScale != 1.0) then
 			self:SetModelScale(self.PermaScale)
 		end
+		self:SetMoney(80000)
 	end
 	function ENT:Think()
+		if (self:GetMoney() < 1) then
+			self:SetBeingRobbed(false)
+		end
 		if self:GetBeingRobbed() then
+			local amount
 			if (self:GetMoney() < 10000) then
 				amount = self:GetMoney()
 			else
 				amount = 10000
 			end
+			self:SetMoney(self:GetMoney() - amount)
 			local bag = ents.Create("bank_briefcase")
-			bag:SetPos(self:GetPos() + Vector(0, 0, 40))
+			bag:SetPos(self:GetPos() + Vector(0, 0, 100))
 			bag:Spawn()
 			bag:SetMoney(amount)
 		else
 			self:SetMoney(math.Clamp(self:GetMoney() + 50, 0, 1000000))
-			self:SetCooldown(math.Clamp(self:GetCooldown() - 1, , self:GetCooldown()))
+			self:SetCooldown(math.Clamp(self:GetCooldown() - 1, 0, self:GetCooldown()))
 		end
 		self:NextThink(CurTime() + 1)
 		return true
@@ -67,9 +73,13 @@ if SERVER then
 					if (self:GetCooldown() <= 0) then
 						self:SetCooldown(360)
 						self:SetBeingRobbed(true)
+						timer.Simple(30, function()
+							if (not IsValid(self)) then return end
+							self:SetBeingRobbed(false)
+						end)
 						BroadcastLua([[chat.AddText(Color(255, 0, 0), "The Bank Vault is being robbed!")]])
 					else
-						ply:ChatPrint("Please wait "..self:GetCooldown().." seconds.")
+						caller:ChatPrint("Please wait "..self:GetCooldown().." seconds.")
 					end
 				end
 			end
@@ -78,29 +88,26 @@ if SERVER then
 end
 
 if CLIENT then
+	surface.CreateFont("BankVaultFont", {
+		font = "Trebuchet",
+		size = 48,
+	})
 	function ENT:Draw()
 		self:DrawModel()
 		
 		local pos = self:GetPos()
-		local maxs = self:LocalToWorld(self:OBBMaxs())
-		local mins = self:LocalToWorld(self:OBBMins())
 		local ang = self:GetAngles()
-		local top
-		if (maxs.z > mins.z) then
-			top = maxs.z
-		else
-			top = mins.z
-		end
+
 
 		local stuff = {}
 
 		stuff[#stuff + 1] = {content = ("$"..string.Comma(self:GetMoney())), color = Color(0, 255, 0)}
-		stuff[#stuff + 1] = {content = ((self:GetCooldown() <= 0) and "Ready to be robbed!" or "Cooldown: "..self:GetCooldown()), color = Color(255, 0, 0)}
+		stuff[#stuff + 1] = {content = self:GetBeingRobbed() and "Robbery in progress" or ((self:GetCooldown() <= 0) and "Ready to be robbed!" or "Cooldown: "..self:GetCooldown()), color = Color(255, 0, 0)}
 		stuff[#stuff + 1] = {content = self.PrintName, color = Color(255, 255, 255)}
 
-		cam.Start3D2D(Vector(pos.x, pos.y, pos.z + (top - pos.z) - 8), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
+		cam.Start3D2D(pos + (ang:Up() * 60), Angle(0, LocalPlayer():EyeAngles().y - 90, 90), 0.125)
 			for k, v in pairs(stuff) do
-				draw.SimpleTextOutlined(v.content, "Trebuchet24", 0, -100 - (35 * (k - 1)), v.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25))
+				draw.SimpleTextOutlined(v.content, "BankVaultFont", 0, -100 - (45 * (k - 1)), v.color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, Color(25, 25, 25))
 			end
 		cam.End3D2D()
 	end

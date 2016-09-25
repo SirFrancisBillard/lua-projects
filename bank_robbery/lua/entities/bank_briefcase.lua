@@ -10,7 +10,7 @@ ENT.Model = "models/props_c17/SuitCase_Passenger_Physics.mdl"
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "CanCollect")
-	self:NetworkVar("Bool", 0, "Money")
+	self:NetworkVar("Int", 0, "Money")
 end
 
 if SERVER then
