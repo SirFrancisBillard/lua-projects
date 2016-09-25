@@ -32,7 +32,7 @@ if SERVER then
 	util.AddNetworkString("ScratchCards_OpenClientMenu")
 	util.AddNetworkString("ScratchCards_UseScratchCard")
 	net.Receive("ScratchCards_UseScratchCard", function(len, ply)
-		local num = math.Clamp(net.ReadInt(), 1, 3)
+		local num = math.Clamp(net.ReadInt(3), 1, 3)
 		if (num == 1) then
 			if (not ply:canAfford(100)) then
 				ply:ChatPrint("You're piss poor!")
@@ -63,7 +63,7 @@ if SERVER then
 		if IsValid(caller) and caller:IsPlayer() then
 			local randy = math.random(1, 5)
 			if (randy == 1) then
-				caller:ChatPrint("Hello my friend.")
+				caller:ChatPrint("Hello, my friend.")
 			elseif (randy == 2) then
 				caller:ChatPrint("I can give you quality cards.")
 			elseif (randy == 3) then
@@ -80,7 +80,7 @@ if SERVER then
 end
 
 function ENT:Think()
-	self:SetSequence("idle_all_02")
+	self:SetSequence("idle_all_01")
 end
 
 if CLIENT then
@@ -96,7 +96,7 @@ if CLIENT then
 		Button1:SetSize(250, 30)
 		Button1.DoClick = function()
 			net.Start("ScratchCards_UseScratchCard")
-				net.WriteInt(1)
+				net.WriteInt(1, 3)
 			net.SendToServer()
 			DermaPanel:Close()
 		end
@@ -106,7 +106,7 @@ if CLIENT then
 		Button2:SetSize(250, 30)
 		Button2.DoClick = function()
 			net.Start("ScratchCards_UseScratchCard")
-				net.WriteInt(2)
+				net.WriteInt(2, 3)
 			net.SendToServer()
 			DermaPanel:Close()
 		end
@@ -116,7 +116,7 @@ if CLIENT then
 		Button3:SetSize(250, 30)
 		Button3.DoClick = function()
 			net.Start("ScratchCards_UseScratchCard")
-				net.WriteInt(3)
+				net.WriteInt(3, 3)
 			net.SendToServer()
 			DermaPanel:Close()
 		end
