@@ -20,6 +20,7 @@ function ENT:Initialize()
 		self:DropToFloor()
 		self:CapabilitiesAdd(CAP_ANIMATEDFACE || CAP_TURN_HEAD)
 		self:SetMaxYawSpeed(90)
+		self:SetTrigger(true)
 	end
 	local phys = self:GetPhysicsObject()
 	if IsValid(phys) then
@@ -29,7 +30,35 @@ end
 
 if SERVER then
 	util.AddNetworkString("ScratchCards_OpenClientMenu")
-	util.AddNetworkString("ScratchCards_BuyScratchCard")
+	util.AddNetworkString("ScratchCards_UseScratchCard")
+	net.Receive("ScratchCards_UseScratchCard", function(len, ply)
+		local num = math.Clamp(net.ReadInt(), 1, 3)
+		if (num == 1) then
+			if (not ply:canAfford(100)) then
+				ply:ChatPrint("You're piss poor!")
+				return
+			end
+			local amount = math.random(1, 200)
+			ply:addMoney(amount)
+			ply:ChatPrint("You won $"..string.Comma(amount).."!")
+		elseif (num == 2) then
+			if (not ply:canAfford(1000)) then
+				ply:ChatPrint("You do not have enough money for that!")
+				return
+			end
+			local amount = math.random(10, 2500)
+			ply:addMoney(amount)
+			ply:ChatPrint("You won $"..string.Comma(amount).."!")
+		elseif (num == 3) then
+			if (not ply:canAfford(10000)) then
+				ply:ChatPrint("You do not have enough money for that!")
+				return
+			end
+			local amount = math.random(100, 30000)
+			ply:addMoney(amount)
+			ply:ChatPrint("You won $"..string.Comma(amount).."!")
+		end
+	end)
 	function ENT:StartTouch(caller)
 		if IsValid(caller) and caller:IsPlayer() then
 			local randy = math.random(1, 5)
@@ -55,40 +84,43 @@ function ENT:Think()
 end
 
 if CLIENT then
-	net.Receive("ScratchCards_OpenClientMenu", function()
+	net.Receive("ScratchCards_OpenClientMenu", function(len)
 		local DermaPanel = vgui.Create("DFrame")
-		DermaPanel:SetPos(100, 100)
 		DermaPanel:SetSize(300, 200)
 		DermaPanel:SetTitle("Scratch Cards")
 		DermaPanel:SetDraggable(true)
 		DermaPanel:MakePopup()
 		local Button1 = vgui.Create("DButton", DermaPanel)
-		Button1:SetText("Low Roller")
-		Button1:SetPos(25, 50)
+		Button1:SetText("Low Roller - $100")
+		Button1:SetPos(25, 45)
 		Button1:SetSize(250, 30)
 		Button1.DoClick = function()
-			net.Start("ScratchCards_BuyScratchCard")
+			net.Start("ScratchCards_UseScratchCard")
 				net.WriteInt(1)
 			net.SendToServer()
+			DermaPanel:Close()
 		end
 		local Button2 = vgui.Create("DButton", DermaPanel)
-		Button2:SetText("Medium Roller")
-		Button2:SetPos(50, 50)
+		Button2:SetText("Medium Roller - $1,000")
+		Button2:SetPos(25, 95)
 		Button2:SetSize(250, 30)
 		Button2.DoClick = function()
-			net.Start("ScratchCards_BuyScratchCard")
+			net.Start("ScratchCards_UseScratchCard")
 				net.WriteInt(2)
 			net.SendToServer()
+			DermaPanel:Close()
 		end
 		local Button3 = vgui.Create("DButton", DermaPanel)
-		Button3:SetText("Medium Roller")
-		Button3:SetPos(50, 50)
+		Button3:SetText("High Roller - $10,000")
+		Button3:SetPos(25, 145)
 		Button3:SetSize(250, 30)
 		Button3.DoClick = function()
-			net.Start("ScratchCards_BuyScratchCard")
+			net.Start("ScratchCards_UseScratchCard")
 				net.WriteInt(3)
 			net.SendToServer()
+			DermaPanel:Close()
 		end
+		DermaPanel:Center()
 	end)
 	function ENT:Draw()
 		self:DrawModel()
