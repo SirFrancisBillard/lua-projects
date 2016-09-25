@@ -46,7 +46,6 @@ if SERVER then
 		if self.PermaScale and (self.PermaScale != 1.0) then
 			self:SetModelScale(self.PermaScale)
 		end
-		self:ExtraInit()
 	end
 	function ENT:Think()
 		self:SetCooldown(math.Clamp(self:GetCooldown() - 1, 0, self:GetCooldown()))
