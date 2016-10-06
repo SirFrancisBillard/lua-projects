@@ -7,10 +7,6 @@ ENT.Category = "CityRP"
 ENT.Spawnable = true
 ENT.Model = "models/weapons/w_defuser.mdl"
 
-ENT.Sounds = {
-	Equip = Sound("items/defuser_equip.wav")
-}
-
 if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
@@ -18,7 +14,7 @@ if SERVER then
 				caller:ChatPrint("You are already carrying a defuser.")
 			else
 				caller:ChatPrint("You have picked up a defuser.")
-				self:EmitSound(self.Sounds.Equip)
+				self:EmitSound(CityRP.Config.Defuser.Sounds.Equip)
 				caller.CarryingC4Defuser = true
 				SafeRemoveEntity(self)
 			end
