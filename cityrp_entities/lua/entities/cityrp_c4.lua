@@ -6,14 +6,6 @@ ENT.PrintName = "C4"
 ENT.Category = "CityRP"
 ENT.Spawnable = true
 ENT.Model = "models/weapons/w_c4_planted.mdl"
-ENT.ExplodeTime = 30
-
-ENT.Sounds = {
-	Beep = Sound("weapons/c4/c4_beep1.wav"),
-	Plant = Sound("weapons/c4/c4_plant.wav"),
-	Defuse = Sound("weapons/c4/c4_disarm.wav"),
-	Explode = Sound("phx/explode00.wav")
-}
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "Planted")
@@ -30,8 +22,8 @@ if SERVER then
 			if self:GetPlanted() then
 				if caller.CarryingC4Defuser then
 					caller:ChatPrint("You have successfully defused the bomb.")
-					self:EmitSound(self.Sounds.Defuse)
-					if math.random(1, 4) == 1 then
+					self:EmitSound(CityRP.Config.C4.Sounds.Defuse)
+					if math.random(1, 100) <= CityRP.Config.Defuser.Values.BreakChance then
 						caller:ChatPrint("Unfortunately, your defuser broke in the process.")
 						caller.CarryingC4Defuser = false
 					end
@@ -41,19 +33,19 @@ if SERVER then
 				end
 			else
 				caller:ChatPrint("You have planted the bomb.")
-				self:EmitSound(self.Sounds.Plant)
+				self:EmitSound(CityRP.Config.C4.Sounds.Plant)
 				self:SetPlanted(true)
-				for i = 1, self.ExplodeTime do
+				for i = 1, CityRP.Config.C4.Values.Timer do
 					timer.Simple(i, function()
 						if not IsValid(self) then return end
-						self:SetCountdown(self.ExplodeTime - i)
-						self:EmitSound(self.Sounds.Beep)
+						self:SetCountdown(CityRP.Config.C4.Values.Timer - i)
+						self:EmitSound(CityRP.Config.C4.Sounds.Beep)
 					end)
 				end
-				timer.Simple(self.ExplodeTime + 1, function()
+				timer.Simple(CityRP.Config.C4.Values.Timer + 1, function()
 					if not IsValid(self) then return end
 					util.BlastDamage(self, self, self:GetPos(), 2048, 200)
-					self:EmitSound(self.Sounds.Explode)
+					self:EmitSound(CityRP.Config.C4.Sounds.Explode)
 					SafeRemoveEntity(self)
 				end)
 			end
