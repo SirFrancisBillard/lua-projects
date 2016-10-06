@@ -7,10 +7,6 @@ ENT.Category = "CityRP"
 ENT.Spawnable = true
 ENT.Model = "models/Items/car_battery01.mdl"
 
-ENT.Sounds = {
-	Equip = Sound("items/itempickup.wav")
-}
-
 if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
@@ -18,7 +14,7 @@ if SERVER then
 				caller:ChatPrint("You already have a spray can.")
 			else
 				caller:ChatPrint("You have picked up a spray can.")
-				self:EmitSound(self.Sounds.Equip)
+				self:EmitSound(CityRP.Config.SprayCan.Sounds.Equip)
 				caller.SprayCan = true
 				SafeRemoveEntity(self)
 			end
