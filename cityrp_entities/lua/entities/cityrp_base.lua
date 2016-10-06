@@ -28,4 +28,13 @@ if SERVER then
 			self:SetModelScale(self.PermaScale)
 		end
 	end
+	hook.Add("PlayerSpawn", "CityRP_SpawnWithoutStuff", function(ply)
+		ply.CarryingC4Defuser = false
+		ply.FlashlightBattery = false
+		ply.WearingKevlar = false
+		ply.SprayCan = false
+		ply:AllowFlashlight(false)
+	end)
 end
+
+

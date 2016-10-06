@@ -25,7 +25,3 @@ if SERVER then
 		end
 	end
 end
-
-hook.Add("PlayerSpawn", "CityRP_SpawnWithoutDefuser", function(ply)
-	ply.CarryingC4Defuser = false
-end)
