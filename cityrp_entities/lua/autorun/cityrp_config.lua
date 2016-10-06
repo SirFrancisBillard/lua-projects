@@ -25,6 +25,18 @@ CityRP = {
 			Sounds = {},
 			Values = {}
 		}
+		Battery = {
+			Sounds = {
+				Equip = Sound("items/battery_pickup.wav")
+			},
+			Values = {}
+		}
+		SprayCan = {
+			Sounds = {
+				Equip = Sound("items/itempickup.wav")
+			},
+			Values = {}
+		}
 	},
 	Curry = function(f, v, ...)
 		local function curry1(f, v)
