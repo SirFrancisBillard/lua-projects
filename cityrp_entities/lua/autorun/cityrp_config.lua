@@ -25,5 +25,12 @@ CityRP = {
 			Sounds = {},
 			Values = {}
 		}
-	}
+	},
+	Curry = function(f, v, ...)
+		local function curry1(f, v)
+			return function (...)  return f(v, ...)  end
+		end
+		if v == nil then return f end
+		return curry(curry1(f, v), ...)
+	end
 }
