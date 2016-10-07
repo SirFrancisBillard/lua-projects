@@ -30,8 +30,8 @@ CityRP = {
 			},
 			Values = {
 				IgniteTime = 5,
-				RequiredSpeed = 300,
-				Radius = 256,
+				RequiredSpeed = 100,
+				Radius = 128,
 				Timer = 1
 			}
 		},
