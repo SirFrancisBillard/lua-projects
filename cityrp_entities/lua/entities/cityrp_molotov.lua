@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 ENT.Type = "anim"
 ENT.Base = "cityrp_base"
-ENT.PrintName = "Molotov Cocktail"
+ENT.PrintName = "Thrown Molotov"
 ENT.Category = "CityRP"
 ENT.Spawnable = true
 ENT.Model = "models/props_junk/garbage_glassbottle003a.mdl"
@@ -19,6 +19,11 @@ if SERVER then
 			if not IsValid(self) then return end
 			self:SetCanBlow(true)
 		end)
+		local zfire = ents.Create("env_fire_trail")
+		zfire:SetPos(self:GetPos() + self:GetAngles():Up() * 8)
+		zfire:SetParent(self)
+		zfire:Spawn()
+		zfire:Activate()
 	end
 	function ENT:PhysicsCollide(data, phys)
 		if data.Speed > CityRP.Config.Molotov.Values.RequiredSpeed and self:GetCanBlow() then
