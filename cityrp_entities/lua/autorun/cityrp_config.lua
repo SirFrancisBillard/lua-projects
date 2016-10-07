@@ -11,7 +11,7 @@ CityRP = {
 			},
 			Values = {
 				Timer = 30,
-				Radius = 700,
+				Radius = 512,
 				Damage = 200,
 				KnockDownDoors = true
 			}
@@ -31,7 +31,7 @@ CityRP = {
 			Values = {
 				IgniteTime = 5,
 				RequiredSpeed = 300,
-				Radius = 250,
+				Radius = 256,
 				Timer = 1
 			}
 		},
