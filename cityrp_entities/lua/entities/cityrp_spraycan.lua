@@ -5,7 +5,7 @@ ENT.Base = "cityrp_base"
 ENT.PrintName = "Spray Can"
 ENT.Category = "CityRP"
 ENT.Spawnable = true
-ENT.Model = "models/Items/car_battery01.mdl"
+ENT.Model = "models/Items/grenadeAmmo.mdl"
 
 if SERVER then
 	function ENT:Use(activator, caller)

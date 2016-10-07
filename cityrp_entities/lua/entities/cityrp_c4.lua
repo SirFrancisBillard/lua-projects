@@ -14,8 +14,9 @@ end
 
 if SERVER then
 	function ENT:Initialize()
-		self.BaseClass.Initialize()
+		self.BaseClass.Initialize(self)
 		self:SetPlanted(false)
+		self:SetCountdown(CityRP.Config.C4.Values.Timer)
 	end
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
@@ -44,8 +45,19 @@ if SERVER then
 				end
 				timer.Simple(CityRP.Config.C4.Values.Timer + 1, function()
 					if not IsValid(self) then return end
-					util.BlastDamage(self, self, self:GetPos(), 2048, 200)
+					util.BlastDamage(self, self, self:GetPos(), CityRP.Config.C4.Values.Radius, CityRP.Config.C4.Values.Damage)
+					local boom = EffectData()
+					boom:SetOrigin(self:GetPos())
+					util.Effect("HelicopterMegaBomb", boom)
 					self:EmitSound(CityRP.Config.C4.Sounds.Explode)
+					if CityRP.Config.C4.Values.KnockDownDoors then
+						for k, v in pairs(ents.FindInSphere(self:GetPos(), CityRP.Config.C4.Values.Radius)) do
+							if IsValid(v) and string.find(v:GetClass(), "_door") then
+								v:Fire("Unlock")
+								v:Fire("Open")
+							end
+						end
+					end
 					SafeRemoveEntity(self)
 				end)
 			end

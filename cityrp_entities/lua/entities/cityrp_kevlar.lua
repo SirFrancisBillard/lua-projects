@@ -10,11 +10,13 @@ ENT.Model = "models/props_c17/SuitCase_Passenger_Physics.mdl"
 if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and caller:IsPlayer() then
-			if ply:Armor() >= 100 then
-				ply:ChatPrint("You are already wearing kevlar.")
+			if caller:Armor() >= 100 then
+				caller:ChatPrint("You are already wearing kevlar.")
 			else
-				ply:ChatPrint("You have equipped kevlar.")
-				ply:SetArmor(100)
+				caller:ChatPrint("You have equipped kevlar.")
+				caller:SetArmor(100)
+				self:EmitSound(CityRP.Config.Kevlar.Sounds.Equip)
+				SafeRemoveEntity(self)
 			end
 		end
 	end
