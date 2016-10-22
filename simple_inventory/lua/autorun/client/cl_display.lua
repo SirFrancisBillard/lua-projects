@@ -5,10 +5,6 @@ local function getPadding()
 	return padding, padding, padding, padding
 end
 
-function GAMEMODE:SpawnMenuEnabled()
-	return false
-end
-
 hook.Add("OnSpawnMenuOpen", "OpenInvInstead", function()
 	OpenInventoryMenu()
 end)
@@ -18,7 +14,15 @@ hook.Add("OnSpawnMenuClose", "CloseInvInstead", function()
 end)
 
 function UseItem(id)
-	RunConsoleCommand("_____use_item_" .. id)
+	net.Start("SimpleInventory_PlayerUseItem")
+		net.WriteString(id)
+	net.SendToServer()
+end
+
+function DropItem(id)
+	net.Start("SimpleInventory_PlayerDropItem")
+		net.WriteString(id)
+	net.SendToServer()
 end
 
 function OpenInventoryMenu()
@@ -28,6 +32,7 @@ function OpenInventoryMenu()
 	g_InvMenu:SetDraggable(false)
 	g_InvMenu:ShowCloseButton(false)
 	g_InvMenu:SetMouseInputEnabled(true)
+	g_InvMenu:MakePopup()
 	g_InvMenu:SetTitle("Inventory")
 
 	local invPanelLeft = vgui.Create("DPanel", g_InvMenu)
@@ -76,8 +81,19 @@ function OpenInventoryMenu()
 			invButtons[#invButtons]:SetTooltip(g_ItemTable[k]["desc"])
 		end
 		invButtons[#invButtons].DoClick = function()
-			UseItem(k)
-			RefreshInventoryMenu()
+			local itemMenu = vgui.Create("DMenu", g_InvMenu)
+			itemMenu:SetPos(gui.MousePos())
+			if type(g_ItemTable[k]["use"]) == "function" then
+				itemMenu:AddOption(g_ItemTable[k]["func"], function()
+					UseItem(k)
+					RefreshInventoryMenu()
+				end)
+			end
+			itemMenu:AddOption("Drop", function()
+				DropItem(k)
+				RefreshInventoryMenu()
+			end)
+			itemMenu:Open()
 		end
 	end
 end
