@@ -1,6 +1,8 @@
 util.AddNetworkString("SimpleInventory_PlayerRefresh")
 util.AddNetworkString("SimpleInventory_PlayerUseItem")
 util.AddNetworkString("SimpleInventory_PlayerDropItem")
+util.AddNetworkString("SimpleInventory_PlayerBuyMenu")
+util.AddNetworkString("SimpleInventory_PlayerBuyItem")
 
 net.Receive("SimpleInventory_PlayerUseItem", function(len, ply)
 	local id = net.ReadString()

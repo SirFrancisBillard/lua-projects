@@ -67,7 +67,7 @@ function OpenInventoryMenu()
 		invButtons[#invButtons + 1] = vgui.Create("DButton", invPanels[#invPanels])
 		invButtons[#invButtons]:SetSize(240, 40)
 		invButtons[#invButtons]:Dock(RIGHT)
-		invButtons[#invButtons]:SetText(g_ItemTable[k]["name"] .. " (" .. v .. ")")
+		invButtons[#invButtons]:SetText(g_ItemTable[k]["name"] .. " (" .. string.Comma(v) .. ")")
 		if g_ItemTable[k]["desc"] != nil then
 			invButtons[#invButtons]:SetTooltip(g_ItemTable[k]["desc"])
 		end
