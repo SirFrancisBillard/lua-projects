@@ -58,6 +58,20 @@ concommand.Add("salesman_load", function(ply, cmd, args)
 	end
 end)
 
+hook.Add("PostCleanupMap", "SimpleInventory_CleanUpSalesmen", function()
+	if not g_MapSalesmen[game.GetMap()] then
+		g_MapSalesmen[game.GetMap()] = {}
+		return
+	end
+	for k, v in pairs(g_MapSalesmen[game.GetMap()]) do
+		local man = ents.Create("inv_salesman")
+		man:SetPos(k)
+		man:SetAngles(v.ang)
+		man:SetItemID(v.kind)
+		man:Spawn()
+	end
+end)
+
 function RegisterSalesman(tab)
 	local man = tab
 	if not man.id or not man.name then return end
