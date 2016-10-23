@@ -1,11 +1,11 @@
-local padding = 10
 g_InvOpen = false
+local padding = 10
 
 local function getPadding()
 	return padding, padding, padding, padding
 end
 
-hook.Add("PlayerBindPress", "OpenInvInstead", function(play, bind, press)
+hook.Add("PlayerBindPress", "SimpleInventory_Open", function(play, bind, press)
 	if string.find(bind, "menu") then
 		ToggleInventoryMenu()
 	end

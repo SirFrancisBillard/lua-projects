@@ -5,7 +5,13 @@ function meta:GiveItem(id, am)
 	if am then
 		amount = am
 	end
-	self:SetNWInt(NWPrefix(id), self:GetNWInt(NWPrefix(id), 0) + amount)
+	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
+	if inv[id] then
+		inv[id] = inv[id] + amount
+	else
+		inv[id] = amount
+	end
+	self:SetNWString("SimpleInventory", util.TableToJSON(inv))
 end
 
 function meta:TakeItem(id, am)
@@ -13,16 +19,17 @@ function meta:TakeItem(id, am)
 	if am then
 		amount = am
 	end
-	self:SetNWInt(NWPrefix(id), math.max(self:GetNWInt(NWPrefix(id), 0) - amount, 0))
+	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
+	if inv[id] then
+		inv[id] = math.max(inv[id] - amount, 0)
+	else
+		inv[id] = 0
+	end
+	self:SetNWString("SimpleInventory", util.TableToJSON(inv))
 end
 
 function meta:SetInventory(tab)
-	for k, v in pairs(tab) do
-		if self:HasItem(k) and g_ItemTable[k] != nil then
-			self:SetNWInt(NWPrefix(k), 0)
-			self:SetNWInt(NWPrefix(k), self:GetNWInt(NWPrefix(k), 0) + v)
-		end
-	end
+	return self:SetNWString(util.TableToJSON(tab))
 end
 
 function meta:SaveInventory()

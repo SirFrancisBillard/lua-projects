@@ -1,21 +1,16 @@
 local meta = FindMetaTable("Player")
 
 function meta:HasItem(id, am)
+	local tab = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
 	if am == nil then
-		return self:GetNWInt(NWPrefix(id), 0) > 0
+		return tab[id] > 0
 	else
-		return self:GetNWInt(NWPrefix(id), 0) >= am
+		return tab[id] >= am
 	end
 end
 
 function meta:GetInventory()
-	local inv = {}
-	for k, v in pairs(g_ItemTable) do
-		if self:GetNWInt(NWPrefix(v.id), 0) > 0 then
-			inv[v.id] = self:GetNWInt(NWPrefix(v.id), 0)
-		end
-	end
-	return inv
+	return util.JSONToTable(self:GetNWString("SimpleInventory", ""))
 end
 
 function meta:RefreshInventory()
