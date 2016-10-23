@@ -1,13 +1,59 @@
 g_SalesmanTable = {}
+g_MapSalesmen = {}
 
 concommand.Add("salesman_add", function(ply, cmd, args)
-	if not ply:IsAdmin() then return end
+	if not IsValid(ply) or not ply:IsAdmin() then return end
 	local id = args[1] or "chef"
 	local man = ents.Create("inv_salesman")
 	man:SetPos(ply:GetEyeTrace().HitPos)
+	man:SetAngles(Angle(0, ply:GetAngles().y + 180, 0))
 	man:SetItemID(id)
 	man:Spawn()
-	man:SetAngles(Angle(0, ply:GetAngles().y + 180, 0))
+	if not g_MapSalesmen[game.GetMap()] then
+		g_MapSalesmen[game.GetMap()] = {}
+	end
+	g_MapSalesmen[game.GetMap()][man:GetPos()] = {kind = id, ang = man:GetAngles()}
+end)
+
+concommand.Add("salesman_remove", function(ply, cmd, args)
+	if not IsValid(ply) or not ply:IsAdmin() then return end
+	local trent = ply:GetEyeTrace().Entity
+	if IsValid(trent) and trent.IsSalesman then
+		SafeRemoveEntity(trent)
+		if g_MapSalesmen[game.GetMap()] and g_MapSalesmen[game.GetMap()][trent:GetPos()] then
+			g_MapSalesmen[game.GetMap()][trent:GetPos()] = nil
+		end
+	end
+end)
+
+concommand.Add("salesman_clear", function(ply, cmd, args)
+	for k, v in pairs(ents.FindByClass("inv_salesman")) do
+		if IsValid(v) and v.IsSalesman then
+			SafeRemoveEntity(v)
+			if g_MapSalesmen[game.GetMap()] and g_MapSalesmen[game.GetMap()][v:GetPos()] then
+				g_MapSalesmen[game.GetMap()][v:GetPos()] = nil
+			end
+		end
+	end
+end)
+
+concommand.Add("salesman_load", function(ply, cmd, args)
+	for k, v in pairs(ents.FindByClass("inv_salesman")) do
+		if IsValid(v) and v.IsSalesman then
+			SafeRemoveEntity(v)
+		end
+	end
+	if not g_MapSalesmen[game.GetMap()] then
+		g_MapSalesmen[game.GetMap()] = {}
+		return
+	end
+	for k, v in pairs(g_MapSalesmen[game.GetMap()]) do
+		local man = ents.Create("inv_salesman")
+		man:SetPos(k)
+		man:SetAngles(v.ang)
+		man:SetItemID(v.kind)
+		man:Spawn()
+	end
 end)
 
 function RegisterSalesman(tab)

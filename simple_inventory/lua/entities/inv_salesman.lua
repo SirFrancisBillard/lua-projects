@@ -4,6 +4,7 @@ ENT.Type = "anim"
 ENT.Base = "base_anim"
 ENT.PrintName = "Salesman"
 ENT.Spawnable = false
+ENT.IsSalesman = true
 
 function ENT:SetupDataTables()
 	self:NetworkVar("String", 0, "ItemID")
