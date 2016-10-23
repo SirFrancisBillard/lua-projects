@@ -84,6 +84,9 @@ elseif CLIENT then
 		salesMenu:ShowCloseButton(true)
 		salesMenu:MakePopup()
 		salesMenu:SetTitle(g_SalesmanTable[man:GetItemID()]["name"])
+		function salesMenu:Paint(w, h)
+			draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
+		end
 
 		local invScroll = vgui.Create("DScrollPanel", salesMenu)
 		invScroll:SetSize(69, 69)
