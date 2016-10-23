@@ -47,7 +47,19 @@ RegisterItem{
 	func = "Use",
 	model = "models/Items/HealthKit.mdl",
 	use = function(ply)
-		ply:SetHealth(math.min(ply:Health() + 25, ply:GetMaxHealth()))
+		ply:SetHealth(math.min(ply:Health() + 40, ply:GetMaxHealth()))
+		return true
+	end
+}
+
+RegisterItem{
+	id = "healthvial",
+	name = "Health Vial",
+	desc = "A small vial filled with medicine.",
+	func = "Use",
+	model = "models/healthvial.mdl",
+	use = function(ply)
+		ply:SetHealth(math.min(ply:Health() + 20, ply:GetMaxHealth()))
 		return true
 	end
 }
