@@ -25,23 +25,32 @@ function OpenInventoryMenu()
 	g_InvMenu:SetKeyboardInputEnabled(false)
 	g_InvMenu:SetMouseInputEnabled(true)
 	g_InvMenu:SetTitle("Inventory")
+	function g_InvMenu:Paint(w, h)
+		draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
+	end
 
 	local invPanelLeft = vgui.Create("DPanel", g_InvMenu)
 	invPanelLeft:SetSize(300, 0)
 	invPanelLeft:Dock(LEFT)
 	invPanelLeft:DockPadding(getPadding())
+	function invPanelLeft:Paint(w, h)
+		draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
+	end
 
 	local invPanelRight = vgui.Create("DPanel", g_InvMenu)
 	invPanelRight:SetSize(300, 0)
 	invPanelRight:Dock(RIGHT)
 	invPanelRight:DockPadding(getPadding())
+	function invPanelRight:Paint(w, h)
+		draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
+	end
 
 	local invScroll = vgui.Create("DScrollPanel", invPanelRight)
 	invScroll:SetSize(300, 0)
 	invScroll:Dock(FILL)
 
 	local invName = vgui.Create("DLabel", invPanelLeft)
-	invName:SetTextColor(color_black)
+	invName:SetTextColor(color_white)
 	invName:SetText(LocalPlayer():Nick())
 	invName:Dock(TOP)
 
@@ -56,11 +65,14 @@ function OpenInventoryMenu()
 	local invButtons = {}
 
 	local inv = LocalPlayer():GetInventory()
-	for k, v in pairs(inv) do
+	for k, v in SortedPairs(inv) do
 		if v <= 0 then continue end
 		invPanels[#invPanels + 1] = vgui.Create("DPanel", invScroll)
 		invPanels[#invPanels]:SetSize(0, 40)
 		invPanels[#invPanels]:Dock(TOP)
+		invPanels[#invPanels].Paint = function(self, w, h)
+			draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
+		end
 		invButtons[#invButtons + 1] = vgui.Create("DButton", invPanels[#invPanels])
 		invButtons[#invButtons]:SetSize(260, 40)
 		invButtons[#invButtons]:Dock(FILL)

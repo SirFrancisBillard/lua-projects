@@ -38,3 +38,10 @@ RegisterSalesman({
 	model = "models/player/monk.mdl",
 	soldItems = {["kettle"] = 180}
 })
+
+RegisterSalesman({
+	id = "drug",
+	name = "Drug Dealer",
+	model = "models/player/soldier_stripped.mdl",
+	soldItems = {["cocaine"] = 540, ["weed"] = 420, ["heroin"] = 260}
+})

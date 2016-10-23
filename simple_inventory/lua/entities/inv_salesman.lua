@@ -42,7 +42,7 @@ if SERVER then
 		if not ply:canAfford(g_SalesmanTable[man:GetItemID()]["soldItems"][id]) then return end
 		ply:addMoney(-g_SalesmanTable[man:GetItemID()]["soldItems"][id])
 		ply:GiveItem(id)
-		ply:Notify("You have bought a " .. g_ItemTable[id]["name"] .. ".")
+		ply:Notify("You have bought " .. g_ItemTable[id]["name"] .. ".")
 	end)
 elseif CLIENT then
 	function ENT:Initialize()

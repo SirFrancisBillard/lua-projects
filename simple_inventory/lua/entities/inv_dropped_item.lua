@@ -41,7 +41,7 @@ if SERVER then
 	function ENT:Use(activator, caller)
 		if IsValid(caller) and IsValid(self) and type(self:GetItemID()) == "string" then
 			caller:GiveItem(g_ItemTable[self:GetItemID()]["id"], 1)
-			caller:Notify("You have picked up a " .. g_ItemTable[self:GetItemID()]["name"] .. ".")
+			caller:Notify("You have picked up " .. g_ItemTable[self:GetItemID()]["name"] .. ".")
 			SafeRemoveEntity(self)
 		end
 	end
