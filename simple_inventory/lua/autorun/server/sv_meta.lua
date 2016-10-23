@@ -1,8 +1,5 @@
 local meta = FindMetaTable("Player")
 
-util.AddNetworkString("SimpleInventory_PlayerUseItem")
-util.AddNetworkString("SimpleInventory_PlayerDropItem")
-
 function meta:GiveItem(id, am)
 	local amount = 1
 	if am then
@@ -19,38 +16,19 @@ function meta:TakeItem(id, am)
 	self:RemoveAmmo(amount, id)
 end
 
-net.Receive("SimpleInventory_PlayerUseItem", function(len, ply)
-	local id = net.ReadString()
-	local item = g_ItemTable[id]
-	if ply:HasItem(item.id) and item.use(ply) then
-		ply:TakeItem(item.id, 1)
+function meta:SetInventory(tab)
+	for k, v in pairs(tab) do
+		if self:HasItem(k) and g_ItemTable[k] != nil then
+			self:RemoveAmmo(self:GetAmmoCount(k), k)
+			self:GiveAmmo(v, k)
+		end
 	end
-end)
+end
 
-net.Receive("SimpleInventory_PlayerDropItem", function(len, ply)
-	local id = net.ReadString()
-	local item = g_ItemTable[id]
-	if ply:HasItem(item.id) then
-		ply:TakeItem(item.id, 1)
+function meta:SaveInventory()
+	return self:SetPData("SimpleInventory", util.TableToJSON(self:GetInventory()))
+end
 
-		local ent = ents.Create("inv_dropped_item")
-		ent.ItemID = id
-		ent:Spawn()
-		ent:Initialize()
-		ent:Activate()
-
-		local pos, mins = ent:GetPos(), ent:WorldSpaceAABB()
-		local offset = pos.z - mins.z
-
-		local trace = {}
-		trace.start = ply:EyePos()
-		trace.endpos = trace.start + ply:GetAimVector() * 85
-		trace.filter = ply
-
-		local tr = util.TraceLine(trace)
-		ent:SetPos(tr.HitPos + Vector(0, 0, offset))
-
-		local phys = ent:GetPhysicsObject()
-		timer.Simple(0, function() if phys:IsValid() then phys:Wake() end end)
-	end
-end)
+function meta:LoadInventory()
+	self:SetInventory(util.JSONToTable(self:GetPData("SimpleInventory", {})))
+end
