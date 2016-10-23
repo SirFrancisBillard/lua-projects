@@ -96,13 +96,10 @@ elseif CLIENT then
 			invPanels[#invPanels + 1] = vgui.Create("DPanel", invScroll)
 			invPanels[#invPanels]:SetSize(0, 40)
 			invPanels[#invPanels]:Dock(TOP)
-			invModels[#invModels + 1] = vgui.Create("ModelImage", invPanels[#invPanels])
-			invModels[#invModels]:SetSize(40, 40)
-			invModels[#invModels]:Dock(LEFT)
-			invModels[#invModels]:SetModel(g_ItemTable[k]["model"])
+
 			invButtons[#invButtons + 1] = vgui.Create("DButton", invPanels[#invPanels])
 			invButtons[#invButtons]:SetSize(240, 40)
-			invButtons[#invButtons]:Dock(RIGHT)
+			invButtons[#invButtons]:Dock(FILL)
 			invButtons[#invButtons]:SetText(g_ItemTable[k]["name"] .. " ($" .. string.Comma(v) .. ")")
 			if g_ItemTable[k]["desc"] != nil then
 				invButtons[#invButtons]:SetTooltip(g_ItemTable[k]["desc"])
@@ -118,6 +115,11 @@ elseif CLIENT then
 				end)
 				itemMenu:Open()
 			end
+			invModels[#invModels + 1] = vgui.Create("ModelImage", invButtons[#invButtons])
+			invModels[#invModels]:SetSize(40, 40)
+			invModels[#invModels]:Dock(LEFT)
+			invModels[#invModels]:DockMargin(5, 0, 0, 0)
+			invModels[#invModels]:SetModel(g_ItemTable[k]["model"])
 		end
 	end)
 end

@@ -53,7 +53,7 @@ RegisterItem{
 }
 
 RegisterItem{
-	id = "healthvial",
+	id = "health_vial",
 	name = "Health Vial",
 	desc = "A small vial filled with medicine.",
 	func = "Use",

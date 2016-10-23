@@ -25,8 +25,15 @@ RegisterSalesman({
 })
 
 RegisterSalesman({
+	id = "doctor",
+	name = "Doctor",
+	model = "models/player/kleiner.mdl",
+	soldItems = {["medkit"] = 50, ["health_vial"] = 25}
+})
+
+RegisterSalesman({
 	id = "hardware",
-	name = "Hardware Store",
+	name = "Hardware Clerk",
 	model = "models/player/monk.mdl",
 	soldItems = {["kettle"] = 180}
 })
