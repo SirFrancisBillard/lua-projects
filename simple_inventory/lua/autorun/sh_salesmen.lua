@@ -27,6 +27,7 @@ concommand.Add("salesman_remove", function(ply, cmd, args)
 end)
 
 concommand.Add("salesman_clear", function(ply, cmd, args)
+	if not IsValid(ply) or not ply:IsAdmin() then return end
 	for k, v in pairs(ents.FindByClass("inv_salesman")) do
 		if IsValid(v) and v.IsSalesman then
 			SafeRemoveEntity(v)
@@ -38,6 +39,7 @@ concommand.Add("salesman_clear", function(ply, cmd, args)
 end)
 
 concommand.Add("salesman_load", function(ply, cmd, args)
+	if not IsValid(ply) or not ply:IsAdmin() then return end
 	for k, v in pairs(ents.FindByClass("inv_salesman")) do
 		if IsValid(v) and v.IsSalesman then
 			SafeRemoveEntity(v)
