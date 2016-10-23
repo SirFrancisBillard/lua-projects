@@ -30,24 +30,28 @@ function OpenInventoryMenu()
 	end
 
 	local invPanelLeft = vgui.Create("DPanel", g_InvMenu)
-	invPanelLeft:SetSize(300, 0)
+	invPanelLeft:SetSize(280, 0)
 	invPanelLeft:Dock(LEFT)
 	invPanelLeft:DockPadding(getPadding())
+	invPanelLeft:DockMargin(getPadding())
 	function invPanelLeft:Paint(w, h)
 		draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
 	end
 
 	local invPanelRight = vgui.Create("DPanel", g_InvMenu)
-	invPanelRight:SetSize(300, 0)
+	invPanelRight:SetSize(280, 0)
 	invPanelRight:Dock(RIGHT)
 	invPanelRight:DockPadding(getPadding())
+	invPanelRight:DockMargin(getPadding())
 	function invPanelRight:Paint(w, h)
 		draw.RoundedBox(4, 0, 0, w, h, Color(0, 0, 0, 200))
 	end
 
 	local invScroll = vgui.Create("DScrollPanel", invPanelRight)
-	invScroll:SetSize(300, 0)
+	invScroll:SetSize(280, 0)
 	invScroll:Dock(FILL)
+	invScroll:DockPadding(getPadding())
+	invScroll:DockMargin(getPadding())
 
 	local invName = vgui.Create("DLabel", invPanelLeft)
 	invName:SetTextColor(color_white)
