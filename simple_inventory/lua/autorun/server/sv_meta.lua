@@ -13,7 +13,7 @@ function meta:TakeItem(id, am)
 	if am then
 		amount = am
 	end
-	self:SetNWInt(NWPrefix(id), self:GetNWInt(NWPrefix(id), 0) - amount)
+	self:SetNWInt(NWPrefix(id), math.max(self:GetNWInt(NWPrefix(id), 0) - amount, 0))
 end
 
 function meta:SetInventory(tab)

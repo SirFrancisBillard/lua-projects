@@ -39,3 +39,63 @@ RegisterItem{
 		return true
 	end
 }
+
+RegisterItem{
+	id = "medkit",
+	name = "Medical Kit",
+	desc = "A large kit filled with medical supplies.",
+	func = "Use",
+	model = "models/Items/HealthKit.mdl",
+	use = function(ply)
+		ply:SetHealth(math.min(ply:Health() + 25, ply:GetMaxHealth()))
+		return true
+	end
+}
+
+RegisterItem{
+	id = "kevlar",
+	name = "Kevlar Vest",
+	desc = "A suitcase with armor inside.",
+	func = "Equip",
+	model = "models/props_c17/SuitCase_Passenger_Physics.mdl",
+	use = function(ply)
+		ply:SetArmor(100)
+		return true
+	end
+}
+
+RegisterItem{
+	id = "kettle",
+	name = "Kettle",
+	desc = "A small kettle for making hot beverages.",
+	func = "Use",
+	model = "models/props_interiors/pot01a.mdl"
+}
+
+RegisterItem{
+	id = "coffee_grounds",
+	name = "Coffee Grounds",
+	desc = "A small bag of coffee grounds.",
+	func = "Roast",
+	model = "models/props_junk/garbage_bag001a.mdl",
+	use = function(ply)
+		if ply:HasItem("kettle") then
+			ply:GiveItem("coffee")
+			return true
+		else
+			return false
+		end
+	end
+}
+
+RegisterItem{
+	id = "coffee",
+	name = "Coffee",
+	desc = "A mug filled with hot coffee.",
+	func = "Drink",
+	model = "models/props_junk/garbage_coffeemug001a.mdl",
+	use = function(ply)
+		ply:SetHealth(math.min(ply:Health() + 12, ply:GetMaxHealth()))
+		return true
+	end
+}

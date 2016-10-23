@@ -14,7 +14,7 @@ end)
 function OpenInventoryMenu()
 	g_InvOpen = true
 
-	g_SpawnMenu:Remove()
+	--g_SpawnMenu:Remove()
 
 	g_InvMenu = vgui.Create("DFrame")
 	g_InvMenu:SetSize(600, 300)
@@ -49,7 +49,7 @@ function OpenInventoryMenu()
 	invChar:SetModel(LocalPlayer():GetModel())
 	invChar:Dock(FILL)
 	function invChar:LayoutEntity(ent) return end
-	function invChar.Entity:GetPlayerColor() return Vector(LocalPlayer():GetPlayerColor().r / 255, ply:GetPlayerColor().g / 255, ply:GetPlayerColor().b / 255) end
+	function invChar.Entity:GetPlayerColor() return LocalPlayer():GetPlayerColor() end
 
 	local invPanels = {}
 	local invModels = {}
