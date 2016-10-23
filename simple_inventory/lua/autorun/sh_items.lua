@@ -125,8 +125,8 @@ RegisterItem{
 			ply:Kill()
 			return true
 		else
-			ply._PreCokeWalkSpeed = ply:GetWalkSpeed()
-			ply._PreCokeRunSpeed = ply:GetRunSpeed()
+			ply._PreCokeWalkSpeed = ply._PreCokeWalkSpeed or ply:GetWalkSpeed()
+			ply._PreCokeRunSpeed = ply._PreCokeRunSpeed or ply:GetRunSpeed()
 			ply:SetWalkSpeed(ply:GetWalkSpeed() * 2)
 			ply:SetRunSpeed(ply:GetRunSpeed() * 2)
 			ply:ConCommand("pp_mat_overlay models/shadertest/shader3")
@@ -188,7 +188,7 @@ RegisterItem{
 			ply:Kill()
 			return true
 		else
-			ply._PreShroomJumpPower = ply:GetJumpPower()
+			ply._PreShroomJumpPower = ply._PreShroomJumpPower or ply:GetJumpPower()
 			ply:SetJumpPower(300)
 			ply:SetHealth(math.min(ply:Health() + 20, ply:GetMaxHealth()))
 			ply:ConCommand("pp_bloom 1")
