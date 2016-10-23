@@ -5,7 +5,7 @@ function meta:GiveItem(id, am)
 	if am then
 		amount = am
 	end
-	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
+	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", g_DefInv))
 	if inv[id] then
 		inv[id] = inv[id] + amount
 	else
@@ -19,7 +19,7 @@ function meta:TakeItem(id, am)
 	if am then
 		amount = am
 	end
-	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
+	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", g_DefInv))
 	if inv[id] then
 		inv[id] = math.max(inv[id] - amount, 0)
 	else

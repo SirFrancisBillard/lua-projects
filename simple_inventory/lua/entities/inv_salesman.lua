@@ -42,6 +42,7 @@ if SERVER then
 		if not ply:canAfford(g_SalesmanTable[man:GetItemID()]["soldItems"][id]) then return end
 		ply:addMoney(-g_SalesmanTable[man:GetItemID()]["soldItems"][id])
 		ply:GiveItem(id)
+		ply:Notify("You have bought a " .. g_ItemTable[id]["name"] .. ".")
 	end)
 elseif CLIENT then
 	function ENT:Initialize()
@@ -105,15 +106,10 @@ elseif CLIENT then
 				invButtons[#invButtons]:SetTooltip(g_ItemTable[k]["desc"])
 			end
 			invButtons[#invButtons].DoClick = function()
-				local itemMenu = vgui.Create("DMenu", salesMenu)
-				itemMenu:SetPos(gui.MousePos())
-				itemMenu:AddOption("Buy", function()
-					net.Start("SimpleInventory_PlayerBuyItem")
-						net.WriteEntity(man)
-						net.WriteString(k)
-					net.SendToServer()
-				end)
-				itemMenu:Open()
+				net.Start("SimpleInventory_PlayerBuyItem")
+					net.WriteEntity(man)
+					net.WriteString(k)
+				net.SendToServer()
 			end
 			invModels[#invModels + 1] = vgui.Create("ModelImage", invButtons[#invButtons])
 			invModels[#invModels]:SetSize(40, 40)

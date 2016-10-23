@@ -1,16 +1,16 @@
 local meta = FindMetaTable("Player")
 
 function meta:HasItem(id, am)
-	local tab = util.JSONToTable(self:GetNWString("SimpleInventory", ""))
-	if am == nil then
-		return tab[id] > 0
-	else
-		return tab[id] >= am
+	local tab = util.JSONToTable(self:GetNWString("SimpleInventory", g_DefInv))
+	local amount = 1
+	if am then
+		amount = am
 	end
+	return type(tab[id]) == "number" and tab[id] >= amount
 end
 
 function meta:GetInventory()
-	return util.JSONToTable(self:GetNWString("SimpleInventory", ""))
+	return util.JSONToTable(self:GetNWString("SimpleInventory", g_DefInv))
 end
 
 function meta:RefreshInventory()
@@ -65,5 +65,11 @@ function meta:DropItem(id)
 		net.Start("SimpleInventory_PlayerDropItem")
 			net.WriteString(id)
 		net.SendToServer()
+	end
+end
+
+function meta:Notify(txt)
+	if SERVER then
+		self:ChatPrint(txt)
 	end
 end

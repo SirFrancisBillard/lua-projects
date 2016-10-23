@@ -7,6 +7,7 @@ concommand.Add("salesman_add", function(ply, cmd, args)
 	man:SetPos(ply:GetEyeTrace().HitPos)
 	man:SetItemID(id)
 	man:Spawn()
+	man:SetAngles(Angle(0, ply:GetAngles().y + 180, 0))
 end)
 
 function RegisterSalesman(tab)

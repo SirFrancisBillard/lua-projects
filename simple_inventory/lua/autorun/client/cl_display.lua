@@ -57,6 +57,7 @@ function OpenInventoryMenu()
 
 	local inv = LocalPlayer():GetInventory()
 	for k, v in pairs(inv) do
+		if v <= 0 then continue end
 		invPanels[#invPanels + 1] = vgui.Create("DPanel", invScroll)
 		invPanels[#invPanels]:SetSize(0, 40)
 		invPanels[#invPanels]:Dock(TOP)

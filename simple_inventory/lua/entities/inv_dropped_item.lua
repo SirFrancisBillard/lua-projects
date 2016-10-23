@@ -5,6 +5,10 @@ ENT.Base = "base_gmodentity"
 ENT.PrintName = "Dropped Item"
 ENT.Spawnable = false
 
+function ENT:SetupDataTables()
+	self:NetworkVar("String", 0, "ItemID")
+end
+
 function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
@@ -27,13 +31,17 @@ end
 if SERVER then
 	function ENT:Think()
 		if type(self.ItemID) == "string" then
-			self:SetModel(g_ItemTable[self.ItemID].model)
+			self:SetItemID(self.ItemID)
+		end
+		if type(self:GetItemID()) == "string" then
+			self:SetModel(g_ItemTable[self:GetItemID()]["model"])
 		end
 	end
 
 	function ENT:Use(activator, caller)
-		if IsValid(caller) and IsValid(self) and type(self.ItemID) == "string" then
-			caller:GiveItem(g_ItemTable[self.ItemID].id, 1)
+		if IsValid(caller) and IsValid(self) and type(self:GetItemID()) == "string" then
+			caller:GiveItem(g_ItemTable[self:GetItemID()]["id"], 1)
+			caller:Notify("You have picked up a " .. g_ItemTable[self:GetItemID()]["name"] .. ".")
 			SafeRemoveEntity(self)
 		end
 	end
