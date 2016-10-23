@@ -2,17 +2,17 @@ local meta = FindMetaTable("Player")
 
 function meta:HasItem(id, am)
 	if am == nil then
-		return self:GetAmmoCount(id) > 0
+		return self:GetNWInt(NWPrefix(id), 0) > 0
 	else
-		return self:GetAmmoCount(id) >= am
+		return self:GetNWInt(NWPrefix(id), 0) >= am
 	end
 end
 
 function meta:GetInventory()
 	local inv = {}
-	for k, v in pairs(game.BuildAmmoTypes()) do
-		if self:HasItem(v.name) and g_ItemTable[v.name] != nil then
-			inv[v.name] = self:GetAmmoCount(v.name)
+	for k, v in pairs(g_ItemTable) do
+		if self:GetNWInt(NWPrefix(v.id), 0) > 0 then
+			inv[v.id] = self:GetNWInt(NWPrefix(v.id), 0)
 		end
 	end
 	return inv

@@ -1,13 +1,8 @@
 g_ItemTable = {}
-g_RecipeTable = {}
 
 function RegisterItem(tab)
 	local item = tab
 	if not item.id or not item.name then return end
-	game.AddAmmoType({name = item.id, dmgtype = DMG_BULLET})
-	if CLIENT then
-		language.Add(item.id .. "_ammo", item.name)
-	end
 	item.func = item.func or "Use"
 	item.use = item.use or "nope"
 	if type(item.recipe) == "table" then

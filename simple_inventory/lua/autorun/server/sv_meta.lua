@@ -5,7 +5,7 @@ function meta:GiveItem(id, am)
 	if am then
 		amount = am
 	end
-	self:GiveAmmo(amount, id, false)
+	self:SetNWInt(NWPrefix(id), self:GetNWInt(NWPrefix(id), 0) + amount)
 end
 
 function meta:TakeItem(id, am)
@@ -13,14 +13,14 @@ function meta:TakeItem(id, am)
 	if am then
 		amount = am
 	end
-	self:RemoveAmmo(amount, id)
+	self:SetNWInt(NWPrefix(id), self:GetNWInt(NWPrefix(id), 0) - amount)
 end
 
 function meta:SetInventory(tab)
 	for k, v in pairs(tab) do
 		if self:HasItem(k) and g_ItemTable[k] != nil then
-			self:RemoveAmmo(self:GetAmmoCount(k), k)
-			self:GiveAmmo(v, k)
+			self:SetNWInt(NWPrefix(k), 0)
+			self:SetNWInt(NWPrefix(k), self:GetNWInt(NWPrefix(k), 0) + v)
 		end
 	end
 end
