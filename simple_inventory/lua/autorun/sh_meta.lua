@@ -27,6 +27,9 @@ function meta:UseItem(id)
 	if SERVER then
 		if ply:HasItem(id) and item.use(ply) then
 			ply:TakeItem(id, 1)
+			return true
+		else
+			return false
 		end
 	elseif CLIENT then
 		net.Start("SimpleInventory_PlayerUseItem")

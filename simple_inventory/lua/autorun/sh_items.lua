@@ -32,6 +32,16 @@ function RegisterItem(tab)
 			end
 		end
 	end
+	if type(item.giveWeapon) == "string" then
+		item.use = function(ply)
+			if not ply:HasWeapon(item.giveWeapon) then
+				ply:Give(item.giveWeapon)
+				return true
+			else
+				return false
+			end
+		end
+	end
 	item.model = item.model or "models/error.mdl"
 	item.price = item.price or 10
 	g_ItemTable[item.id] = item
@@ -328,8 +338,8 @@ RegisterItem{
 
 RegisterItem{
 	id = "weed",
-	name = "Cannabis",
-	desc = "Weed will decrease your stress and gives you a relaxing feeling.",
+	name = "Weed",
+	desc = "Weed will decrease your stress and give you a relaxing feeling.",
 	func = "Use",
 	model = "models/katharsmodels/contraband/zak_wiet/zak_wiet.mdl",
 	use = function(ply)
