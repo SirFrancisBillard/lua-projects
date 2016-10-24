@@ -14,7 +14,7 @@ end)
 function OpenInventoryMenu()
 	g_InvOpen = true
 
-	g_SpawnMenu:Remove()
+	--g_SpawnMenu:Remove()
 
 	g_InvMenu = vgui.Create("DFrame")
 	g_InvMenu:SetSize(600, 300)

@@ -40,9 +40,16 @@ if SERVER then
 		if man:GetClass() != "inv_salesman" then return end
 		if man:GetPos():DistToSqr(ply:GetPos()) > 262144 then return end
 		if g_ItemTable[id] == nil then return end
-		if not ply:canAfford(g_SalesmanTable[man:GetItemID()]["soldItems"][id]) then return end
+		if not ply:canAfford(g_SalesmanTable[man:GetItemID()]["soldItems"][id]) then
+			ply:Notify("You cannot afford this item!")
+			return
+		end
+		if not ply:CanGiveItem(id, 1) then
+			ply:Notify("Your inventory is full!")
+			return
+		end
 		ply:addMoney(-g_SalesmanTable[man:GetItemID()]["soldItems"][id])
-		ply:GiveItem(id)
+		ply:GiveItem(id, 1)
 		ply:Notify("You have bought " .. g_ItemTable[id]["name"] .. ".")
 	end)
 elseif CLIENT then

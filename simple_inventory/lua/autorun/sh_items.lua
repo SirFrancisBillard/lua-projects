@@ -6,7 +6,6 @@ function RegisterItem(tab)
 	item.func = item.func or "Use"
 	item.use = item.use or "nope"
 	if type(item.recipe) == "table" then
-		item.oldUse = item.use
 		item.use = function(ply)
 			local good = true
 			for k, v in pairs(item.recipe.needs) do
@@ -23,22 +22,24 @@ function RegisterItem(tab)
 			return good
 		end
 	end
+	if type(item.restore) == "number" then
+		item.use = function(ply)
+			if ply:Health() < ply:GetMaxHealth() then
+				ply:SetHealth(math.Clamp(ply:Health() + item.restore, 0, 100))
+				return true
+			else
+				return false
+			end
+		end
+	end
 	item.model = item.model or "models/error.mdl"
 	item.price = item.price or 10
 	g_ItemTable[item.id] = item
 end
 
-RegisterItem{
-	id = "melon",
-	name = "Watermelon",
-	desc = "A lovely fruit.",
-	func = "Eat",
-	model = "models/props_junk/watermelon01.mdl",
-	use = function(ply)
-		ply:SetHealth(math.min(ply:Health() + 1, ply:GetMaxHealth()))
-		return true
-	end
-}
+-- DEFAULT ITEMS
+
+-- MEDICAL
 
 RegisterItem{
 	id = "medkit",
@@ -46,10 +47,7 @@ RegisterItem{
 	desc = "A large kit filled with medical supplies.",
 	func = "Use",
 	model = "models/Items/HealthKit.mdl",
-	use = function(ply)
-		ply:SetHealth(math.min(ply:Health() + 40, ply:GetMaxHealth()))
-		return true
-	end
+	restore = 80
 }
 
 RegisterItem{
@@ -58,11 +56,10 @@ RegisterItem{
 	desc = "A small vial filled with medicine.",
 	func = "Use",
 	model = "models/healthvial.mdl",
-	use = function(ply)
-		ply:SetHealth(math.min(ply:Health() + 20, ply:GetMaxHealth()))
-		return true
-	end
+	restore = 40
 }
+
+-- BLACK MARKET
 
 RegisterItem{
 	id = "kevlar",
@@ -71,10 +68,126 @@ RegisterItem{
 	func = "Equip",
 	model = "models/props_c17/SuitCase_Passenger_Physics.mdl",
 	use = function(ply)
-		ply:SetArmor(100)
-		return true
+		if ply:Armor() < 100 then
+			ply:SetArmor(100)
+			return true
+		else
+			return false
+		end
 	end
 }
+
+-- FOOD
+
+RegisterItem{
+	id = "melon",
+	name = "Watermelon",
+	desc = "A lovely fruit.",
+	func = "Eat",
+	model = "models/props_junk/watermelon01.mdl",
+	restore = 12
+}
+
+RegisterItem{
+	id = "fish",
+	name = "Fish",
+	desc = "A fresh fish, straight from the ocean.",
+	func = "Eat",
+	model = "models/props/CS_militia/fishriver01.mdl",
+	restore = 18
+}
+
+RegisterItem{
+	id = "burger",
+	name = "Hamburger",
+	desc = "A tasty hamburger with grilled beef.",
+	func = "Eat",
+	model = "models/food/burger.mdl",
+	restore = 20
+}
+
+RegisterItem{
+	id = "chinese",
+	name = "Chinese Takeout",
+	desc = "A small carton filled with cold noodles.",
+	func = "Eat",
+	model = "models/props_junk/garbage_takeoutcarton001a.mdl",
+	restore = 14
+}
+
+RegisterItem{
+	id = "carrot",
+	name = "Carrot",
+	desc = "Good for you eyes!",
+	func = "Eat",
+	model = "models/props/cs_office/Snowman_nose.mdl",
+	restore = 6
+}
+
+RegisterItem{
+	id = "beans",
+	name = "Can of Beans",
+	desc = "A tin can filled with beans.",
+	func = "Eat",
+	model = "models/props_junk/garbage_metalcan001a.mdl",
+	restore = 10
+}
+
+RegisterItem{
+	id = "goldfish",
+	name = "Golfish",
+	desc = "An extremely rare and incredibly delicious fish.",
+	func = "Eat",
+	model = "models/props/de_inferno/GoldFish.mdl",
+	restore = 80
+}
+
+RegisterItem{
+	id = "cola",
+	name = "Cola Can",
+	desc = "A can of fizzy cola.",
+	func = "Drink",
+	model = "models/props_junk/PopCan01a.mdl",
+	restore = 6
+}
+
+RegisterItem{
+	id = "cider",
+	name = "Cider",
+	desc = "Never forget your origins.",
+	func = "Drink",
+	model = "models/props_junk/GlassBottle01a.mdl",
+	restore = 8
+}
+
+RegisterItem{
+	id = "milk_carton",
+	name = "Milk Carton",
+	desc = "A carton of fresh milk.",
+	func = "Drink",
+	model = "models/props_junk/garbage_milkcarton002a.mdl",
+	restore = 12
+}
+
+RegisterItem{
+	id = "milk_jug",
+	name = "Milk Jug",
+	desc = "A jug of fresh milk.",
+	func = "Drink",
+	model = "models/props_junk/garbage_milkcarton001a.mdl",
+	restore = 16
+}
+
+RegisterItem{
+	id = "bleach",
+	name = "Bleach",
+	desc = "A bottle filled with disinfectant.",
+	func = "Drink",
+	model = "models/props_junk/garbage_plasticbottle001a.mdl",
+	restore = -80
+}
+
+-- COFFEE MAKING
 
 RegisterItem{
 	id = "kettle",
@@ -106,10 +219,7 @@ RegisterItem{
 	desc = "A mug filled with hot coffee.",
 	func = "Drink",
 	model = "models/props_junk/garbage_coffeemug001a.mdl",
-	use = function(ply)
-		ply:SetHealth(math.min(ply:Health() + 12, ply:GetMaxHealth()))
-		return true
-	end
+	restore = 12
 }
 
 -- DRUGS

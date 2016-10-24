@@ -31,8 +31,8 @@ concommand.Add("salesman_clear", function(ply, cmd, args)
 	for k, v in pairs(ents.FindByClass("inv_salesman")) do
 		if IsValid(v) and v.IsSalesman then
 			SafeRemoveEntity(v)
-			if g_MapSalesmen[game.GetMap()] and g_MapSalesmen[game.GetMap()][v:GetPos()] then
-				g_MapSalesmen[game.GetMap()][v:GetPos()] = nil
+			if g_MapSalesmen[game.GetMap()] then
+				g_MapSalesmen[game.GetMap()] = {}
 			end
 		end
 	end
