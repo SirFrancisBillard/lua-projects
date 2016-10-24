@@ -36,6 +36,9 @@ function meta:TakeItem(id, am)
 	else
 		inv[id] = 0
 	end
+	if inv[id] <= 0 then
+		inv[id] = nil
+	end
 	self:SetNWString("SimpleInventory", util.TableToJSON(inv))
 end
 
