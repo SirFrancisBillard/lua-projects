@@ -35,11 +35,10 @@ end
 
 function ENT:Use(activator, caller)
 	if IsValid(caller) and caller:IsPlayer() then
-		if caller:HasWeapon("weapon_bandages") then
-			caller:GiveAmmo(1, "bandages")
-		else
+		if not caller:HasWeapon("weapon_bandages") then
 			caller:Give("weapon_bandages")
 		end
+		caller:GiveAmmo(1, "bandages")
 		SafeRemoveEntity(self)
 	end
 end
