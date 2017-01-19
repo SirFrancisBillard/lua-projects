@@ -44,8 +44,8 @@ SWEP.WElements = {
 	["bandage"] = { type = "Model", model = "models/props/cs_office/Paper_towels.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(2.012, 2.647, -2.123), angle = Angle(-69.766, 5.291, 9.59), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 }
 
-function SWEP:IsGood()
-	return IsValid(self) and IsValid(self.Owner) and self.Owner:IsPlayer() and self.Owner:Alive() and IsValid(self.Owner:GetActiveWeapon()) and self.Owner:GetActiveWeapon():GetClass() == self.ClassName
+local function IsGood(ent)
+	return IsValid(ent) and IsValid(ent.Owner) and ent.Owner:IsPlayer() and ent.Owner:Alive() and IsValid(ent.Owner:GetActiveWeapon()) and ent.Owner:GetActiveWeapon():GetClass() == ent.ClassName
 end
 
 function SWEP:Deploy()
@@ -68,7 +68,7 @@ function SWEP:PrimaryAttack()
 	self.Using = true
 	self:SendWeaponAnim(ACT_VM_THROW)
 	timer.Simple(0.3, function()
-		if not self:IsGood() then return end
+		if not IsGood(self) then return end
 		self:TakePrimaryAmmo(1)
 		self.Owner:SetNWInt("Bleed", 0)
 		self.Owner:SetNWEntity("BleedAttacker", self.Owner)
