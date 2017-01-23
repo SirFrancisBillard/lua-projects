@@ -130,3 +130,13 @@ function ToggleInventoryMenu()
 end
 
 net.Receive("SimpleInventory_PlayerRefresh", RefreshInventoryMenu)
+
+net.Receive("SimpleInventory_PlayerGetItem", function(len)
+	local id = net.ReadString()
+	if LocalInventory[id] ~= nil then
+		LocalInventory[id] = LocalInventory[id] + 1
+	else
+		LocalInventory[id] = 1
+	end
+	RefreshInventoryMenu()
+end)
