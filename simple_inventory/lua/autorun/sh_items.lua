@@ -1,10 +1,17 @@
 g_ItemTable = {}
+g_ItemTranslateToID = {}
+g_ItemTranslateFromID = {}
+g_RegisterID = 0
 
 function RegisterItem(tab)
 	local item = tab
 	if not item.id or not item.name then return end
 	item.func = item.func or "Use"
 	item.use = item.use or "nope"
+	g_ItemTranslateToID[tostring(g_RegisterID)] = item.id
+	g_ItemTranslateFromID[item.id] = tostring(g_RegisterID)
+	item.id = g_RegisterID
+	g_RegisterID = g_RegisterID + 1
 	if type(item.recipe) == "table" then
 		item.use = function(ply)
 			local good = true
@@ -258,7 +265,7 @@ RegisterItem{
 				ply:SetRunSpeed(ply._PreCokeRunSpeed)
 			end )
 			local sayings = {
-				"HOW CAN I SHOOT WITH A FREAKING MELON ?",
+				"HOW CAN I SHOOT WITH A FREAKING MELON?",
 				"IM FLYING AS A FOOTBALL!?",
 				"IM FASTER THAN MY LOVELY BILLIES!"
 			}
@@ -327,7 +334,7 @@ RegisterItem{
 			end)
 			local sayings = {
 				"my pancakeyss are almost READYyy",
-				"watermelons how to make ?!?",
+				"watermelons how to make?!?",
 				"How Do I Use legs???"
 			}
 			ply:ConCommand("say " .. sayings[math.random(1, #sayings)])
