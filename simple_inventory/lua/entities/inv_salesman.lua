@@ -36,7 +36,7 @@ if SERVER then
 
 	net.Receive("SimpleInventory_PlayerBuyItem", function(len, ply)
 		local man = net.ReadEntity()
-		local id = net.ReadString()
+		local id = g_ItemTranslateFromID[net.ReadString()]
 		if man:GetClass() != "inv_salesman" then return end
 		if man:GetPos():DistToSqr(ply:GetPos()) > 262144 then return end
 		if g_ItemTable[id] == nil then return end
