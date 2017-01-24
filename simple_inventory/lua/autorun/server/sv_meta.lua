@@ -1,43 +1,46 @@
 local meta = FindMetaTable("Player")
 
 function meta:GiveItem(id, am)
-	if not g_ItemTable[id] or not self:CanGiveItem(id, am) then return end
+	local num = g_ItemTranslateFromID[id]
+	if not g_ItemTable[num] or not self:CanGiveItem(num, am) then return end
 	local amount = 1
 	if am then
 		amount = am
 	end
 	local inv = util.JSONToTable(self:GetNWString("SimpleInventory", g_DefInv))
-	if inv[id] then
-		inv[id] = inv[id] + amount
+	if inv[num] then
+		inv[num] = inv[num] + amount
 	else
-		inv[id] = amount
+		inv[num] = amount
 	end
 	self:SetNWString("SimpleInventory", util.TableToJSON(inv))
 end
 
 function meta:CanGiveItem(id, am)
+	local num = g_ItemTranslateFromID[id]
 	local amount = 1
 	if am then
 		amount = am
 	end
-	local digits = #id + #tostring(amount) + 5
+	local digits = #num + #tostring(amount) + 5
 	return #self:GetNWString("SimpleInventory", g_DefInv) + digits < 199
 end
 
 function meta:TakeItem(id, am)
-	if not g_ItemTable[id] then return end
+	local num = g_ItemTranslateFromID[id]
+	if not g_ItemTable[num] then return end
 	local amount = 1
 	if am then
 		amount = am
 	end
 	local inv = self:GetInventory()
-	if inv[id] then
-		inv[id] = math.max(inv[id] - amount, 0)
+	if inv[num] then
+		inv[num] = math.max(inv[num] - amount, 0)
 	else
-		inv[id] = 0
+		inv[num] = 0
 	end
-	if inv[id] <= 0 then
-		inv[id] = nil
+	if inv[num] <= 0 then
+		inv[num] = nil
 	end
 	self:SetNWString("SimpleInventory", util.TableToJSON(inv))
 end
