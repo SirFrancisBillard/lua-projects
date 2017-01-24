@@ -5,7 +5,7 @@ util.AddNetworkString("SimpleInventory_PlayerBuyMenu")
 util.AddNetworkString("SimpleInventory_PlayerBuyItem")
 
 net.Receive("SimpleInventory_PlayerUseItem", function(len, ply)
-	local id = net.ReadString()
+	local id = g_ItemTranslateFromID[net.ReadString()]
 	local item = g_ItemTable[id]
 	if ply:HasItem(item.id) and item.use(ply) then
 		ply:TakeItem(item.id, 1)
@@ -13,7 +13,7 @@ net.Receive("SimpleInventory_PlayerUseItem", function(len, ply)
 end)
 
 net.Receive("SimpleInventory_PlayerDropItem", function(len, ply)
-	local id = net.ReadString()
+	local id = g_ItemTranslateFromID[net.ReadString()]
 	local item = g_ItemTable[id]
 	if ply:HasItem(item.id) then
 		ply:TakeItem(item.id, 1)
