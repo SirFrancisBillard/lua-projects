@@ -6,7 +6,8 @@ function meta:HasItem(id, am)
 	if am then
 		amount = am
 	end
-	return type(tab[id]) == "number" and tab[id] >= amount
+	local num = g_ItemTranslateFromID[id]
+	return type(tab[num]) == "number" and tab[num] >= amount
 end
 
 function meta:GetInventory()
@@ -23,29 +24,31 @@ function meta:RefreshInventory()
 end
 
 function meta:UseItem(id)
-	local item = g_ItemTable[id]
+	local num = g_ItemTranslateFromID[id]
 	if SERVER then
-		if ply:HasItem(id) and item.use(ply) then
-			ply:TakeItem(id, 1)
+		local item = g_ItemTable[g_ItemTranslateFromID[id]]
+		if ply:HasItem(num) and item.use(ply) then
+			ply:TakeItem(num, 1)
 			return true
 		else
 			return false
 		end
 	elseif CLIENT then
 		net.Start("SimpleInventory_PlayerUseItem")
-			net.WriteString(id)
+			net.WriteString(num)
 		net.SendToServer()
 	end
 end
 
 function meta:DropItem(id)
+	local num = g_ItemTranslateFromID[id]
 	if SERVER then
-		local item = g_ItemTable[id]
+		local item = g_ItemTable[g_ItemTranslateFromID[id]]
 		if ply:HasItem(item.id) then
 			ply:TakeItem(item.id, 1)
 
 			local ent = ents.Create("inv_dropped_item")
-			ent.ItemID = id
+			ent.ItemID = num
 			ent:Spawn()
 			ent:Initialize()
 			ent:Activate()
@@ -66,7 +69,7 @@ function meta:DropItem(id)
 		end
 	elseif CLIENT then
 		net.Start("SimpleInventory_PlayerDropItem")
-			net.WriteString(id)
+			net.WriteString(num)
 		net.SendToServer()
 	end
 end
