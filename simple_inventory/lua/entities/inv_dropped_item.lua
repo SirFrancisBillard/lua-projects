@@ -9,6 +9,10 @@ function ENT:SetupDataTables()
 	self:NetworkVar("String", 0, "ItemID")
 end
 
+function ENT:ID()
+	return g_ItemTranslateFromID[self:GetItemID()]
+end
+
 function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
@@ -33,16 +37,16 @@ if SERVER then
 		if type(self.ItemID) == "string" then
 			self:SetItemID(self.ItemID)
 		end
-		if type(self:GetItemID()) == "string" then
-			self:SetModel(g_ItemTable[self:GetItemID()]["model"])
+		if type(self:ID()) == "string" then
+			self:SetModel(g_ItemTable[self:ID()]["model"])
 		end
 	end
 
 	function ENT:Use(activator, caller)
-		if IsValid(caller) and IsValid(self) and type(self:GetItemID()) == "string" then
-			if caller:CanGiveItem(g_ItemTable[self:GetItemID()]["id"], 1) then
-				caller:GiveItem(g_ItemTable[self:GetItemID()]["id"], 1)
-				caller:Notify("You have picked up " .. g_ItemTable[self:GetItemID()]["name"] .. ".")
+		if IsValid(caller) and IsValid(self) and type(self:ID()) == "string" then
+			if caller:CanGiveItem(g_ItemTable[self:ID()]["id"], 1) then
+				caller:GiveItem(g_ItemTable[self:ID()]["id"], 1)
+				caller:Notify("You have picked up " .. g_ItemTable[self:ID()]["name"] .. ".")
 				SafeRemoveEntity(self)
 			else
 				caller:Notify("Your inventory is full!")
