@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 g_ItemTable = {}
-g_DefaultInventory
+g_DefaultInventory = {}
 
 local PlyMeta = FindMetaTable("Player")
 
@@ -16,19 +16,39 @@ function CreateItem(tab)
 end
 
 function PlyMeta:GetInventory()
-	return self.inventory
+	return self.inventory or g_DefaultInventory
 end
 
 function PlyMeta:HasItem(item, amt)
-	if g_ItemTable[item] != nil and amt > 0 then
+	if g_ItemTable[item] ~= nil and amt > 0 then
 		local inv = self:GetInventory()
-		return not inv[item] == nil and inv[item] >= amt
+		return inv[item] ~= nil and inv[item] >= amt
+	end
+end
+
+function PlyMeta:UseItem(item)
+	if SERVER then
+		if g_ItemTable[item] ~= nil and self:HasItem(item, 1) then
+			g_ItemTable[item].use(ply)
+			self:TakeItem(item, 1)
+		end
+	else -- CLIENT
+		net.Start("UseInventoryItem")
+			net.WriteString(item)
+		net.SendToServer()
 	end
 end
 
 if SERVER then
 	util.AddNetworkString("SendInventoryToClient")
 	util.AddNetworkString("UseInventoryItem")
+
+	net.Receive("UseInventoryItem", function(len, ply)
+		local item = net.ReadString()
+		if g_ItemTable[item] ~= nil then
+			ply:UseItem(item)
+		end
+	end)
 
 	function PlyMeta:SendInventory()
 		self.inventory = self.inventory or g_DefaultInventory
@@ -38,7 +58,7 @@ if SERVER then
 	end
 
 	function PlyMeta:GiveItem(item, amt)
-		if g_ItemTable[item] != nil and amt > 0 then
+		if g_ItemTable[item] ~= nil and amt > 0 then
 			if self.inventory[item] == nil then
 				self.inventory[item] = amt
 			else
@@ -48,10 +68,13 @@ if SERVER then
 		end
 	end
 
-	function PlyMeta:UseItem(item) end
-end
-
-if CLIENT then
+	function PlyMeta:TakeItem(item, amt)
+		if g_ItemTable[item] ~= nil and amt > 0 and self:HasItem(item, amt) then
+			self.inventory[item] = self.inventory[item] - amt
+			self:SendInventory()
+		end
+	end
+else -- CLIENT
 	net.Receive("SendInventoryToClient", function(len)
 		LocalPlayer().inventory = net.ReadTable() or g_DefaultInventory
 		RefreshInventoryMenu()
