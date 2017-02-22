@@ -16,7 +16,7 @@ g_tUtilF = {
 	end,
 	fSerializationFunc = function()
 		return "abs"
-  end,
+  	end,
 	aAltStr = function()
 		return sAltStr or "iNumPackets"
 	end,
