@@ -23,3 +23,22 @@ function PLAYER:SetItem(slot, id, amt)
 
 	self:SendInventory()
 end
+
+function PLAYER:GiveItem(id, amt)
+	local count = ply:GetItemCount(id)
+
+	if count <= 0 and self:InventoryFull() then
+		return
+	end
+
+	self:SendInventory()
+end
+
+function PLAYER:SwapItemSlot(a, b)
+	local item1 = self.Inventory[a]
+	local item2 = self.Inventory[b]
+	self.Inventory[a] = item2
+	self.Inventory[b] = item1
+
+	self:SendInventory()
+end
