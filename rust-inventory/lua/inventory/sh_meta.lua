@@ -1,7 +1,22 @@
 local PLAYER = FindMetaTable("Player")
 
+function PLAYER:GetFilledInventorySlots()
+	local filled = 0
+	for i = 1, 30 do
+		if not self.Inventory[i].ID == "empty" then
+			filled = filled + 1
+		end
+	end
+	return filled
+end
+
 function PLAYER:IsInventoryFull()
-	return #self.Inventory >= 30
+	return self:GetFilledInventorySlots() >= 30
+end
+
+function PLAYER:HasAvailableInventorySlots(amt)
+	amt = amt or 1
+	return self:GetFilledInventorySlots() <= (30 - amt)
 end
 
 function PLAYER:GetItemCount(id)
@@ -16,12 +31,32 @@ end
 
 function PLAYER:HasItem(id, amt)
 	amt = amt or 1
-	self:GetItemCount() >= amt
+	return self:GetItemCount() >= amt
 end
 
 function PLAYER:CanReceiveItem(id, amt)
 	local max = GetItemData(id).StackSize
-	-- TODO
+	local slots_needed
+	if amt > max then
+		slots_needed = math.ceil(amt % max)
+	else
+		slots_needed = 1
+	end
+	if self:HasAvailableInventorySlots(slots_needed) then
+		return true, amt
+	end
+	local should_put = math.min(amt, max - foundamt)
+	-- if inv is full, make sure we have the item and can stack
+	local space_in_stacks = 0
+	for i = 1, 30 do
+		if self.Inventory[i].ID == id then
+			space_in_stacks = space_in_stacks + (max - self.Inventory[i].Quantity)
+		end
+	end
+	if amt > space_in_stacks then
+		return true, space_in_stacks
+	end
+	return false, 0
 end
 
 function PLAYER:IsItemOnHotbar(id, amt)
@@ -33,15 +68,6 @@ function PLAYER:IsItemOnHotbar(id, amt)
 			if found >= amt then
 				return true
 			end
-		end
-	end
-	return false
-end
-
-function PLAYER:HasAvailableInventorySlot()
-	for i = 1, 30 do
-		if not self.Inventory[i].ID == "empty" then
-			return true
 		end
 	end
 	return false
