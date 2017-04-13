@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 
-ENT.PrintName = "M16 Grenade"
+ENT.PrintName = "Undermounted Grenade"
 
 ENT.Spawnable = false
 ENT.Model = "models/Items/AR2_Grenade.mdl"
@@ -25,9 +25,6 @@ if SERVER then
 		self:PhysWake()
 
 		util.SpriteTrail(self, 0, color_white, false, 4, 1, 0.3, 0.1, "trails/smoke.vmt")
-
-		self.Roller = false
-		self.ExplodeTime = false
 	end
 
 	function ENT:Detonate()
