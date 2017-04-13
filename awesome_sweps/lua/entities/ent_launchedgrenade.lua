@@ -63,7 +63,7 @@ if SERVER then
 	end
 else -- CLIENT
 	function ENT:Draw()
-		render.SetMaterial("sprite idk")
+		render.SetMaterial("sprites/glow01.vmt")
 		render.DrawSprite(self:GetPos(), 18, 18, self:GetOwner() == LocalPlayer() and color_white or color_red)
 		self:DrawModel()
 	end
