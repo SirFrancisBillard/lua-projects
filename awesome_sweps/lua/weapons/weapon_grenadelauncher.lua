@@ -6,9 +6,15 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Grenade Launcher"
+SWEP.Instructions = [[<color=green>[PRIMARY FIRE]</color> Launch a grenade.
+
+Grenades will explode shortly after impact with surfaces.
+
+Grenades deal more damage on direct hits.]]
 
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
+SWEP.UseHands = true
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
@@ -34,7 +40,7 @@ SWEP.SlotPos = 1
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 
-local ShootSound = Sound("de")
+local ShootSound = Sound("weapons/grenade_launcher1.wav")
 
 function SWEP:CanPrimaryAttack()
 	return self.Owner:GetAmmoCount(self.Primary.Ammo) > 0
@@ -42,8 +48,9 @@ end
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
-	self.Weapon:SetNextPrimaryFire(CurTime() + SWEP.Primary.Delay)
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
+	self:ShootEffects()
 	self:EmitSound(ShootSound)
 
 	if CLIENT then return end
@@ -52,16 +59,16 @@ function SWEP:PrimaryAttack()
 
 	if not IsValid(nade) then return end
 
-	ent:SetOwner(self.Owner)
-	ent:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 16))
-	ent:SetAngles(self.Owner:EyeAngles())
-	ent:Spawn()
+	nade:SetOwner(self.Owner)
+	nade:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 16))
+	nade:SetAngles(self.Owner:EyeAngles())
+	nade:Spawn()
 
-	local phys = ent:GetPhysicsObject()
-	if not IsValid(phys) then ent:Remove() return end
+	local phys = nade:GetPhysicsObject()
+	if not IsValid(phys) then nade:Remove() return end
 
 	local velocity = self.Owner:GetAimVector()
-	velocity = velocity * 100
+	velocity = velocity * 1200
 	phys:ApplyForceCenter(velocity)
 
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
@@ -69,10 +76,6 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.Owner:RemoveAmmo(1, self.Primary.Ammo)
-
-	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
-		self.needs_reload = true
-	end
 end
 
 function SWEP:CanSecondaryAttack()
@@ -81,12 +84,10 @@ end
 
 -- reload handling
 
-SWEP.reloadtimer           = 0
+SWEP.reloadtimer = 0
 
 function SWEP:SetupDataTables()
-   self:DTVar("Bool", 0, "reloading")
-
-   return self.BaseClass.SetupDataTables(self)
+	self:DTVar("Bool", 0, "reloading")
 end
 
 function SWEP:Reload()
@@ -94,11 +95,8 @@ function SWEP:Reload()
 
 	if not IsFirstTimePredicted() then return end
 
-	if self:Clip1() < self.Primary.ClipSize and self.Owner:GetAmmoCount( self.Primary.Ammo ) > 0 then
-
-		if self:StartReload() then
-			return
-		end
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) < self.Primary.DefaultClip and self:StartReload() then
+		return
 	end
 end
 
@@ -113,13 +111,14 @@ function SWEP:StartReload()
 
 	local wep = self
 
-	if wep:Clip1() >= self.Primary.ClipSize then
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip then
 		return false
 	end
 
+	self:SetBodygroup(0, 1)
 	wep:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
 
-	self.reloadtimer =  CurTime() + wep:SequenceDuration()
+	self.reloadtimer = CurTime() + wep:SequenceDuration()
 
 	self.dt.reloading = true
 
@@ -127,33 +126,34 @@ function SWEP:StartReload()
 end
 
 function SWEP:PerformReload()
-	local ply = self.Owner
-
 	-- prevent normal shooting in between reloads
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-	self.Owner:GiveAmmo(1, self.Primary.Ammo, true)
+	if SERVER then
+		self.Owner:GiveAmmo(1, self.Primary.Ammo, true)
+	end
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
+	self:EmitSound(Sound("weapons/shotgun/shotgun_reload" .. math.random(1, 3) .. ".wav"))
 
-	self.reloadtimer = CurTime() + self:SequenceDuration()
+	self.reloadtimer = CurTime() + self:SequenceDuration() + 0.2
 end
 
 function SWEP:FinishReload()
 	self.dt.reloading = false
 	self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
-
+	self:SetBodygroup(0, 0)
 	self.reloadtimer = CurTime() + self:SequenceDuration()
 end
 
 
 function SWEP:Think()
-	if self.needs_reload then
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
 		self:Reload()
 	end
 
 	if self.dt.reloading and IsFirstTimePredicted() then
-		if self.Owner:KeyDown(IN_ATTACK) then
+		if self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 then
 			self:FinishReload()
 			return
 		end

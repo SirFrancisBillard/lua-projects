@@ -3,15 +3,13 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 
-ENT.PrintName = "Launched Grenade"
+ENT.PrintName = "M16 Grenade"
 
 ENT.Spawnable = false
-ENT.Model = "models/weapons/w_eq_fraggrenade_thrown.mdl"
+ENT.Model = "models/Items/AR2_Grenade.mdl"
 
-local DamageDirect = 80
-local DamageRoller = 40
+local SplodeDamage = 50
 local SplodeRadius = 250
-local SplodeTime = 2
 
 local color_white = color_white or Color(255, 255, 255)
 local color_red = Color(255, 0, 0)
@@ -37,32 +35,13 @@ if SERVER then
 		boom:SetOrigin(self:GetPos())
 		util.Effect("Explosion", boom)
 
-		util.BlastDamage(self, self.Owner, self:GetPos(), SplodeRadius, self.Roller and DamageRoller or DamageDirect)
+		util.BlastDamage(self, self.Owner, self:GetPos(), SplodeRadius, SplodeDamage)
 
 		self:Remove()
 	end
 
 	function ENT:PhysicsCollide(data, phys)
-		if data.HitEntity:IsWorld() and not self.Roller then
-			self.Roller = true
-			self.ExplodeTime = CurTime() + SplodeTime
-		end
-
-		if data.Speed > 50 then
-			self:EmitSound(Sound("HEGrenade.Bounce"))
-		end
-	end
-
-	function ENT:Think()
-		if self.ExplodeTime and self.ExplodeTime < CurTime() then
-			self:Detonate()
-		end
-	end
-
-	function ENT:StartTouch(ent)
-		if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC()) then
-			self:Detonate()
-		end
+		self:Detonate()
 	end
 else -- CLIENT
 	function ENT:Draw()
