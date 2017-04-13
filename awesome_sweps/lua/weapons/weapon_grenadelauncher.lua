@@ -148,20 +148,22 @@ end
 
 
 function SWEP:Think()
-	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
+	local ammo = self.Owner:GetAmmoCount(self.Primary.Ammo)
+	
+	if ammo <= 0 then
 		self:Reload()
 	end
 
 	if self.dt.reloading and IsFirstTimePredicted() then
-		if self.Owner:KeyDown(IN_ATTACK) and self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 then
+		if self.Owner:KeyDown(IN_ATTACK) and ammo > 0 then
 			self:FinishReload()
 			return
 		end
 
 		if self.reloadtimer <= CurTime() then
-			if self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip then
+			if ammo >= self.Primary.DefaultClip then
 				self:FinishReload()
-			elseif self.Owner:GetAmmoCount(self.Primary.Ammo) < self.Primary.DefaultClip then
+			elseif ammo < self.Primary.DefaultClip then
 				self:PerformReload()
 			else
 				self:FinishReload()
