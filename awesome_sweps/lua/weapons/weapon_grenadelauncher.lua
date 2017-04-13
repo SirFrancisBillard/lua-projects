@@ -6,10 +6,10 @@ if CLIENT then
 end
 
 SWEP.PrintName = "Grenade Launcher"
-SWEP.Instructions = [[<color=green>[PRIMARY FIRE]</color> Launch a grenade.
+SWEP.Instructions = [[
+<color=green>[PRIMARY FIRE]</color> Launch a grenade.
 
 Grenades will explode shortly after impact with surfaces.
-
 Grenades deal more damage on direct hits.]]
 
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
