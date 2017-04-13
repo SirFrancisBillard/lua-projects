@@ -24,7 +24,7 @@ SWEP.Primary.DefaultClip = 30
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "m16generic"
 
-SWEP.Primary.Cone = 0.2
+SWEP.Primary.Cone = 0
 SWEP.Primary.Delay = 0.2
 SWEP.Primary.Damage = 12
 
@@ -47,6 +47,7 @@ SWEP.DrawCrosshair = true
 
 local ShootSound = Sound("Weapon_M4A1.Single")
 local NadeSound = Sound("weapons/grenade_launcher1.wav")
+local MaxConeModifier = 0.4
 
 local function CheckForNoAmmo(ent)
 	if ent.Owner:GetAmmoCount(self.Primary.Ammo) < 1 then
@@ -73,7 +74,7 @@ function SWEP:PrimaryAttack()
 	bullet.Num 	= self.Primary.NumShots
 	bullet.Src 	= self.Owner:GetShootPos()
 	bullet.Dir 	= self.Owner:GetAimVector()
-	bullet.Spread 	= Vector(self.Primary.Cone + math.min(MaxConeModifier, self.cone_modifier), self.Primary.Cone + math.min(MaxConeModifier, self.cone_modifier), 0)
+	bullet.Spread 	= Vector(self.Primary.Cone + self.cone_modifier, self.Primary.Cone + self.cone_modifier, 0)
 	bullet.Tracer	= 1
 	bullet.Force	= 20
 	bullet.Damage	= self.Primary.Damage
@@ -81,7 +82,7 @@ function SWEP:PrimaryAttack()
 	
 	self.Owner:FireBullets(bullet)
 
-	self.cone_modifier = self.cone_modifier + 0.05
+	self.cone_modifier = math.min(MaxConeModifier, self.cone_modifier + 0.05)
 	
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
@@ -134,10 +135,10 @@ function SWEP:Reload()
 
 	self.reload_timer = CurTime() + self:SequenceDuration(ACT_VM_RELOAD)
 	self.reloading = true
-end
+end]
 
 function SWEP:Think()
-	self.cone_modifier = self.cone_modifier - FrameTime()
+	self.cone_modifier = math.max(0, self.cone_modifier - (FrameTime() / 10))
 
 	if self.needs_reload then
 		self.needs_reload = false
