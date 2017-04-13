@@ -21,7 +21,7 @@ SWEP.AdminOnly = false
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = 30
-SWEP.Primary.Automatic = false
+SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "m16generic"
 
 SWEP.Primary.Cone = 0
@@ -71,13 +71,13 @@ function SWEP:PrimaryAttack()
 	if CLIENT then return end
 
 	local bullet = {}
-	bullet.Num 	= self.Primary.NumShots
-	bullet.Src 	= self.Owner:GetShootPos()
-	bullet.Dir 	= self.Owner:GetAimVector()
-	bullet.Spread 	= Vector(self.Primary.Cone + self.cone_modifier, self.Primary.Cone + self.cone_modifier, 0)
-	bullet.Tracer	= 1
-	bullet.Force	= 20
-	bullet.Damage	= self.Primary.Damage
+	bullet.Num = self.Primary.NumShots
+	bullet.Src = self.Owner:GetShootPos()
+	bullet.Dir = self.Owner:GetAimVector()
+	bullet.Spread = Vector(self.Primary.Cone + self.cone_modifier, self.Primary.Cone + self.cone_modifier, 0)
+	bullet.Tracer = 1
+	bullet.Force = 20
+	bullet.Damage = self.Primary.Damage
 	bullet.AmmoType = self.Primary.Ammo
 	
 	self.Owner:FireBullets(bullet)
