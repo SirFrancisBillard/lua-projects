@@ -70,7 +70,19 @@ function SWEP:PrimaryAttack()
 	if CLIENT then return end
 
 	local bullet = {}
+	bullet.Num 	= self.Primary.NumShots
+	bullet.Src 	= self.Owner:GetShootPos()
+	bullet.Dir 	= self.Owner:GetAimVector()
+	bullet.Spread 	= Vector(self.Primary.Cone + math.min(MaxConeModifier, self.cone_modifier), self.Primary.Cone + math.min(MaxConeModifier, self.cone_modifier), 0)
+	bullet.Tracer	= 1
+	bullet.Force	= 20
+	bullet.Damage	= self.Primary.Damage
+	bullet.AmmoType = self.Primary.Ammo
+	
+	self.Owner:FireBullets(bullet)
 
+	self.cone_modifier = self.cone_modifier + 0.05
+	
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
 	end
@@ -95,7 +107,21 @@ function SWEP:SecondaryAttack()
 
 	if CLIENT then return end
 
-	-- undermounted grenade
+	local nade = ents.Create("ent_impactgrenade")
+
+	if not IsValid(nade) then return end
+
+	nade:SetOwner(self.Owner)
+	nade:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 16))
+	nade:SetAngles(self.Owner:EyeAngles())
+	nade:Spawn()
+
+	local phys = nade:GetPhysicsObject()
+	if not IsValid(phys) then nade:Remove() return end
+
+	local velocity = self.Owner:GetAimVector()
+	velocity = velocity * 2400
+	phys:ApplyForceCenter(velocity)
 
 	self.Owner:RemoveAmmo(math.Clamp(self.Secondary.TakeAmmo, 1, self.Owner:GetAmmoCount(self.Primary.Ammo)), self.Primary.Ammo)
 	CheckForNoAmmo(self)
@@ -111,6 +137,8 @@ function SWEP:Reload()
 end
 
 function SWEP:Think()
+	self.cone_modifier = self.cone_modifier - FrameTime()
+
 	if self.needs_reload then
 		self.needs_reload = false
 		self:Reload()
@@ -124,5 +152,6 @@ end
 function SWEP:Deploy()
 	self.reloading = false
 	self.reload_timer = 0
+	self.cone_modifier = 0
 	return self.BaseClass.Deploy(self)
 end
