@@ -147,8 +147,9 @@ function SWEP:Reload()
 	if not IsFirstTimePredicted() or self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip or self.reloading then return end
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
+	self.Owner:GetViewModel():SetPlaybackRate(1.5)
 
-	self.reload_timer = CurTime() + self:SequenceDuration()
+	self.reload_timer = CurTime() + (self:SequenceDuration() * (2 / 3))
 	self.reloading = true
 end
 

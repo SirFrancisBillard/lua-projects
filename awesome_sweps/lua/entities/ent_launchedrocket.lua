@@ -8,9 +8,9 @@ ENT.PrintName = "Launched Rocket"
 ENT.Spawnable = false
 ENT.Model = "models/weapons/w_missile_closed.mdl"
 
-local SplashDamage = 20
-local DirectDamage = 40
-local SplodeRadius = 250
+local SplashDamage = 60
+local DirectDamage = 80
+local SplodeRadius = 80
 
 local color_white = color_white or Color(255, 255, 255)
 local color_red = Color(255, 0, 0)
@@ -23,14 +23,17 @@ if SERVER then
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetMoveType(MOVETYPE_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
-		self:PhysWake()
+
+		local phys = self:GetPhysicsObject()
+		if IsValid(phys) then
+			phys:Wake()
+			phys:EnableGravity(false)
+		end
 
 		util.SpriteTrail(self, 0, color_white, false, 12, 1, 0.8, 0.1, "trails/smoke.vmt")
 
 		self.DirectHit = false
 		self.Noise = CreateSound(self, "weapons/rpg/rocket1.wav")
-
-		self:SetGravity(0)
 	end
 
 	function ENT:Detonate()

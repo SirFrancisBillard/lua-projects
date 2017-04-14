@@ -57,7 +57,7 @@ function SWEP:PrimaryAttack()
 	if not IsValid(phys) then nade:Remove() return end
 
 	local velocity = self.Owner:GetAimVector()
-	velocity = velocity * 10000
+	velocity = velocity * 2500
 	phys:ApplyForceCenter(velocity)
 end
 
