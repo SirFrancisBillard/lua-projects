@@ -8,7 +8,6 @@ end
 SWEP.PrintName = "Grenade Launcher"
 SWEP.Instructions = [[
 <color=green>[PRIMARY FIRE]</color> Launch a grenade.
-
 Grenades will explode shortly after impact with surfaces.
 Grenades deal more damage on direct hits.]]
 
@@ -149,7 +148,7 @@ end
 
 function SWEP:Think()
 	local ammo = self.Owner:GetAmmoCount(self.Primary.Ammo)
-	
+
 	if ammo <= 0 then
 		self:Reload()
 	end

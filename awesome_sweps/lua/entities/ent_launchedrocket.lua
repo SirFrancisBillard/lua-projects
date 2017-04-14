@@ -6,7 +6,7 @@ ENT.Base = "base_gmodentity"
 ENT.PrintName = "Launched Rocket"
 
 ENT.Spawnable = false
-ENT.Model = "models/Items/AR2_Grenade.mdl"
+ENT.Model = "models/weapons/w_missile_closed.mdl"
 
 local SplashDamage = 20
 local DirectDamage = 40
@@ -21,14 +21,16 @@ if SERVER then
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
-		self:SetMoveType(MOVETYPE_FLY)
+		self:SetMoveType(MOVETYPE_VPHYSICS)
 		self:SetSolid(SOLID_VPHYSICS)
 		self:PhysWake()
 
-		util.SpriteTrail(self, 0, color_white, false, 4, 1, 0.8, 0.1, "trails/smoke.vmt")
+		util.SpriteTrail(self, 0, color_white, false, 12, 1, 0.8, 0.1, "trails/smoke.vmt")
 
 		self.DirectHit = false
 		self.Noise = CreateSound(self, "weapons/rpg/rocket1.wav")
+
+		self:SetGravity(0)
 	end
 
 	function ENT:Detonate()
