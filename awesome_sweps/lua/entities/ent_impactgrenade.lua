@@ -20,11 +20,11 @@ if SERVER then
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:PhysicsInit(SOLID_VPHYSICS)
-		self:PhysicsInitSphere(6, "metal")
 		self:SetMoveType(MOVETYPE_VPHYSICS)
+		self:SetSolid(SOLID_VPHYSICS)
 		self:PhysWake()
 
-		util.SpriteTrail(self, 0, color_white, false, 4, 1, 0.3, 0.1, "trails/smoke.vmt")
+		util.SpriteTrail(self, 0, color_white, false, 4, 1, 0.2, 0.1, "trails/smoke.vmt")
 	end
 
 	function ENT:Detonate()
