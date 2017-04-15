@@ -155,7 +155,7 @@ function SWEP:Reload()
 end
 
 function SWEP:Think()
-	self.cone_modifier = math.max(0, self.cone_modifier - (FrameTime() / 10))
+	self.cone_modifier = math.max(0, self.cone_modifier - (FrameTime() / 25))
 
 	if self.needs_reload then
 		self.needs_reload = false

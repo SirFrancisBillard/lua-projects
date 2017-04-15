@@ -1,31 +1,32 @@
 AddCSLuaFile()
 
-game.AddAmmoType({name = "pythonbullets"})
+game.AddAmmoType({name = "goldengunbullets"})
 if CLIENT then
-	language.Add("pythonbullets_ammo", "Bullets")
+	language.Add("goldengunbullets_ammo", "Bullets")
 end
 
-SWEP.PrintName = "Python Revolver"
+SWEP.PrintName = "Golden Gun"
 SWEP.Instructions = [[
 <color=green>[PRIMARY FIRE]</color> Fire a bullet.
-<color=green>[SECONDARY FIRE]</color> Fan the hammer.
-Fanning provides a greater fire rate with heavily reduced accuracy.]]
+Golden gun bullets are capable of instantly killing targets.
 
-SWEP.ViewModel = "models/weapons/c_357.mdl"
-SWEP.WorldModel = "models/weapons/w_357.mdl"
+<color=yellow>Unlike what the name would suggest, this weapon is not actually made out of gold.</color>]]
+
+SWEP.ViewModel = "models/weapons/cstrike/c_pist_deagle.mdl"
+SWEP.WorldModel = "models/weapons/w_pist_deagle.mdl"
 SWEP.UseHands = true
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
 
 SWEP.Primary.ClipSize = -1
-SWEP.Primary.DefaultClip = 6
+SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Automatic = false
-SWEP.Primary.Ammo = "pythonbullets"
+SWEP.Primary.Ammo = "goldengunbullets"
 
 SWEP.Primary.Cone = 0
 SWEP.Primary.Delay = 0.6
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 1337
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Recoil = 12
 
@@ -33,9 +34,6 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
-
-SWEP.Secondary.Delay = 0.3
-SWEP.Secondary.Cone = 0.06
 
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
@@ -46,16 +44,10 @@ SWEP.SlotPos = 1
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
 
-local DefaultPos = Vector(1.44, 0, -1.88)
-local DefaultAng = Vector(0, 0, 0)
+SWEP.ViewModelPos = Vector(0.759, 0, -1.04)
+SWEP.ViewModelAng = Vector(0, 0, 0)
 
-local IronPos = Vector(-3.401, 0, -4.56)
-local IronAng = Vector(0, 0, 0)
-
-SWEP.ViewModelPos = DefaultPos
-SWEP.ViewModelAng = DefaultAng
-
-local ShootSound = Sound("Weapon_357.Single")
+local ShootSound = Sound("Weapon_Deagle.Single")
 
 function SWEP:Initialize()
 	self:SetHoldType("revolver")
@@ -77,21 +69,14 @@ function SWEP:PrimaryAttack()
 	bullet.Num = self.Primary.NumShots
 	bullet.Src = self.Owner:GetShootPos()
 	bullet.Dir = self.Owner:GetAimVector()
+	bullet.Spread = Vector(self.Primary.Cone, self.Primary.Cone, 0)
 	bullet.Tracer = 1
 	bullet.Force = 20
 	bullet.Damage = self.Primary.Damage
 	bullet.AmmoType = "Pistol"
 
-	if self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetNextPrimaryFire(CurTime() + self.Secondary.Delay)
-		bullet.Spread = Vector(self.Secondary.Cone, self.Secondary.Cone, 0)
-	else
-		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		bullet.Spread = Vector(self.Primary.Cone, self.Primary.Cone, 0)
-	end
-
 	self.Owner:FireBullets(bullet)
-	self.Owner:ViewPunch(Angle(-3, math.random(-1.5, 1.5), 0))
+	self.Owner:ViewPunch(Angle(-8, math.random(-4, 4), 0))
 
 	if CLIENT then return end
 
@@ -112,9 +97,8 @@ function SWEP:Reload()
 	if not IsFirstTimePredicted() or self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip or self.reloading then return end
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
-	self.Owner:GetViewModel():SetPlaybackRate(1.5)
 
-	self.reload_timer = CurTime() + (self:SequenceDuration() * (2 / 3))
+	self.reload_timer = CurTime() + self:SequenceDuration() + 0.1
 	self.reloading = true
 end
 
@@ -129,16 +113,6 @@ function SWEP:Think()
 		self.reload_timer = 0
 
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
-	end
-
-	if CLIENT then
-		if self.Owner:KeyDown(IN_ATTACK2) and not self.reloading then
-			self.ViewModelPos = LerpVector(FrameTime() * 5, self.ViewModelPos, IronPos)
-			self.ViewModelAng = LerpVector(FrameTime() * 5, self.ViewModelAng, IronAng)
-		else
-			self.ViewModelPos = LerpVector(FrameTime() * 5, self.ViewModelPos, DefaultPos)
-			self.ViewModelAng = LerpVector(FrameTime() * 5, self.ViewModelAng, DefaultAng)
-		end
 	end
 end
 

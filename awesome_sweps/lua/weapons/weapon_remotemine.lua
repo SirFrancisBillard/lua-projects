@@ -43,7 +43,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:CanPrimaryAttack()
-	return not IsValid(self.Owner.DeployedMine)
+	return true
 end
 
 function SWEP:PrimaryAttack()
@@ -54,6 +54,10 @@ function SWEP:PrimaryAttack()
 	self:EmitSound(ShootSound)
 
 	if CLIENT then return end
+
+	if IsValid(self.Owner.DeployedMine) then
+		self.Owner.DeployedMine:Fizzle()
+	end
 
 	local nade = ents.Create("ent_remotemine")
 

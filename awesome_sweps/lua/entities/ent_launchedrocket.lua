@@ -8,9 +8,9 @@ ENT.PrintName = "Launched Rocket"
 ENT.Spawnable = false
 ENT.Model = "models/weapons/w_missile_closed.mdl"
 
-local SplashDamage = 60
-local DirectDamage = 80
-local SplodeRadius = 80
+local SplashDamage = 80
+local DirectDamage = 90
+local SplodeRadius = 100
 
 local color_white = color_white or Color(255, 255, 255)
 local color_red = Color(255, 0, 0)

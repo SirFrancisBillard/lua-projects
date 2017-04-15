@@ -40,7 +40,9 @@ if SERVER then
 	function ENT:Fizzle()
 		local spark = EffectData()
 		spark:SetOrigin(self:GetPos())
-		util.Effect("CrossbowLoad", spark, true, true)
+		spark:SetNormal(vector_origin:GetNormalized())
+		spark:SetMagnitude(0.1)
+		util.Effect("ManhackSparks", spark, true, true)
 
 		self:Remove()
 	end
