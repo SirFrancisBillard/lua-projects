@@ -23,7 +23,7 @@ if SERVER then
 		self:SetModel(self.Model)
 		self:SetModelScale(0.2)
 		self:PhysicsInit(SOLID_VPHYSICS)
-		self:PhysicsInitSphere(6, "metal")
+		self:PhysicsInitSphere(3, "metal")
 		self:SetMoveType(MOVETYPE_VPHYSICS)
 		self:PhysWake()
 
@@ -36,7 +36,7 @@ if SERVER then
 	function ENT:Detonate()
 		local boom = EffectData()
 		boom:SetOrigin(self:GetPos())
-		util.Effect("Explosion", boom)
+		util.Effect("Explosion", boom, true, true)
 
 		util.BlastDamage(self, self.Owner, self:GetPos(), SplodeRadius, self.Roller and DamageRoller or DamageDirect)
 

@@ -36,7 +36,7 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
 
-SWEP.Secondary.Delay = 2
+SWEP.Secondary.Delay = 3
 SWEP.Secondary.TakeAmmo = 6
 
 SWEP.Weight = 5
@@ -55,7 +55,7 @@ SWEP.IronSightsAng = Vector(1.6, -0.7, 0)
 
 local ShootSound = Sound("Weapon_M4A1.Single")
 local NadeSound = Sound("weapons/grenade_launcher1.wav")
-local MaxConeModifier = 0.2
+local MaxConeModifier = 0.08
 
 local function CheckForNoAmmo(ent)
 	if ent.Owner:GetAmmoCount(ent.Primary.Ammo) < 1 then
@@ -64,6 +64,7 @@ local function CheckForNoAmmo(ent)
 end
 
 function SWEP:Initialize()
+	self:SetHoldType("ar2")
 	self.cone_modifier = 0
 
 	return self.BaseClass.Initialize(self)
@@ -82,8 +83,6 @@ function SWEP:PrimaryAttack()
 	self:ShootEffects()
 	self:EmitSound(ShootSound)
 
-	if CLIENT then return end
-
 	local bullet = {}
 	bullet.Num = self.Primary.NumShots
 	bullet.Src = self.Owner:GetShootPos()
@@ -97,7 +96,9 @@ function SWEP:PrimaryAttack()
 	self.Owner:FireBullets(bullet)
 	self.Owner:ViewPunch(Angle(-0.5, math.random(-0.2, 0.2), 0))
 
-	self.cone_modifier = math.min(MaxConeModifier, self.cone_modifier + 0.02)
+	self.cone_modifier = math.min(MaxConeModifier, self.cone_modifier + 0.01)
+
+	if CLIENT then return end
 
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)

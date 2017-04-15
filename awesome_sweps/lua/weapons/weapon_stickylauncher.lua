@@ -44,6 +44,8 @@ SWEP.IsStickyLauncher = true
 local ShootSound = Sound("weapons/grenade_launcher1.wav")
 
 function SWEP:Initialize()
+	self:SetHoldType("shotgun")
+
 	return self.BaseClass.Initialize(self)
 end
 

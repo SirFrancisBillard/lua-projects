@@ -39,7 +39,7 @@ if SERVER then
 	function ENT:Detonate()
 		local boom = EffectData()
 		boom:SetOrigin(self:GetPos())
-		util.Effect("Explosion", boom)
+		util.Effect("Explosion", boom, true, true)
 
 		util.BlastDamage(self, self.Owner, self:GetPos(), SplodeRadius, self.DirectHit and DirectDamage or SplashDamage)
 

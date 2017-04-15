@@ -35,7 +35,7 @@ if SERVER then
 	function ENT:Detonate()
 		local boom = EffectData()
 		boom:SetOrigin(self:GetPos())
-		util.Effect("Explosion", boom)
+		util.Effect("Explosion", boom, true, true)
 
 		util.BlastDamage(self, self.Owner, self:GetPos(), SplodeRadius, SplodeDamage)
 
@@ -45,7 +45,7 @@ if SERVER then
 	function ENT:Fizzle()
 		local spark = EffectData()
 		spark:SetOrigin(self:GetPos())
-		util.Effect("CrossbowLoad", spark)
+		util.Effect("CrossbowLoad", spark, true, true)
 
 		self:Remove()
 	end
