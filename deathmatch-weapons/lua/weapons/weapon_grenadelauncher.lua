@@ -58,23 +58,23 @@ function SWEP:PrimaryAttack()
 	self:ShootEffects()
 	self:EmitSound(ShootSound)
 
-	if CLIENT then return end
+	if SERVER then
+		local nade = ents.Create("ent_launchedgrenade")
 
-	local nade = ents.Create("ent_launchedgrenade")
+		if not IsValid(nade) then return end
 
-	if not IsValid(nade) then return end
+		nade:SetOwner(self.Owner)
+		nade:SetPos(self.Owner:EyePos())
+		nade:SetAngles(self.Owner:EyeAngles())
+		nade:Spawn()
 
-	nade:SetOwner(self.Owner)
-	nade:SetPos(self.Owner:EyePos())
-	nade:SetAngles(self.Owner:EyeAngles())
-	nade:Spawn()
+		local phys = nade:GetPhysicsObject()
+		if not IsValid(phys) then nade:Remove() return end
 
-	local phys = nade:GetPhysicsObject()
-	if not IsValid(phys) then nade:Remove() return end
-
-	local velocity = self.Owner:GetAimVector()
-	velocity = velocity * 1200
-	phys:ApplyForceCenter(velocity)
+		local velocity = self.Owner:GetAimVector()
+		velocity = velocity * 1200
+		phys:ApplyForceCenter(velocity)
+	end
 
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)

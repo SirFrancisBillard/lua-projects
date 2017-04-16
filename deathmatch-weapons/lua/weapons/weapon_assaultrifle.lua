@@ -57,12 +57,6 @@ local ShootSound = Sound("Weapon_M4A1.Single")
 local NadeSound = Sound("weapons/grenade_launcher1.wav")
 local MaxConeModifier = 0.08
 
-local function CheckForNoAmmo(ent)
-	if ent.Owner:GetAmmoCount(ent.Primary.Ammo) < 1 then
-		ent.needs_reload = true
-	end
-end
-
 function SWEP:Initialize()
 	self.BaseClass.Initialize(self)
 
@@ -75,6 +69,9 @@ function SWEP:CanPrimaryAttack()
 end
 
 function SWEP:PrimaryAttack()
+	if IsFirstTimePredicted() then
+		print(self.reloading)
+	end
 	if not self:CanPrimaryAttack() then return end
 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -98,14 +95,15 @@ function SWEP:PrimaryAttack()
 
 	self.cone_modifier = math.min(MaxConeModifier, self.cone_modifier + 0.01)
 
-	if CLIENT then return end
-
 	if self.Owner:GetAmmoCount(self.Primary.Ammo) > self.Primary.DefaultClip then
 		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
 	end
 
 	self.Owner:RemoveAmmo(1, self.Primary.Ammo)
-	CheckForNoAmmo(self)
+
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) < 1 then
+		self.needs_reload = true
+	end
 end
 
 function SWEP:CanSecondaryAttack()
@@ -141,7 +139,10 @@ function SWEP:SecondaryAttack()
 	end
 
 	self.Owner:RemoveAmmo(math.Clamp(self.Secondary.TakeAmmo, 1, self.Owner:GetAmmoCount(self.Primary.Ammo)), self.Primary.Ammo)
-	CheckForNoAmmo(self)
+
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) < 1 then
+		self.needs_reload = true
+	end
 end
 
 function SWEP:Reload()
