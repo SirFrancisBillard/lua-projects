@@ -11,7 +11,7 @@ SWEP.Instructions = [[
 Grenades will explode shortly after impact with surfaces.
 Grenades deal more damage on direct hits.]]
 
-SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
+SWEP.ViewModel = "models/weapons/c_irifle.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 SWEP.UseHands = true
 
@@ -23,7 +23,7 @@ SWEP.Primary.DefaultClip = 6
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "glgrenades"
 
-SWEP.Primary.Delay = 0.8
+SWEP.Primary.Delay = 0.5
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -44,11 +44,11 @@ local ShootSound = Sound("weapons/grenade_launcher1.wav")
 function SWEP:Initialize()
 	self.BaseClass.Initialize(self)
 
-	self:SetHoldType("shotgun")
+	self:SetHoldType("ar2")
 end
 
 function SWEP:CanPrimaryAttack()
-	return self.Owner:GetAmmoCount(self.Primary.Ammo) > 0
+	return self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 and not self.reloading
 end
 
 function SWEP:PrimaryAttack()
@@ -81,107 +81,36 @@ function SWEP:PrimaryAttack()
 	end
 
 	self.Owner:RemoveAmmo(1, self.Primary.Ammo)
+
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
+		self.needs_reload = true
+	end
 end
 
 function SWEP:CanSecondaryAttack()
 	return false
 end
 
--- reload handling
-
-SWEP.reloadtimer = 0
-
-function SWEP:SetupDataTables()
-	self:DTVar("Bool", 0, "reloading")
-end
-
 function SWEP:Reload()
-	if self.dt.reloading then return end
-
-	if not IsFirstTimePredicted() then return end
-
-	if self.Owner:GetAmmoCount(self.Primary.Ammo) < self.Primary.DefaultClip and self:StartReload() then
-		return
-	end
-end
-
-function SWEP:StartReload()
-	if self.dt.reloading then
-		return false
-	end
-
-	if not IsFirstTimePredicted() then return false end
-
-	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
-	local wep = self
-
-	if self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip then
-		return false
-	end
-
-	self:SetBodygroup(0, 1)
-	wep:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
-	self.Owner:SetAnimation(PLAYER_RELOAD)
-
-	self.reloadtimer = CurTime() + wep:SequenceDuration()
-
-	self.dt.reloading = true
-
-	return true
-end
-
-function SWEP:PerformReload()
-	-- prevent normal shooting in between reloads
-	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
-	if SERVER then
-		self.Owner:GiveAmmo(1, self.Primary.Ammo, true)
-	end
+	if not IsFirstTimePredicted() or self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip or self.reloading then return end
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
-	self:EmitSound(Sound("weapons/shotgun/shotgun_reload" .. math.random(1, 3) .. ".wav"))
+	self.Owner:SetAnimation(PLAYER_RELOAD)
 
-	self.reloadtimer = CurTime() +  self:SequenceDuration() + 0.1
+	self.reload_timer = CurTime() + self:SequenceDuration()
+	self.reloading = true
 end
-
-function SWEP:FinishReload()
-	self.dt.reloading = false
-	self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
-	self:SetBodygroup(0, 0)
-	self.reloadtimer = CurTime() + self:SequenceDuration()
-end
-
 
 function SWEP:Think()
-	local ammo = self.Owner:GetAmmoCount(self.Primary.Ammo)
-
-	if ammo <= 0 then
+	if self.needs_reload then
+		self.needs_reload = false
 		self:Reload()
 	end
 
-	if self.dt.reloading and IsFirstTimePredicted() then
-		if self.Owner:KeyDown(IN_ATTACK) and ammo > 0 then
-			self:FinishReload()
-			return
-		end
+	if self.reloading and self.reload_timer <= CurTime() then
+		self.reloading = false
+		self.reload_timer = 0
 
-		if self.reloadtimer <= CurTime() then
-			if ammo >= self.Primary.DefaultClip then
-				self:FinishReload()
-			elseif ammo < self.Primary.DefaultClip then
-				self:PerformReload()
-			else
-				self:FinishReload()
-			end
-			return
-		end
+		self.Owner:SetAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
 	end
-end
-
-function SWEP:Deploy()
-	self.dt.reloading = false
-	self.reloadtimer = 0
-
-	return self.BaseClass.Deploy(self)
 end
