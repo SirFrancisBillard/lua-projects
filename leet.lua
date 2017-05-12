@@ -18,9 +18,17 @@ function LEET.TranslateToLeet(str, num_times)
 	if type(str) ~= "string" then return str end
 	if num_times == nil then num_times = 1 end
 	if num_times > #LEET.English or num_times > #LEET.Leet then return str end
-	return LEET.TranslateToLeet(str:gsub(LEET.English[num_times], LEET.Leet[num_times]), num_times + 1)
+	return LEET.TranslateToLeet(str:lower():gsub(LEET.English[num_times], LEET.Leet[num_times]), num_times + 1)
 end
 
-LEET.AddLetter("a", "x")
-LEET.AddLetter("b", "y")
-LEET.AddLetter("c", "z")
+LEET.AddLetter("a", "4")
+LEET.AddLetter("b", "6")
+LEET.AddLetter("e", "3")
+LEET.AddLetter("i", "1")
+LEET.AddLetter("m", "|V|")
+LEET.AddLetter("n", "|\\|")
+LEET.AddLetter("o", "0")
+LEET.AddLetter("s", "5")
+LEET.AddLetter("t", "7")
+LEET.AddLetter("v", "\\/")
+LEET.AddLetter("w", "\\|/")
