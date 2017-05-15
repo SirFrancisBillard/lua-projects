@@ -29,29 +29,30 @@ SWEP.UseHands = true
 SWEP.ShowViewModel = true
 SWEP.ShowWorldModel = true
 SWEP.ViewModelBoneMods = {
-	["Detonator"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },
-	["Slam_panel"] = { scale = Vector(0.996, 0.996, 0.996), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },
-	["ValveBiped.Bip01_L_Clavicle"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(-30, 1.493, -30), angle = Angle(0, 0, 0) },
-	["Slam_base"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },
-	["ValveBiped.Bip01_L_Hand"] = { scale = Vector(0.009, 0.009, 3), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) }
+	["Detonator"] = {scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0)},
+	["Slam_panel"] = {scale = Vector(0.996, 0.996, 0.996), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0)},
+	["ValveBiped.Bip01_L_Clavicle"] = {scale = Vector(0.009, 0.009, 0.009), pos = Vector(-30, 1.493, -30), angle = Angle(0, 0, 0)},
+	["Slam_base"] = {scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },
+	["ValveBiped.Bip01_L_Hand"] = {scale = Vector(0.009, 0.009, 3), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0)}
 }
 
 SWEP.VElements = {
-	["paper"] = { type = "Model", model = "models/props_junk/garbage_newspaper001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.37, 3.904, -3.547), angle = Angle(84.832, 49.483, 6.363), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	["paper"] = {type = "Model", model = "models/props_junk/garbage_newspaper001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.37, 3.904, -3.547), angle = Angle(84.832, 49.483, 6.363), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {}}
 }
 
 SWEP.WElements = {
-	["paper"] = { type = "Model", model = "models/props_junk/garbage_newspaper001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(3.519, 5.426, -2.177), angle = Angle(93.78, 0, 1.71), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	["paper"] = {type = "Model", model = "models/props_junk/garbage_newspaper001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(3.519, 5.426, -2.177), angle = Angle(93.78, 0, 1.71), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {}}
 }
 
 local FirstNames = {
 	"William",
 	"Robert",
+	"Alex",
 	"Joseph",
 	"Lewis",
 	"James",
 	"Donald",
-	"Christohper",
+	"Christopher",
 	"Murray",
 	"Helena",
 	"Sarah",
@@ -112,7 +113,7 @@ local Middles = {
 	"assassinated",
 	"gives birth",
 	"declares terrorist attack",
-	"joins NATO",
+	"leaves the EU",
 	"joins ISIS",
 	"commits suicide",
 	"build wall",
@@ -121,7 +122,8 @@ local Middles = {
 	"wins lottery",
 	"commits mass genocide",
 	"goes on murderous rampage",
-	"to star in lead role"
+	"to star in lead role",
+	"builds spaceship"
 }
 
 local Ends = {
@@ -129,6 +131,7 @@ local Ends = {
 	"while drunk",
 	"for breast cancer awareness week",
 	"twelve times",
+	"eighteen times"
 	"inside public restroom",
 	"during sexual intercourse",
 	"in mexico",
